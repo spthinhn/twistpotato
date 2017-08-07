@@ -1,6 +1,6 @@
 <header id="header">
     <div class="container clearfix">
-        <div class="logo"><a href="index.html"><img alt="" src="images/logo.png"></a></div>
+        <div class="logo"><a href="index.html"><img alt="" src="images/logo3.png"></a></div>
         <div class="row">
             <div class="col-md-6">
                     <div class="navigation navigation-1" style="position: absolute; top: 0; left: 15%">

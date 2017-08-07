@@ -240,5 +240,7 @@
 		days_ago_text: "about %d days ago",
 		view_text: "view tweet on twitter"
 	});
-	
+	$("#slider1").responsiveSlides({
+        speed: 800
+      });
 })(jQuery);

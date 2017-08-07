@@ -21,6 +21,9 @@
     
     <!-- Responsive Style -->
     <link rel="stylesheet" href="css/responsive.css">
+    <link rel="stylesheet" href="css/responsiveslides.css">
+
+    
     
     <!-- Favicons -->
     <link rel="shortcut icon" href="images/favicon.png">
@@ -37,8 +40,8 @@
     
     
     
-    <div class="section-1">
-        <div class="re_s_2"></div>
+    <div class="section-3">
+        <div class="re_s_4"></div>
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -61,8 +64,8 @@
         </div>
     </div><!-- End section-1 -->
     
-    <div class="section-2">
-        <div class="re_s_3"></div>
+    <div class="section-1">
+        <div class="re_s_2"></div>
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -75,18 +78,20 @@
                     <ul>
                         <li>
                             <div class="col-md-12 dishes-item">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="dishes-img"><img alt="" src="images/phomai/12.png"></div>
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-9">
                                     <div class="dishes">
                                         <div class="dishes-content">
                                             <div class="dishes-icon"><i class="icon-food"></i></div>
-                                            <h3><a href="single-dishes.html">Korean BBQ chicken</a></h3>
-                                            <p>Integer lorem quam, adipiscing condim tristique , eleifend turpis. Pellentesque cursus arcu id magna euismod in.</p>
+                                            <h3><a href="single-dishes.html">NGUYÊN CHẤT TRUYỀN THỐNG</a></h3>
+                                            <p>Bột phô mai nguyên chất có vị mặn hơi ngọt và béo béo đặc trưng của phô mai làm dậy lên hương vị tuyệt vời của những món ăn mà bạn tự tay mình làm.</p>
+                                            <p>Bột phô mai nguyên chất có vị mặn hơi ngọt và béo béo đặc trưng của phô mai làm dậy lên hương vị tuyệt vời của những món ăn mà bạn tự tay mình làm.</p>
                                             <div class="dishes-footer">
-                                                <span class="dishes-price">Only 30.99 $</span>
-                                                <a class="dishes-order" href="#">Order It Now</a>
+                                                <div class="col-sm-4 col-sm-offset-8">
+                                                    <a class="dishes-order pull-right" href="#">Xem thêm !</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -95,18 +100,20 @@
                         </li>
                         <li>
                             <div class="col-md-12 dishes-item">
-                                <div class="col-md-4">
-                                    <div class="dishes-img"><img alt="" src="images/phomai/13.png"></div>
+                                <div class="col-md-3">
+                                    <div class="dishes-img"><img alt="" src="images/phomai/12.png"></div>
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-9">
                                     <div class="dishes">
                                         <div class="dishes-content">
                                             <div class="dishes-icon"><i class="icon-food"></i></div>
-                                            <h3><a href="single-dishes.html">Korean BBQ chicken</a></h3>
-                                            <p>Integer lorem quam, adipiscing condim tristique , eleifend turpis. Pellentesque cursus arcu id magna euismod in.</p>
+                                            <h3><a href="single-dishes.html">NGUYÊN CHẤT TRUYỀN THỐNG</a></h3>
+                                            <p>Bột phô mai nguyên chất có vị mặn hơi ngọt và béo béo đặc trưng của phô mai làm dậy lên hương vị tuyệt vời của những món ăn mà bạn tự tay mình làm.</p>
+                                            <p>Bột phô mai nguyên chất có vị mặn hơi ngọt và béo béo đặc trưng của phô mai làm dậy lên hương vị tuyệt vời của những món ăn mà bạn tự tay mình làm.</p>
                                             <div class="dishes-footer">
-                                                <span class="dishes-price">Only 30.99 $</span>
-                                                <a class="dishes-order" href="#">Order It Now</a>
+                                                <div class="col-sm-4 col-sm-offset-8">
+                                                    <a class="dishes-order pull-right" href="#">Xem thêm !</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -124,9 +131,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <div class="section-title">
-                        <div><h3>Upcoming Events</h3><span></span></div>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lorem quam, adipiscing condimentum tristique vel, eleifend sed turpis. Pellentesque cursus arcu id magna euismod in elementum purus molestie.</p>
+                    <div class="section-title" style="margin-bottom: 30px">
+                        <div><h3>Tin tức</h3><span></span></div>
                     </div>
                 </div>
                 <div class="col-md-3 event-item">
@@ -135,13 +141,13 @@
                             <a href="single-event.html"><img alt="" src="http://placehold.it/346x229/949089/FFF/"></a>
                             <div class="event-title">
                                 <div>
-                                    <h3>Begha Birthday Celebration</h3>
-                                    <span>May 20, 2014 - 5:00 pm</span>
+                                    <h3>LÀM THẾ NÀO ĐỂ BẢO QUẢN BỘT PHÔ MAI</h3>
                                 </div>
                             </div>
                         </div>
                         <div class="event-content">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lorem quam, adipiscing condimentum tristique vel, eleifend sed turpis.</p>
+                            <p>1. KHÔNG nên để bột ở nơi ẩm ướt ( ví dụ như gần bồn rửa chén bát) và trong ngăn đá tủ lạnh.</p>
+                            <p>2. KHÔNG để bột tiếp xúc trực tiếp không khí và ánh nắng, nghĩa là bạn phải đậy kín và để bột nơi thoáng mát.</p>
                             <a class="event-single" href="single-event.html"><i class="icon-chevron-right"></i></a>
                         </div>
                     </div>
@@ -152,13 +158,13 @@
                             <a href="single-event.html"><img alt="" src="http://placehold.it/346x229/949089/FFF/"></a>
                             <div class="event-title">
                                 <div>
-                                    <h3>Marriage Celebration</h3>
-                                    <span>May 20, 2014 - 9:00 pm</span>
+                                    <h3>LÀM THẾ NÀO ĐỂ BẢO QUẢN BỘT PHÔ MAI</h3>
                                 </div>
                             </div>
                         </div>
                         <div class="event-content">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lorem quam, adipiscing condimentum tristique vel, eleifend sed turpis.</p>
+                            <p>1. KHÔNG nên để bột ở nơi ẩm ướt ( ví dụ như gần bồn rửa chén bát) và trong ngăn đá tủ lạnh.</p>
+                            <p>2. KHÔNG để bột tiếp xúc trực tiếp không khí và ánh nắng, nghĩa là bạn phải đậy kín và để bột nơi thoáng mát.</p>
                             <a class="event-single" href="single-event.html"><i class="icon-chevron-right"></i></a>
                         </div>
                     </div>
@@ -169,13 +175,13 @@
                             <a href="single-event.html"><img alt="" src="http://placehold.it/346x229/949089/FFF/"></a>
                             <div class="event-title">
                                 <div>
-                                    <h3>Baby Celebration</h3>
-                                    <span>May 20, 2014 - 1:00 am</span>
+                                    <h3>LÀM THẾ NÀO ĐỂ BẢO QUẢN BỘT PHÔ MAI</h3>
                                 </div>
                             </div>
                         </div>
                         <div class="event-content">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lorem quam, adipiscing condimentum tristique vel, eleifend sed turpis.</p>
+                            <p>1. KHÔNG nên để bột ở nơi ẩm ướt ( ví dụ như gần bồn rửa chén bát) và trong ngăn đá tủ lạnh.</p>
+                            <p>2. KHÔNG để bột tiếp xúc trực tiếp không khí và ánh nắng, nghĩa là bạn phải đậy kín và để bột nơi thoáng mát.</p>
                             <a class="event-single" href="single-event.html"><i class="icon-chevron-right"></i></a>
                         </div>
                     </div>
@@ -186,13 +192,13 @@
                             <a href="single-event.html"><img alt="" src="http://placehold.it/346x229/949089/FFF/"></a>
                             <div class="event-title">
                                 <div>
-                                    <h3>Other Celebrations</h3>
-                                    <span>May 20, 2014 - 8:00 am</span>
+                                    <h3>LÀM THẾ NÀO ĐỂ BẢO QUẢN BỘT PHÔ MAI</h3>
                                 </div>
                             </div>
                         </div>
                         <div class="event-content">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lorem quam, adipiscing condimentum tristique vel, eleifend sed turpis.</p>
+                            <p>1. KHÔNG nên để bột ở nơi ẩm ướt ( ví dụ như gần bồn rửa chén bát) và trong ngăn đá tủ lạnh.</p>
+                            <p>2. KHÔNG để bột tiếp xúc trực tiếp không khí và ánh nắng, nghĩa là bạn phải đậy kín và để bột nơi thoáng mát.</p>
                             <a class="event-single" href="single-event.html"><i class="icon-chevron-right"></i></a>
                         </div>
                     </div>
@@ -202,144 +208,6 @@
         </div>
         <div class="re_s_5"></div>
     </div><!-- End section-3 -->
-    
-    <div class="section-1">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="section-title">
-                        <div><h3>Our Happy Customers</h3><span></span></div>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lorem quam, adipiscing condimentum tristique vel, eleifend sed turpis. Pellentesque cursus arcu id magna euismod in elementum purus molestie.</p>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
-                <div class="customers-slider">
-                    <ul>
-                        <li>
-                            <div class="col-md-4 customers-item">
-                                <div class="customers">
-                                    <div class="customers-s"></div>
-                                    <div class="customers-outer-1"></div>
-                                    <div class="customers-outer-2"></div>
-                                    <div class="customers-inner">
-                                        <div class="customers-img"><img alt="" src="http://placehold.it/60x60/413c35/FFF/"></div>
-                                        <div class="customers-content"><p>“Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lorem quam, adipiscing condimentum  vel.”</p></div>
-                                        <div class="customers-meta"><span>Begha</span> - 7oroof.com Network</div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                    <div class="customers-outer-3"></div>
-                                    <div class="customers-outer-4"></div>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-4 customers-item">
-                                <div class="customers">
-                                    <div class="customers-s"></div>
-                                    <div class="customers-outer-1"></div>
-                                    <div class="customers-outer-2"></div>
-                                    <div class="customers-inner">
-                                        <div class="customers-img"><img alt="" src="http://placehold.it/60x60/413c35/FFF/"></div>
-                                        <div class="customers-content"><p>“Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lorem quam, adipiscing condimentum  vel.”</p></div>
-                                        <div class="customers-meta"><span>Begha</span> - 7oroof.com Network</div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                    <div class="customers-outer-3"></div>
-                                    <div class="customers-outer-4"></div>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-4 customers-item">
-                                <div class="customers">
-                                    <div class="customers-s"></div>
-                                    <div class="customers-outer-1"></div>
-                                    <div class="customers-outer-2"></div>
-                                    <div class="customers-inner">
-                                        <div class="customers-img"><img alt="" src="http://placehold.it/60x60/413c35/FFF/"></div>
-                                        <div class="customers-content"><p>“Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lorem quam, adipiscing condimentum  vel.”</p></div>
-                                        <div class="customers-meta"><span>Begha</span> - 7oroof.com Network</div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                    <div class="customers-outer-3"></div>
-                                    <div class="customers-outer-4"></div>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="col-md-4 customers-item">
-                                <div class="customers">
-                                    <div class="customers-s"></div>
-                                    <div class="customers-outer-1"></div>
-                                    <div class="customers-outer-2"></div>
-                                    <div class="customers-inner">
-                                        <div class="customers-img"><img alt="" src="http://placehold.it/60x60/413c35/FFF/"></div>
-                                        <div class="customers-content"><p>“Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lorem quam, adipiscing condimentum  vel.”</p></div>
-                                        <div class="customers-meta"><span>Begha</span> - 7oroof.com Network</div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                    <div class="customers-outer-3"></div>
-                                    <div class="customers-outer-4"></div>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-4 customers-item">
-                                <div class="customers">
-                                    <div class="customers-s"></div>
-                                    <div class="customers-outer-1"></div>
-                                    <div class="customers-outer-2"></div>
-                                    <div class="customers-inner">
-                                        <div class="customers-img"><img alt="" src="http://placehold.it/60x60/413c35/FFF/"></div>
-                                        <div class="customers-content"><p>“Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lorem quam, adipiscing condimentum  vel.”</p></div>
-                                        <div class="customers-meta"><span>Begha</span> - 7oroof.com Network</div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                    <div class="customers-outer-3"></div>
-                                    <div class="customers-outer-4"></div>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </div>
-                            <div class="col-md-4 customers-item">
-                                <div class="customers">
-                                    <div class="customers-s"></div>
-                                    <div class="customers-outer-1"></div>
-                                    <div class="customers-outer-2"></div>
-                                    <div class="customers-inner">
-                                        <div class="customers-img"><img alt="" src="http://placehold.it/60x60/413c35/FFF/"></div>
-                                        <div class="customers-content"><p>“Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lorem quam, adipiscing condimentum  vel.”</p></div>
-                                        <div class="customers-meta"><span>Begha</span> - 7oroof.com Network</div>
-                                        <div class="clearfix"></div>
-                                    </div>
-                                    <div class="customers-outer-3"></div>
-                                    <div class="customers-outer-4"></div>
-                                    <div class="clearfix"></div>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
-                </div><!-- End customers-slider -->
-            </div>
-            
-            <div class="callout">
-                <div class="callout-s"></div>
-                <div class="callout-inner">
-                    <h3>Sexy Food, Awesome Food & Restaurant Template</h3>
-                    <div class="row">
-                        <div class="col-md-10">
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer lorem quam, adipiscing condimentum tristique vel, eleifend sed turpis. Pellentesque cursus arcu id magna euismod in elementum purus molestie.</p>
-                        </div>
-                        <div class="col-md-2">
-                            <a href="http://themeforest.net/user/begha" class="callout-a">Purchase Now</a>
-                        </div>
-                    </div>
-                    <div class="clearfix"></div>
-                </div>
-                <div class="callout-outer-1"></div>
-                <div class="callout-outer-2"></div>
-                <div class="clearfix"></div>
-            </div>
-            
-        </div>
-    </div><!-- End section-1 -->
     
     <footer id="footer">
         <div class="go-up"><i class="icon-chevron-up"></i></div>
@@ -429,6 +297,7 @@
 <script src="js/jquery.themepunch.plugins.min.js"></script>
 <script src="js/jquery.themepunch.revolution.min.js"></script>
 <script src="js/jquery.nicescroll.min.js"></script>
+<script src="js/responsiveslides.min.js"></script>
 <script src="js/custom.js"></script>
 <!-- End js -->
 
