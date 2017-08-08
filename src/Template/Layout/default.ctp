@@ -215,8 +215,8 @@
             <div class="row">
                 <div class="col-md-3">
                     <div class="footer-widget footer-widget-1">
-                        <h6>Sexy Food</h6>
-                        <p>Duis dapibus aliquam mi, eget euismod sem scelerisque ut. Vivamus at elit quis urna adipiscing iaculis. Curabitur vitae velit in neque dictum blandit. Proin in iaculis neque. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas.</p>
+                        <h6>Tomato T&P</h6>
+                        <p>TOMATO T&P là nhà nhập khẩu và phân phối độc quyền bột phô mai có xuất xứ từ Hàn Quốc ở Việt Nam.</p>
                         <div class="footer-social">
                             <ul>
                                 <li class=""><a href="#"><i class="social_icon-facebook"></i></a></li>
@@ -227,44 +227,21 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-6">
                     <div class="footer-widget footer-widget-2">
-                        <h6>Latest Tweets</h6>
-                        <div class="footer-tweet"></div>
+                        <h6>Liên hệ</h6>
+                        <div class="col-md-6">
+                            <p><b>Địa chỉ: </b> 1F/62 Đường Bình Lợi, P.13, Q.Bình Thạnh, TP. Hồ Chí Minh, Việt Nam</p>
+                            <p><b>Số điện thoại: </b>031 2045 447</p>
+                        </div>
+                        <div class="col-md-6">
+                            <img width="100%" src="images/googlemap.jpg" />
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-3">
                     <div class="footer-widget footer-widget-3">
-                        <h6>Site Menu</h6>
-                        <ul>
-                            <li><a href="index.html">Home</a></li>
-                            <li><a href="about.html">About Us</a></li>
-                            <li><a href="menu.html">Our Menus</a></li>
-                            <li><a href="events.html">Events</a></li>
-                            <li><a href="services.html">Our Services</a></li>
-                            <li><a href="contact.html">Contact Us</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="footer-widget footer-widget-4">
-                        <h6>Opening Hours</h6>
-                        <div class="row">
-                            <div class="col-md-5">Sunday</div>
-                            <div class="col-md-7">8:00 am - 11:00 pm</div>
-                            <div class="col-md-5">Monday</div>
-                            <div class="col-md-7">8:00 am - 11:00 pm</div>
-                            <div class="col-md-5">Tuesday</div>
-                            <div class="col-md-7">8:00 am - 11:00 pm</div>
-                            <div class="col-md-5">Wednesday</div>
-                            <div class="col-md-7">8:00 am - 11:00 pm</div>
-                            <div class="col-md-5">Thursday</div>
-                            <div class="col-md-7">8:00 am - 11:00 pm</div>
-                            <div class="col-md-5">Friday</div>
-                            <div class="col-md-7">8:00 am - 11:00 pm</div>
-                            <div class="col-md-5">Saturday</div>
-                            <div class="col-md-7">8:00 am - 11:00 pm</div>
-                        </div>
+                        <iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2Fpages%2FPh%25C3%25B4-Mai-H%25C3%25A0n-Qu%25E1%25BB%2591c%2F824398560926201&amp;width&amp;layout=standard&amp;action=like&amp;show_faces=true&amp;share=true&amp;height=75" scrolling="no" style="border:none; overflow:hidden; height:75px; " allowtransparency="true" frameborder="0"></iframe>
                     </div>
                 </div>
             </div><!-- End row -->
