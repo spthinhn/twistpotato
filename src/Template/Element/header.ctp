@@ -5,8 +5,8 @@
             <div class="col-md-6">
                     <div class="navigation navigation-1" style="position: absolute; top: 0; left: 15%">
                         <ul>
-                            <li><a href="index.html">Giới thiệu</a></li>
-                            <li><a href="about.html">Sản phẩm</a></li>
+                            <li><a href="introduce">Giới thiệu</a></li>
+                            <li><a href="products">Sản phẩm</a></li>
                         </ul>
                     </div>
                     <div class="navigation_mobile_main navigation_mobile">
