@@ -16,7 +16,7 @@
 					<div class="dishes-content">
 						<div class="dishes-icon"><i class="icon-food"></i></div>
 						<h3><a href="product">Korean BBQ chicken</a></h3>
-						<p>Integer lorem quam, adipiscing condim tristique , eleifend turpis. Pellentesque cursus arcu id magna euismod in.</p>
+						<p>Dùng được trong nhiều thực phẩm, các món ăn như gà lắc, nem chua, khoai tây lắc, khoai tây lốc xoáy, bánh tráng, bắp rang caramen phô mai, đặc biệt là làm bánh và nhiều công dụng khác.</p>
 					</div>
 				</div>
 			</div>
@@ -26,7 +26,7 @@
 					<div class="dishes-content">
 						<div class="dishes-icon"><i class="icon-food"></i></div>
 						<h3><a href="product">Korean BBQ chicken</a></h3>
-						<p>Integer lorem quam, adipiscing condim tristique , eleifend turpis. Pellentesque cursus arcu id magna euismod in.</p>
+						<p>Dùng được trong nhiều thực phẩm, các món ăn như gà lắc, nem chua, khoai tây lắc, khoai tây lốc xoáy, bánh tráng, bắp rang caramen phô mai, đặc biệt là làm bánh và nhiều công dụng khác.</p>
 					</div>
 				</div>
 			</div>
@@ -36,7 +36,7 @@
 					<div class="dishes-content">
 						<div class="dishes-icon"><i class="icon-food"></i></div>
 						<h3><a href="product">Korean BBQ chicken</a></h3>
-						<p>Integer lorem quam, adipiscing condim tristique , eleifend turpis. Pellentesque cursus arcu id magna euismod in.</p>
+						<p>Dùng được trong nhiều thực phẩm, các món ăn như gà lắc, nem chua, khoai tây lắc, khoai tây lốc xoáy, bánh tráng, bắp rang caramen phô mai, đặc biệt là làm bánh và nhiều công dụng khác.</p>
 					</div>
 				</div>
 			</div>
@@ -46,7 +46,7 @@
 					<div class="dishes-content">
 						<div class="dishes-icon"><i class="icon-food"></i></div>
 						<h3><a href="product">Korean BBQ chicken</a></h3>
-						<p>Integer lorem quam, adipiscing condim tristique , eleifend turpis. Pellentesque cursus arcu id magna euismod in.</p>
+						<p>Dùng được trong nhiều thực phẩm, các món ăn như gà lắc, nem chua, khoai tây lắc, khoai tây lốc xoáy, bánh tráng, bắp rang caramen phô mai, đặc biệt là làm bánh và nhiều công dụng khác.</p>
 					</div>
 				</div>
 			</div>
@@ -56,7 +56,7 @@
 					<div class="dishes-content">
 						<div class="dishes-icon"><i class="icon-food"></i></div>
 						<h3><a href="product">Korean BBQ chicken</a></h3>
-						<p>Integer lorem quam, adipiscing condim tristique , eleifend turpis. Pellentesque cursus arcu id magna euismod in.</p>
+						<p>Dùng được trong nhiều thực phẩm, các món ăn như gà lắc, nem chua, khoai tây lắc, khoai tây lốc xoáy, bánh tráng, bắp rang caramen phô mai, đặc biệt là làm bánh và nhiều công dụng khác.</p>
 					</div>
 				</div>
 			</div>
@@ -66,7 +66,7 @@
 					<div class="dishes-content">
 						<div class="dishes-icon"><i class="icon-food"></i></div>
 						<h3><a href="product">Korean BBQ chicken</a></h3>
-						<p>Integer lorem quam, adipiscing condim tristique , eleifend turpis. Pellentesque cursus arcu id magna euismod in.</p>
+						<p>Dùng được trong nhiều thực phẩm, các món ăn như gà lắc, nem chua, khoai tây lắc, khoai tây lốc xoáy, bánh tráng, bắp rang caramen phô mai, đặc biệt là làm bánh và nhiều công dụng khác.</p>
 					</div>
 				</div>
 			</div>
@@ -76,7 +76,7 @@
 					<div class="dishes-content">
 						<div class="dishes-icon"><i class="icon-food"></i></div>
 						<h3><a href="product">Korean BBQ chicken</a></h3>
-						<p>Integer lorem quam, adipiscing condim tristique , eleifend turpis. Pellentesque cursus arcu id magna euismod in.</p>
+						<p>Dùng được trong nhiều thực phẩm, các món ăn như gà lắc, nem chua, khoai tây lắc, khoai tây lốc xoáy, bánh tráng, bắp rang caramen phô mai, đặc biệt là làm bánh và nhiều công dụng khác.</p>
 					</div>
 				</div>
 			</div>

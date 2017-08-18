@@ -1,6 +1,6 @@
 <header id="header">
     <div class="container clearfix">
-        <div class="logo"><a href="index.html"><img alt="" src="images/logo3.png"></a></div>
+        <div class="logo"><a href="/"><img alt="" src="images/logo3.png"></a></div>
         <div class="row">
             <div class="col-md-6">
                     <div class="navigation navigation-1" style="position: absolute; top: 0; left: 15%">
@@ -17,8 +17,8 @@
             <div class="col-md-6">
                 <div class="navigation navigation-2" style="position: absolute; top: 0; left: 15%">
                     <ul>
-                        <li><a href="events.html">Tin tức</a></li>
-                        <li><a href="services.html">Liên hệ</a></li>
+                        <li><a href="blogs">Tin tức</a></li>
+                        <li><a href="contact">Liên hệ</a></li>
                     </ul>
                 </div>
             </div>

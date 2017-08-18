@@ -243,5 +243,7 @@
 	$("#slider1").responsiveSlides({
         speed: 800
       });
-    $('.collapse').collapse();
+    $('.collapse').collapse({
+	  toggle: false
+	})
 })(jQuery);
