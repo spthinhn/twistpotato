@@ -1,15 +1,15 @@
 <?php
 /**
- * CakePHP :  Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP :  Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP Project
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP Project
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Shell\Task;
 
@@ -22,10 +22,6 @@ use Cake\TestSuite\TestCase;
  */
 class LoadTaskTest extends TestCase
 {
-    /**
-     * @var \Cake\Shell\Task\LoadTask|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $Task;
 
     /**
      * setUp method
@@ -46,8 +42,6 @@ class LoadTaskTest extends TestCase
             ->getMock();
 
         $this->bootstrap = ROOT . DS . 'config' . DS . 'bootstrap.php';
-        $this->bootstrapCli = ROOT . DS . 'config' . DS . 'bootstrap_cli.php';
-        copy($this->bootstrap, $this->bootstrapCli);
 
         $bootstrap = new File($this->bootstrap, false);
         $this->originalBootstrapContent = $bootstrap->read();
@@ -66,7 +60,6 @@ class LoadTaskTest extends TestCase
 
         $bootstrap = new File($this->bootstrap, false);
         $bootstrap->write($this->originalBootstrapContent);
-        unlink($this->bootstrapCli);
     }
 
     /**
@@ -80,7 +73,6 @@ class LoadTaskTest extends TestCase
             'bootstrap' => false,
             'routes' => false,
             'autoload' => true,
-            'cli' => false
         ];
 
         $action = $this->Task->main('TestPlugin');
@@ -103,7 +95,6 @@ class LoadTaskTest extends TestCase
             'bootstrap' => true,
             'routes' => false,
             'autoload' => true,
-            'cli' => false
         ];
 
         $action = $this->Task->main('TestPlugin');
@@ -112,29 +103,6 @@ class LoadTaskTest extends TestCase
 
         $expected = "Plugin::load('TestPlugin', ['autoload' => true, 'bootstrap' => true]);";
         $bootstrap = new File($this->bootstrap, false);
-        $this->assertContains($expected, $bootstrap->read());
-    }
-
-    /**
-     * Tests that loading with bootstrap_cli works.
-     *
-     * @return void
-     */
-    public function testLoadBootstrapCli()
-    {
-        $this->Task->params = [
-            'bootstrap' => false,
-            'routes' => false,
-            'autoload' => false,
-            'cli' => true
-        ];
-
-        $action = $this->Task->main('CliPlugin');
-
-        $this->assertTrue($action);
-
-        $expected = "Plugin::load('CliPlugin');";
-        $bootstrap = new File($this->bootstrapCli, false);
         $this->assertContains($expected, $bootstrap->read());
     }
 
@@ -149,7 +117,6 @@ class LoadTaskTest extends TestCase
             'bootstrap' => false,
             'routes' => true,
             'autoload' => true,
-            'cli' => false
         ];
 
         $action = $this->Task->main('TestPlugin');
@@ -172,7 +139,6 @@ class LoadTaskTest extends TestCase
             'bootstrap' => false,
             'routes' => true,
             'autoload' => false,
-            'cli' => false
         ];
 
         $action = $this->Task->main('TestPlugin');
@@ -195,7 +161,6 @@ class LoadTaskTest extends TestCase
             'bootstrap' => false,
             'routes' => false,
             'autoload' => false,
-            'cli' => false
         ];
 
         $action = $this->Task->main('TestPlugin');

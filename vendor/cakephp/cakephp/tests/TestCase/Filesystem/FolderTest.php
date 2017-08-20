@@ -2,17 +2,17 @@
 /**
  * FolderTest file
  *
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         1.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Filesystem;
 
@@ -102,6 +102,7 @@ class FolderTest extends TestCase
         $result = $Base->pwd();
         $this->assertEquals($basePath, $result);
 
+
         // is "/" in "/tests/test_app/"
         $result = $Base->inPath(realpath(DS), true);
         $this->assertFalse($result, true);
@@ -125,6 +126,7 @@ class FolderTest extends TestCase
         // is "/tests/other/(...)tests/test_app" in "/tests/test_app/"
         $result = $Base->inPath(TMP . 'tests' . DS . 'other' . DS . $basePath, true);
         $this->assertFalse($result);
+
 
         // is "/tests/test_app/" in "/"
         $result = $Base->inPath(realpath(DS));
@@ -251,8 +253,8 @@ class FolderTest extends TestCase
             $Folder = new Folder($path);
             $result = $Folder->create($path . DS . 'two/three');
             $this->assertFalse($result);
-        } catch (\Exception $e) {
-            $this->assertInstanceOf('PHPUnit\Framework\Error\Error', $e);
+        } catch (\PHPUnit_Framework_Error $e) {
+            $this->assertTrue(true);
         }
 
         chmod($path, '0777');
@@ -518,7 +520,7 @@ class FolderTest extends TestCase
         $this->assertSame([], array_diff($expected, $result));
 
         $expected = [];
-        $result = $folder->subdirectories('NonExistentPath');
+        $result = $folder->subdirectories('NonExistantPath');
         $this->assertSame([], array_diff($expected, $result));
         $result = $folder->subdirectories($path . DS . 'Exception');
         $this->assertSame([], array_diff($expected, $result));
@@ -797,16 +799,16 @@ class FolderTest extends TestCase
      */
     public function testFindRecursive()
     {
-        $Folder = new Folder(CORE_PATH . 'config');
+        $Folder = new Folder(CORE_PATH);
         $result = $Folder->findRecursive('(config|paths)\.php');
         $expected = [
             CORE_PATH . 'config' . DS . 'config.php'
         ];
         $this->assertSame([], array_diff($expected, $result));
+        $this->assertSame([], array_diff($expected, $result));
 
-        $result = $Folder->findRecursive('(config|bootstrap)\.php', true);
+        $result = $Folder->findRecursive('(config|woot)\.php', true);
         $expected = [
-            CORE_PATH . 'config' . DS . 'bootstrap.php',
             CORE_PATH . 'config' . DS . 'config.php'
         ];
         $this->assertSame($expected, $result);
@@ -878,7 +880,7 @@ class FolderTest extends TestCase
     }
 
     /**
-     * test that errors and messages can be restarted
+     * test that errors and messages can be resetted
      *
      * @return void
      */
@@ -982,16 +984,16 @@ class FolderTest extends TestCase
         $Folder = new Folder($folderOne);
         $result = $Folder->copy($folderThree);
         $this->assertTrue($result);
-        $this->assertFileExists($folderThree . DS . 'file1.php');
-        $this->assertFileExists($folderThree . DS . 'folderA' . DS . 'fileA.php');
+        $this->assertTrue(file_exists($folderThree . DS . 'file1.php'));
+        $this->assertTrue(file_exists($folderThree . DS . 'folderA' . DS . 'fileA.php'));
 
         $Folder = new Folder($folderTwo);
         $result = $Folder->copy($folderThree);
         $this->assertTrue($result);
-        $this->assertFileExists($folderThree . DS . 'file1.php');
-        $this->assertFileExists($folderThree . DS . 'file2.php');
-        $this->assertFileExists($folderThree . DS . 'folderA' . DS . 'fileA.php');
-        $this->assertFileExists($folderThree . DS . 'folderB' . DS . 'fileB.php');
+        $this->assertTrue(file_exists($folderThree . DS . 'file1.php'));
+        $this->assertTrue(file_exists($folderThree . DS . 'file2.php'));
+        $this->assertTrue(file_exists($folderThree . DS . 'folderA' . DS . 'fileA.php'));
+        $this->assertTrue(file_exists($folderThree . DS . 'folderB' . DS . 'fileB.php'));
 
         $Folder = new Folder($path);
         $Folder->delete();
@@ -1012,16 +1014,16 @@ class FolderTest extends TestCase
         $Folder = new Folder($folderOne);
         $result = $Folder->copy($folderThree);
         $this->assertTrue($result);
-        $this->assertFileExists($folderThree . DS . 'file1.php');
-        $this->assertFileExists($folderThree . DS . 'folderA' . DS . 'fileA.php');
+        $this->assertTrue(file_exists($folderThree . DS . 'file1.php'));
+        $this->assertTrue(file_exists($folderThree . DS . 'folderA' . DS . 'fileA.php'));
 
         $Folder = new Folder($folderTwo);
         $result = $Folder->copy(['to' => $folderThree, 'scheme' => Folder::MERGE]);
         $this->assertTrue($result);
-        $this->assertFileExists($folderThree . DS . 'file1.php');
-        $this->assertFileExists($folderThree . DS . 'file2.php');
-        $this->assertFileExists($folderThree . DS . 'folderA' . DS . 'fileA.php');
-        $this->assertFileExists($folderThree . DS . 'folderB' . DS . 'fileB.php');
+        $this->assertTrue(file_exists($folderThree . DS . 'file1.php'));
+        $this->assertTrue(file_exists($folderThree . DS . 'file2.php'));
+        $this->assertTrue(file_exists($folderThree . DS . 'folderA' . DS . 'fileA.php'));
+        $this->assertTrue(file_exists($folderThree . DS . 'folderB' . DS . 'fileB.php'));
     }
 
     /**
@@ -1041,8 +1043,8 @@ class FolderTest extends TestCase
         $Folder = new Folder($folderOne);
         $result = $Folder->copy(['to' => $folderTwo, 'scheme' => Folder::SKIP]);
         $this->assertTrue($result);
-        $this->assertFileExists($folderTwo . DS . 'file1.php');
-        $this->assertFileExists($folderTwo . DS . 'folderA' . DS . 'fileA.php');
+        $this->assertTrue(file_exists($folderTwo . DS . 'file1.php'));
+        $this->assertTrue(file_exists($folderTwo . DS . 'folderA' . DS . 'fileA.php'));
 
         $Folder = new Folder($folderTwo);
         $Folder->delete();
@@ -1050,8 +1052,8 @@ class FolderTest extends TestCase
         $Folder = new Folder($folderOne);
         $result = $Folder->copy(['to' => $folderTwo, 'scheme' => Folder::SKIP]);
         $this->assertTrue($result);
-        $this->assertFileExists($folderTwo . DS . 'file1.php');
-        $this->assertFileExists($folderTwo . DS . 'folderA' . DS . 'fileA.php');
+        $this->assertTrue(file_exists($folderTwo . DS . 'file1.php'));
+        $this->assertTrue(file_exists($folderTwo . DS . 'folderA' . DS . 'fileA.php'));
 
         $Folder = new Folder($folderTwo);
         $Folder->delete();
@@ -1064,7 +1066,7 @@ class FolderTest extends TestCase
         $Folder = new Folder($folderTwo);
         $result = $Folder->copy(['to' => $folderThree, 'scheme' => Folder::SKIP]);
         $this->assertTrue($result);
-        $this->assertFileExists($folderThree . DS . 'file2.php');
+        $this->assertTrue(file_exists($folderThree . DS . 'file2.php'));
         $this->assertEquals('touched', file_get_contents($folderThree . DS . 'file2.php'));
         $this->assertEquals('untouched', file_get_contents($folderThree . DS . 'folderB' . DS . 'fileB.php'));
     }
@@ -1107,28 +1109,28 @@ class FolderTest extends TestCase
         $Folder = new Folder($folderOne);
         $result = $Folder->copy(['to' => $folderThree, 'scheme' => Folder::OVERWRITE]);
 
-        $this->assertFileExists($folderThree . DS . 'file1.php');
-        $this->assertFileExists($folderThree . DS . 'folderA' . DS . 'fileA.php');
+        $this->assertTrue(file_exists($folderThree . DS . 'file1.php'));
+        $this->assertTrue(file_exists($folderThree . DS . 'folderA' . DS . 'fileA.php'));
 
         $Folder = new Folder($folderTwo);
         $result = $Folder->copy(['to' => $folderThree, 'scheme' => Folder::OVERWRITE]);
         $this->assertTrue($result);
 
-        $this->assertFileExists($folderThree . DS . 'folderA' . DS . 'fileA.php');
+        $this->assertTrue(file_exists($folderThree . DS . 'folderA' . DS . 'fileA.php'));
 
         $Folder = new Folder($folderOne);
         unlink($fileOneA);
         $result = $Folder->copy(['to' => $folderThree, 'scheme' => Folder::OVERWRITE]);
         $this->assertTrue($result);
 
-        $this->assertFileExists($folderThree . DS . 'file1.php');
-        $this->assertFileExists($folderThree . DS . 'file2.php');
+        $this->assertTrue(file_exists($folderThree . DS . 'file1.php'));
+        $this->assertTrue(file_exists($folderThree . DS . 'file2.php'));
         $this->assertTrue(!file_exists($folderThree . DS . 'folderA' . DS . 'fileA.php'));
-        $this->assertFileExists($folderThree . DS . 'folderB' . DS . 'fileB.php');
+        $this->assertTrue(file_exists($folderThree . DS . 'folderB' . DS . 'fileB.php'));
     }
 
     /**
-     * testCopyWithoutRecursive
+     * testCopyWithoutResursive
      *
      * Verify that only the files exist in the target directory.
      *
@@ -1141,9 +1143,9 @@ class FolderTest extends TestCase
         $Folder = new Folder($folderOne);
         $result = $Folder->copy(['to' => $folderThree, 'recursive' => false]);
 
-        $this->assertFileExists($folderThree . DS . 'file1.php');
+        $this->assertTrue(file_exists($folderThree . DS . 'file1.php'));
         $this->assertFalse(is_dir($folderThree . DS . 'folderA'));
-        $this->assertFileNotExists($folderThree . DS . 'folderA' . DS . 'fileA.php');
+        $this->assertFalse(file_exists($folderThree . DS . 'folderA' . DS . 'fileA.php'));
     }
 
     /**
@@ -1214,13 +1216,13 @@ class FolderTest extends TestCase
         $Folder = new Folder($folderOne);
         $result = $Folder->move($folderTwo);
         $this->assertTrue($result);
-        $this->assertFileExists($folderTwo . '/file1.php');
+        $this->assertTrue(file_exists($folderTwo . '/file1.php'));
         $this->assertTrue(is_dir($folderTwo . '/folderB'));
-        $this->assertFileExists($folderTwo . '/folderB/fileB.php');
-        $this->assertFileNotExists($fileOne);
-        $this->assertFileExists($folderTwo . '/folderA');
-        $this->assertFileNotExists($folderOneA);
-        $this->assertFileNotExists($fileOneA);
+        $this->assertTrue(file_exists($folderTwo . '/folderB/fileB.php'));
+        $this->assertFalse(file_exists($fileOne));
+        $this->assertTrue(file_exists($folderTwo . '/folderA'));
+        $this->assertFalse(file_exists($folderOneA));
+        $this->assertFalse(file_exists($fileOneA));
 
         $Folder = new Folder($folderTwo);
         $Folder->delete();
@@ -1233,12 +1235,12 @@ class FolderTest extends TestCase
         $Folder = new Folder($folderOne);
         $result = $Folder->move($folderTwo);
         $this->assertTrue($result);
-        $this->assertFileExists($folderTwo . '/file1.php');
+        $this->assertTrue(file_exists($folderTwo . '/file1.php'));
         $this->assertTrue(is_dir($folderTwo . '/folderA'));
-        $this->assertFileExists($folderTwo . '/folderA/fileA.php');
-        $this->assertFileNotExists($fileOne);
-        $this->assertFileNotExists($folderOneA);
-        $this->assertFileNotExists($fileOneA);
+        $this->assertTrue(file_exists($folderTwo . '/folderA/fileA.php'));
+        $this->assertFalse(file_exists($fileOne));
+        $this->assertFalse(file_exists($folderOneA));
+        $this->assertFalse(file_exists($fileOneA));
 
         $Folder = new Folder($folderTwo);
         $Folder->delete();
@@ -1256,11 +1258,11 @@ class FolderTest extends TestCase
         $Folder = new Folder($folderOne);
         $result = $Folder->move($folderTwo);
         $this->assertTrue($result);
-        $this->assertFileExists($folderTwo . '/file1.php');
+        $this->assertTrue(file_exists($folderTwo . '/file1.php'));
         $this->assertEquals('', file_get_contents($folderTwoB . '/fileB.php'));
-        $this->assertFileNotExists($fileOne);
-        $this->assertFileNotExists($folderOneA);
-        $this->assertFileNotExists($fileOneA);
+        $this->assertFalse(file_exists($fileOne));
+        $this->assertFalse(file_exists($folderOneA));
+        $this->assertFalse(file_exists($fileOneA));
 
         $Folder = new Folder($path);
         $Folder->delete();
@@ -1283,12 +1285,12 @@ class FolderTest extends TestCase
         $Folder = new Folder($folderOne);
         $result = $Folder->move(['to' => $folderTwo, 'scheme' => Folder::SKIP]);
         $this->assertTrue($result);
-        $this->assertFileExists($folderTwo . '/file1.php');
+        $this->assertTrue(file_exists($folderTwo . '/file1.php'));
         $this->assertTrue(is_dir($folderTwo . '/folderB'));
-        $this->assertFileExists($folderTwoB . '/fileB.php');
-        $this->assertFileNotExists($fileOne);
-        $this->assertFileNotExists($folderOneA);
-        $this->assertFileNotExists($fileOneA);
+        $this->assertTrue(file_exists($folderTwoB . '/fileB.php'));
+        $this->assertFalse(file_exists($fileOne));
+        $this->assertFalse(file_exists($folderOneA));
+        $this->assertFalse(file_exists($fileOneA));
 
         $Folder = new Folder($folderTwo);
         $Folder->delete();
@@ -1302,12 +1304,12 @@ class FolderTest extends TestCase
         $Folder = new Folder($folderOne);
         $result = $Folder->move(['to' => $folderTwo, 'scheme' => Folder::SKIP]);
         $this->assertTrue($result);
-        $this->assertFileExists($folderTwo . '/file1.php');
+        $this->assertTrue(file_exists($folderTwo . '/file1.php'));
         $this->assertTrue(is_dir($folderTwo . '/folderA'));
-        $this->assertFileExists($folderTwo . '/folderA/fileA.php');
-        $this->assertFileNotExists($fileOne);
-        $this->assertFileNotExists($folderOneA);
-        $this->assertFileNotExists($fileOneA);
+        $this->assertTrue(file_exists($folderTwo . '/folderA/fileA.php'));
+        $this->assertFalse(file_exists($fileOne));
+        $this->assertFalse(file_exists($folderOneA));
+        $this->assertFalse(file_exists($fileOneA));
 
         $Folder = new Folder($folderTwo);
         $Folder->delete();
@@ -1323,11 +1325,11 @@ class FolderTest extends TestCase
         $Folder = new Folder($folderOne);
         $result = $Folder->move(['to' => $folderTwo, 'scheme' => Folder::SKIP]);
         $this->assertTrue($result);
-        $this->assertFileExists($folderTwo . '/file1.php');
+        $this->assertTrue(file_exists($folderTwo . '/file1.php'));
         $this->assertEquals('untouched', file_get_contents($folderTwoB . '/fileB.php'));
-        $this->assertFileNotExists($fileOne);
-        $this->assertFileNotExists($folderOneA);
-        $this->assertFileNotExists($fileOneA);
+        $this->assertFalse(file_exists($fileOne));
+        $this->assertFalse(file_exists($folderOneA));
+        $this->assertFalse(file_exists($fileOneA));
 
         $Folder = new Folder($path);
         $Folder->delete();
@@ -1340,9 +1342,9 @@ class FolderTest extends TestCase
         $Folder = new Folder($folderOne);
         $result = $Folder->move(['to' => $folderTwo, 'recursive' => false]);
         $this->assertTrue($result);
-        $this->assertFileExists($folderTwo . '/file1.php');
+        $this->assertTrue(file_exists($folderTwo . '/file1.php'));
         $this->assertFalse(is_dir($folderTwo . '/folderA'));
-        $this->assertFileNotExists($folderTwo . '/folderA/fileA.php');
+        $this->assertFalse(file_exists($folderTwo . '/folderA/fileA.php'));
     }
 
     /**
@@ -1367,6 +1369,33 @@ class FolderTest extends TestCase
         $results = $Folder->find('.*', Folder::SORT_TIME);
 
         $this->assertSame(['file_2.tmp', 'file_1.tmp'], $results);
+    }
+
+    /**
+     * testSortByTime2 method
+     *
+     * Verify that the order using modified time is correct.
+     *
+     * @return void
+     */
+    public function testSortByTime2()
+    {
+        $Folder = new Folder(TMP . 'tests', true);
+
+        $fileA = new File($Folder->pwd() . DS . 'a.txt');
+        $fileA->create();
+
+        $fileC = new File($Folder->pwd() . DS . 'c.txt');
+        $fileC->create();
+
+        sleep(1);
+
+        $fileB = new File($Folder->pwd() . DS . 'b.txt');
+        $fileB->create();
+
+        $results = $Folder->find('.*', Folder::SORT_TIME);
+
+        $this->assertSame(['a.txt', 'c.txt', 'b.txt'], $results);
     }
 
     /**

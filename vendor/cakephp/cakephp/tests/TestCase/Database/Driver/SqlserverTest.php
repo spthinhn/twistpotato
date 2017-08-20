@@ -1,23 +1,22 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Test\TestCase\Database\Driver;
 
-use Cake\Database\Query;
+use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
-use PDO;
+use \PDO;
 
 /**
  * Tests Sqlserver driver
@@ -34,64 +33,6 @@ class SqlserverTest extends TestCase
     {
         parent::setUp();
         $this->missingExtension = !defined('PDO::SQLSRV_ENCODING_UTF8');
-    }
-
-    /**
-     * data provider for testDnsString
-     *
-     * @return array
-     */
-    public function dnsStringDataProvider()
-    {
-        return [
-            [
-                [
-                    'app' => 'CakePHP-Testapp',
-                    'connectionPooling' => true,
-                    'failoverPartner' => 'failover.local',
-                    'loginTimeout' => 10,
-                    'multiSubnetFailover' => 'failover.local',
-                ],
-                'sqlsrv:Server=localhost\SQLEXPRESS;Database=cake;MultipleActiveResultSets=false;APP=CakePHP-Testapp;ConnectionPooling=1;Failover_Partner=failover.local;LoginTimeout=10;MultiSubnetFailover=failover.local',
-            ],
-            [
-                [
-                    'app' => 'CakePHP-Testapp',
-                    'failoverPartner' => 'failover.local',
-                    'multiSubnetFailover' => 'failover.local',
-                ],
-                'sqlsrv:Server=localhost\SQLEXPRESS;Database=cake;MultipleActiveResultSets=false;APP=CakePHP-Testapp;Failover_Partner=failover.local;MultiSubnetFailover=failover.local',
-            ],
-            [
-                [
-                ],
-                'sqlsrv:Server=localhost\SQLEXPRESS;Database=cake;MultipleActiveResultSets=false',
-            ]
-        ];
-    }
-
-    /**
-     * Test if all options in dns string are set
-     *
-     * @dataProvider dnsStringDataProvider
-     * @param array $constructorArgs
-     * @param string $dnsString
-     * @return void
-     */
-    public function testDnsString($constructorArgs, $dnsString)
-    {
-        $this->skipIf($this->missingExtension, 'pdo_sqlsrv is not installed.');
-        $driver = $this->getMockBuilder('Cake\Database\Driver\Sqlserver')
-            ->setMethods(['_connect'])
-            ->setConstructorArgs([$constructorArgs])
-            ->getMock();
-
-        $driver->method('_connect')
-            ->with($this->callback(function ($dns) use ($dnsString) {
-                return $dns === $dnsString;
-            }))
-            ->will($this->returnValue([]));
-        $driver->connect();
     }
 
     /**
@@ -126,12 +67,6 @@ class SqlserverTest extends TestCase
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::SQLSRV_ATTR_ENCODING => 'a-language'
         ];
-        $expected['attributes'] = [];
-        $expected['app'] = null;
-        $expected['connectionPooling'] = null;
-        $expected['failoverPartner'] = null;
-        $expected['loginTimeout'] = null;
-        $expected['multiSubnetFailover'] = null;
 
         $connection = $this->getMockBuilder('stdClass')
             ->setMethods(['exec', 'quote'])
@@ -167,29 +102,31 @@ class SqlserverTest extends TestCase
     public function testSelectLimitVersion12()
     {
         $driver = $this->getMockBuilder('Cake\Database\Driver\Sqlserver')
-            ->setMethods(['_connect', 'getConnection', '_version'])
+            ->setMethods(['_connect', 'connection', '_version'])
             ->setConstructorArgs([[]])
             ->getMock();
-        $driver->expects($this->any())
+        $driver
+            ->expects($this->any())
             ->method('_version')
             ->will($this->returnValue(12));
 
         $connection = $this->getMockBuilder('\Cake\Database\Connection')
-            ->setMethods(['connect', 'getDriver', 'setDriver'])
+            ->setMethods(['connect', 'driver'])
             ->setConstructorArgs([['log' => false]])
             ->getMock();
-        $connection->expects($this->any())
-            ->method('getDriver')
+        $connection
+            ->expects($this->any())
+            ->method('driver')
             ->will($this->returnValue($driver));
 
-        $query = new Query($connection);
+        $query = new \Cake\Database\Query($connection);
         $query->select(['id', 'title'])
             ->from('articles')
             ->order(['id'])
             ->offset(10);
         $this->assertEquals('SELECT id, title FROM articles ORDER BY id OFFSET 10 ROWS', $query->sql());
 
-        $query = new Query($connection);
+        $query = new \Cake\Database\Query($connection);
         $query->select(['id', 'title'])
             ->from('articles')
             ->order(['id'])
@@ -197,13 +134,13 @@ class SqlserverTest extends TestCase
             ->offset(50);
         $this->assertEquals('SELECT id, title FROM articles ORDER BY id OFFSET 50 ROWS FETCH FIRST 10 ROWS ONLY', $query->sql());
 
-        $query = new Query($connection);
+        $query = new \Cake\Database\Query($connection);
         $query->select(['id', 'title'])
             ->from('articles')
             ->offset(10);
         $this->assertEquals('SELECT id, title FROM articles ORDER BY (SELECT NULL) OFFSET 10 ROWS', $query->sql());
 
-        $query = new Query($connection);
+        $query = new \Cake\Database\Query($connection);
         $query->select(['id', 'title'])
             ->from('articles')
             ->limit(10);
@@ -218,29 +155,31 @@ class SqlserverTest extends TestCase
     public function testSelectLimitOldServer()
     {
         $driver = $this->getMockBuilder('Cake\Database\Driver\Sqlserver')
-            ->setMethods(['_connect', 'getConnection', '_version'])
+            ->setMethods(['_connect', 'connection', '_version'])
             ->setConstructorArgs([[]])
             ->getMock();
-        $driver->expects($this->any())
+        $driver
+            ->expects($this->any())
             ->method('_version')
             ->will($this->returnValue(8));
 
         $connection = $this->getMockBuilder('\Cake\Database\Connection')
-            ->setMethods(['connect', 'getDriver', 'setDriver'])
+            ->setMethods(['connect', 'driver'])
             ->setConstructorArgs([['log' => false]])
             ->getMock();
-        $connection->expects($this->any())
-            ->method('getDriver')
+        $connection
+            ->expects($this->any())
+            ->method('driver')
             ->will($this->returnValue($driver));
 
-        $query = new Query($connection);
+        $query = new \Cake\Database\Query($connection);
         $query->select(['id', 'title'])
             ->from('articles')
             ->limit(10);
         $expected = 'SELECT TOP 10 id, title FROM articles';
         $this->assertEquals($expected, $query->sql());
 
-        $query = new Query($connection);
+        $query = new \Cake\Database\Query($connection);
         $query->select(['id', 'title'])
             ->from('articles')
             ->offset(10);
@@ -249,7 +188,7 @@ class SqlserverTest extends TestCase
             'WHERE _cake_paging_._cake_page_rownum_ > 10';
         $this->assertEquals($expected, $query->sql());
 
-        $query = new Query($connection);
+        $query = new \Cake\Database\Query($connection);
         $query->select(['id', 'title'])
             ->from('articles')
             ->order(['id'])
@@ -259,7 +198,7 @@ class SqlserverTest extends TestCase
             'WHERE _cake_paging_._cake_page_rownum_ > 10';
         $this->assertEquals($expected, $query->sql());
 
-        $query = new Query($connection);
+        $query = new \Cake\Database\Query($connection);
         $query->select(['id', 'title'])
             ->from('articles')
             ->order(['id'])
@@ -280,17 +219,18 @@ class SqlserverTest extends TestCase
     public function testInsertUsesOutput()
     {
         $driver = $this->getMockBuilder('Cake\Database\Driver\Sqlserver')
-            ->setMethods(['_connect', 'getConnection'])
+            ->setMethods(['_connect', 'connection'])
             ->setConstructorArgs([[]])
             ->getMock();
         $connection = $this->getMockBuilder('\Cake\Database\Connection')
-            ->setMethods(['connect', 'getDriver', 'setDriver'])
+            ->setMethods(['connect', 'driver'])
             ->setConstructorArgs([['log' => false]])
             ->getMock();
-        $connection->expects($this->any())
-            ->method('getDriver')
+        $connection
+            ->expects($this->any())
+            ->method('driver')
             ->will($this->returnValue($driver));
-        $query = new Query($connection);
+        $query = new \Cake\Database\Query($connection);
         $query->insert(['title'])
             ->into('articles')
             ->values(['title' => 'A new article']);

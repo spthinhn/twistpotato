@@ -87,7 +87,7 @@ class WhitespaceShell extends Shell
     /**
      * get the option parser
      *
-     * @return \Cake\Console\ConsoleOptionParser
+     * @return ConsoleOptionParser
      */
     public function getOptionParser()
     {

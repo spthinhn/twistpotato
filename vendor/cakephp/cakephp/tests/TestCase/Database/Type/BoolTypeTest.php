@@ -1,37 +1,28 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.1.7
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Database\Type;
 
 use Cake\Database\Type;
 use Cake\TestSuite\TestCase;
-use PDO;
+use \PDO;
 
 /**
  * Test for the Boolean type.
  */
 class BoolTypeTest extends TestCase
 {
-    /**
-     * @var \Cake\Database\Type\BoolType
-     */
-    public $type;
-
-    /**
-     * @var \Cake\Database\Driver
-     */
-    public $driver;
 
     /**
      * Setup
@@ -64,7 +55,7 @@ class BoolTypeTest extends TestCase
     /**
      * Test converting an array to boolean results in an exception
      *
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @return void
      */
     public function testToDatabaseInvalid()
@@ -72,10 +63,11 @@ class BoolTypeTest extends TestCase
         $this->type->toDatabase([1, 2], $this->driver);
     }
 
+
     /**
      * Tests that passing an invalid value will throw an exception
      *
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @return void
      */
     public function testToDatabaseInvalidArray()
@@ -84,7 +76,7 @@ class BoolTypeTest extends TestCase
     }
 
     /**
-     * Test converting string booleans to PHP values.
+     * Test convertring string booleans to PHP values.
      *
      * @return void
      */
@@ -127,7 +119,7 @@ class BoolTypeTest extends TestCase
     }
 
     /**
-     * Test converting booleans to PDO types.
+     * Test convertring booleans to PDO types.
      *
      * @return void
      */

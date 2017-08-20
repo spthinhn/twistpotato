@@ -1,15 +1,15 @@
 <?php
 /**
- * CakePHP :  Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP :  Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP Project
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP Project
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Shell\Task;
 
@@ -22,10 +22,6 @@ use Cake\TestSuite\TestCase;
  */
 class UnloadTaskTest extends TestCase
 {
-    /**
-     * @var \Cake\Shell\Task\UnloadTask|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $Task;
 
     /**
      * setUp method
@@ -77,16 +73,12 @@ class UnloadTaskTest extends TestCase
     {
         $bootstrap = new File($this->bootstrap, false);
 
-        $this->_addPluginToBootstrap('TestPlugin');
+        $this->_addPluginToBootstrap("TestPlugin");
 
-        $this->_addPluginToBootstrap('TestPluginSecond');
+        $this->_addPluginToBootstrap("TestPluginSecond");
 
         $expected = "Plugin::load('TestPlugin', ['autoload' => true, 'bootstrap' => false, 'routes' => false]);";
         $this->assertContains($expected, $bootstrap->read());
-
-        $this->Task->params = [
-            'cli' => false
-        ];
 
         $action = $this->Task->main('TestPlugin');
 
@@ -106,36 +98,32 @@ class UnloadTaskTest extends TestCase
     {
         $bootstrap = new File($this->bootstrap, false);
 
-        $this->Task->params = [
-            'cli' => false
-        ];
-
         //  Plugin::load('TestPlugin', [
-        //      'bootstrap' => false
+        //      'boostrap' => false
         //  ]);
-        $bootstrap->append("\nPlugin::load('TestPlugin', [\n\t'bootstrap' => false\n]);\n");
+        $bootstrap->append("\nPlugin::load('TestPlugin', [\n\t'boostrap' => false\n]);\n");
         $this->Task->main('TestPlugin');
-        $this->assertNotContains("Plugin::load('TestPlugin', [\n\t'bootstrap' => false\n]);", $bootstrap->read());
+        $this->assertNotContains("Plugin::load('TestPlugin', [\n\t'boostrap' => false\n]);", $bootstrap->read());
         $this->_clearBootstrap();
 
         //  Plugin::load(
         //      'TestPlugin',
-        //      [ 'bootstrap' => false]
+        //      [ 'boostrap' => false]
         //  );
-        $bootstrap->append("\nPlugin::load(\n\t'TestPlugin',\n\t[ 'bootstrap' => false]\n);\n");
+        $bootstrap->append("\nPlugin::load(\n\t'TestPlugin',\n\t[ 'boostrap' => false]\n);\n");
         $this->Task->main('TestPlugin');
-        $this->assertNotContains("Plugin::load(\n\t'TestPlugin',\n\t[ 'bootstrap' => false]\n);", $bootstrap->read());
+        $this->assertNotContains("Plugin::load(\n\t'TestPlugin',\n\t[ 'boostrap' => false]\n);", $bootstrap->read());
         $this->_clearBootstrap();
 
         //  Plugin::load(
         //      'Foo',
         //      [
-        //          'bootstrap' => false
+        //          'boostrap' => false
         //      ]
         //  );
-        $bootstrap->append("\nPlugin::load(\n\t'TestPlugin',\n\t[\n\t\t'bootstrap' => false\n\t]\n);\n");
+        $bootstrap->append("\nPlugin::load(\n\t'TestPlugin',\n\t[\n\t\t'boostrap' => false\n\t]\n);\n");
         $this->Task->main('TestPlugin');
-        $this->assertNotContains("Plugin::load(\n\t'TestPlugin',\n\t[\n\t\t'bootstrap' => false\n\t]\n);", $bootstrap->read());
+        $this->assertNotContains("Plugin::load(\n\t'TestPlugin',\n\t[\n\t\t'boostrap' => false\n\t]\n);", $bootstrap->read());
         $this->_clearBootstrap();
 
         //  Plugin::load('Test', [

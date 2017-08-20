@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Database\Type;
 
@@ -24,15 +24,6 @@ use Cake\TestSuite\TestCase;
  */
 class DateTypeTest extends TestCase
 {
-    /**
-     * @var \Cake\Database\Type\DateType
-     */
-    public $type;
-
-    /**
-     * @var \Cake\Database\Driver
-     */
-    public $driver;
 
     /**
      * Setup
@@ -212,10 +203,10 @@ class DateTypeTest extends TestCase
     {
         $this->type->useImmutable();
         $this->assertInstanceOf('DateTimeImmutable', $this->type->marshal('2015-11-01'));
-        $this->assertInstanceOf('DateTimeImmutable', $this->type->toPHP('2015-11-01', $this->driver));
+        $this->assertInstanceOf('DateTimeImmutable', $this->type->toPhp('2015-11-01', $this->driver));
 
         $this->type->useMutable();
         $this->assertInstanceOf('DateTime', $this->type->marshal('2015-11-01'));
-        $this->assertInstanceOf('DateTime', $this->type->toPHP('2015-11-01', $this->driver));
+        $this->assertInstanceOf('DateTime', $this->type->toPhp('2015-11-01', $this->driver));
     }
 }

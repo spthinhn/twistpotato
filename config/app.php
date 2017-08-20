@@ -64,7 +64,7 @@ return [
      *   You should treat it as extremely sensitive data.
      */
     'Security' => [
-        'salt' => env('SECURITY_SALT', '0d4a228da7d5877142c2fae3daf9aa0788d2ded163131db7fdea254c4b97f24c'),
+        'salt' => env('SECURITY_SALT', '__SALT__'),
     ],
 
     /**
@@ -92,7 +92,7 @@ return [
         /**
          * Configure the cache used for general framework caching.
          * Translation cache files are stored with this configuration.
-         * Duration will be set to '+2 minutes' in bootstrap.php when debug = true
+         * Duration will be set to '+1 year' in bootstrap.php when debug = false
          * If you set 'className' => 'Null' core cache will be disabled.
          */
         '_cake_core_' => [
@@ -100,7 +100,7 @@ return [
             'prefix' => 'myapp_cake_core_',
             'path' => CACHE . 'persistent/',
             'serialize' => true,
-            'duration' => '+1 years',
+            'duration' => '+2 minutes',
             'url' => env('CACHE_CAKECORE_URL', null),
         ],
 
@@ -108,14 +108,14 @@ return [
          * Configure the cache for model and datasource caches. This cache
          * configuration is used to store schema descriptions, and table listings
          * in connections.
-         * Duration will be set to '+2 minutes' in bootstrap.php when debug = true
+         * Duration will be set to '+1 year' in bootstrap.php when debug = false
          */
         '_cake_model_' => [
             'className' => 'File',
             'prefix' => 'myapp_cake_model_',
             'path' => CACHE . 'models/',
             'serialize' => true,
-            'duration' => '+1 years',
+            'duration' => '+2 minutes',
             'url' => env('CACHE_CAKEMODEL_URL', null),
         ],
     ],
@@ -138,7 +138,7 @@ return [
      *   logged errors/exceptions.
      * - `log` - boolean - Whether or not you want exceptions logged.
      * - `exceptionRenderer` - string - The class responsible for rendering
-     *   uncaught exceptions. If you choose a custom class you should place
+     *   uncaught exceptions.  If you choose a custom class you should place
      *   the file for that class in src/Error. This class needs to implement a
      *   render method.
      * - `skipLog` - array - List of exceptions to skip for logging. Exceptions that
@@ -173,7 +173,7 @@ return [
      *  Debug  - Do not send the email, just return the result
      *
      * You can add custom transports (or override existing transports) by adding the
-     * appropriate file to src/Mailer/Transport. Transports should be named
+     * appropriate file to src/Mailer/Transport.  Transports should be named
      * 'YourTransport.php', where 'Your' is the name of the transport.
      */
     'EmailTransport' => [
@@ -311,8 +311,7 @@ return [
      *
      * ## Options
      *
-     * - `cookie` - The name of the cookie to use. Defaults to 'CAKEPHP'. Avoid using `.` in cookie names,
-     *   as PHP will drop sessions from cookies with `.` in the name.
+     * - `cookie` - The name of the cookie to use. Defaults to 'CAKEPHP'.
      * - `cookiePath` - The url path for which session cookie is set. Maps to the
      *   `session.cookie_path` php.ini config. Defaults to base path of app.
      * - `timeout` - The time in minutes the session should be valid for.
@@ -339,7 +338,7 @@ return [
      * Make sure the class implements PHP's `SessionHandlerInterface` and set
      * Session.handler to <name>
      *
-     * To use database sessions, load the SQL file located at config/schema/sessions.sql
+     * To use database sessions, load the SQL file located at config/Schema/sessions.sql
      */
     'Session' => [
         'defaults' => 'php',

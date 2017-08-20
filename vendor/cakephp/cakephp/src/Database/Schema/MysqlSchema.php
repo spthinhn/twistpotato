@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Database\Schema;
 
@@ -57,9 +57,9 @@ class MysqlSchema extends BaseSchema
     /**
      * {@inheritDoc}
      */
-    public function convertOptionsDescription(TableSchema $schema, $row)
+    public function convertOptionsDescription(Table $table, $row)
     {
-        $schema->setOptions([
+        $table->options([
             'engine' => $row['Engine'],
             'collation' => $row['Collation'],
         ]);
@@ -148,17 +148,17 @@ class MysqlSchema extends BaseSchema
             return ['type' => 'json', 'length' => null];
         }
 
-        return ['type' => 'string', 'length' => null];
+        return ['type' => 'text', 'length' => null];
     }
 
     /**
      * {@inheritDoc}
      */
-    public function convertColumnDescription(TableSchema $schema, $row)
+    public function convertColumnDescription(Table $table, $row)
     {
         $field = $this->_convertColumn($row['Type']);
         $field += [
-            'null' => $row['Null'] === 'YES',
+            'null' => $row['Null'] === 'YES' ? true : false,
             'default' => $row['Default'],
             'collate' => $row['Collation'],
             'comment' => $row['Comment'],
@@ -166,13 +166,13 @@ class MysqlSchema extends BaseSchema
         if (isset($row['Extra']) && $row['Extra'] === 'auto_increment') {
             $field['autoIncrement'] = true;
         }
-        $schema->addColumn($row['Field'], $field);
+        $table->addColumn($row['Field'], $field);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function convertIndexDescription(TableSchema $schema, $row)
+    public function convertIndexDescription(Table $table, $row)
     {
         $type = null;
         $columns = $length = [];
@@ -200,9 +200,9 @@ class MysqlSchema extends BaseSchema
             $type === Table::INDEX_FULLTEXT
         );
         if ($isIndex) {
-            $existing = $schema->index($name);
+            $existing = $table->index($name);
         } else {
-            $existing = $schema->constraint($name);
+            $existing = $table->constraint($name);
         }
 
         // MySQL multi column indexes come back as multiple rows.
@@ -211,13 +211,13 @@ class MysqlSchema extends BaseSchema
             $length = array_merge($existing['length'], $length);
         }
         if ($isIndex) {
-            $schema->addIndex($name, [
+            $table->addIndex($name, [
                 'type' => $type,
                 'columns' => $columns,
                 'length' => $length
             ]);
         } else {
-            $schema->addConstraint($name, [
+            $table->addConstraint($name, [
                 'type' => $type,
                 'columns' => $columns,
                 'length' => $length
@@ -244,7 +244,7 @@ class MysqlSchema extends BaseSchema
     /**
      * {@inheritDoc}
      */
-    public function convertForeignKeyDescription(TableSchema $schema, $row)
+    public function convertForeignKeyDescription(Table $table, $row)
     {
         $data = [
             'type' => Table::CONSTRAINT_FOREIGN,
@@ -254,26 +254,26 @@ class MysqlSchema extends BaseSchema
             'delete' => $this->_convertOnClause($row['DELETE_RULE']),
         ];
         $name = $row['CONSTRAINT_NAME'];
-        $schema->addConstraint($name, $data);
+        $table->addConstraint($name, $data);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function truncateTableSql(TableSchema $schema)
+    public function truncateTableSql(Table $table)
     {
-        return [sprintf('TRUNCATE TABLE `%s`', $schema->name())];
+        return [sprintf('TRUNCATE TABLE `%s`', $table->name())];
     }
 
     /**
      * {@inheritDoc}
      */
-    public function createTableSql(TableSchema $schema, $columns, $constraints, $indexes)
+    public function createTableSql(Table $table, $columns, $constraints, $indexes)
     {
         $content = implode(",\n", array_merge($columns, $constraints, $indexes));
-        $temporary = $schema->isTemporary() ? ' TEMPORARY ' : ' ';
-        $content = sprintf("CREATE%sTABLE `%s` (\n%s\n)", $temporary, $schema->name(), $content);
-        $options = $schema->getOptions();
+        $temporary = $table->temporary() ? ' TEMPORARY ' : ' ';
+        $content = sprintf("CREATE%sTABLE `%s` (\n%s\n)", $temporary, $table->name(), $content);
+        $options = $table->options();
         if (isset($options['engine'])) {
             $content .= sprintf(' ENGINE=%s', $options['engine']);
         }
@@ -290,9 +290,9 @@ class MysqlSchema extends BaseSchema
     /**
      * {@inheritDoc}
      */
-    public function columnSql(TableSchema $schema, $name)
+    public function columnSql(Table $table, $name)
     {
-        $data = $schema->column($name);
+        $data = $table->column($name);
         $out = $this->_driver->quoteIdentifier($name);
         $nativeJson = $this->_driver->supportsNativeJson();
 
@@ -381,17 +381,20 @@ class MysqlSchema extends BaseSchema
             $out .= ' NOT NULL';
         }
         $addAutoIncrement = (
-            [$name] == (array)$schema->primaryKey() &&
-            !$schema->hasAutoincrement() &&
-            !isset($data['autoIncrement'])
+            [$name] == (array)$table->primaryKey() &&
+            !$table->hasAutoIncrement()
         );
         if (in_array($data['type'], ['integer', 'biginteger']) &&
             ($data['autoIncrement'] === true || $addAutoIncrement)
         ) {
             $out .= ' AUTO_INCREMENT';
         }
-        if (isset($data['null']) && $data['null'] === true && $data['type'] === 'timestamp') {
-            $out .= ' NULL';
+        if (isset($data['null']) && $data['null'] === true) {
+            $out .= $data['type'] === 'timestamp' ? ' NULL' : ' DEFAULT NULL';
+            unset($data['default']);
+        }
+        if (isset($data['default']) && !in_array($data['type'], ['timestamp', 'datetime'])) {
+            $out .= ' DEFAULT ' . $this->_driver->schemaValue($data['default']);
             unset($data['default']);
         }
         if (isset($data['default']) &&
@@ -399,10 +402,6 @@ class MysqlSchema extends BaseSchema
             strtolower($data['default']) === 'current_timestamp'
         ) {
             $out .= ' DEFAULT CURRENT_TIMESTAMP';
-            unset($data['default']);
-        }
-        if (isset($data['default'])) {
-            $out .= ' DEFAULT ' . $this->_driver->schemaValue($data['default']);
             unset($data['default']);
         }
         if (isset($data['comment']) && $data['comment'] !== '') {
@@ -415,9 +414,9 @@ class MysqlSchema extends BaseSchema
     /**
      * {@inheritDoc}
      */
-    public function constraintSql(TableSchema $schema, $name)
+    public function constraintSql(Table $table, $name)
     {
-        $data = $schema->constraint($name);
+        $data = $table->constraint($name);
         if ($data['type'] === Table::CONSTRAINT_PRIMARY) {
             $columns = array_map(
                 [$this->_driver, 'quoteIdentifier'],
@@ -442,16 +441,16 @@ class MysqlSchema extends BaseSchema
     /**
      * {@inheritDoc}
      */
-    public function addConstraintSql(TableSchema $schema)
+    public function addConstraintSql(Table $table)
     {
         $sqlPattern = 'ALTER TABLE %s ADD %s;';
         $sql = [];
 
-        foreach ($schema->constraints() as $name) {
-            $constraint = $schema->constraint($name);
+        foreach ($table->constraints() as $name) {
+            $constraint = $table->constraint($name);
             if ($constraint['type'] === Table::CONSTRAINT_FOREIGN) {
-                $tableName = $this->_driver->quoteIdentifier($schema->name());
-                $sql[] = sprintf($sqlPattern, $tableName, $this->constraintSql($schema, $name));
+                $tableName = $this->_driver->quoteIdentifier($table->name());
+                $sql[] = sprintf($sqlPattern, $tableName, $this->constraintSql($table, $name));
             }
         }
 
@@ -461,15 +460,15 @@ class MysqlSchema extends BaseSchema
     /**
      * {@inheritDoc}
      */
-    public function dropConstraintSql(TableSchema $schema)
+    public function dropConstraintSql(Table $table)
     {
         $sqlPattern = 'ALTER TABLE %s DROP FOREIGN KEY %s;';
         $sql = [];
 
-        foreach ($schema->constraints() as $name) {
-            $constraint = $schema->constraint($name);
+        foreach ($table->constraints() as $name) {
+            $constraint = $table->constraint($name);
             if ($constraint['type'] === Table::CONSTRAINT_FOREIGN) {
-                $tableName = $this->_driver->quoteIdentifier($schema->name());
+                $tableName = $this->_driver->quoteIdentifier($table->name());
                 $constraintName = $this->_driver->quoteIdentifier($name);
                 $sql[] = sprintf($sqlPattern, $tableName, $constraintName);
             }
@@ -481,10 +480,9 @@ class MysqlSchema extends BaseSchema
     /**
      * {@inheritDoc}
      */
-    public function indexSql(TableSchema $schema, $name)
+    public function indexSql(Table $table, $name)
     {
-        $data = $schema->index($name);
-        $out = '';
+        $data = $table->index($name);
         if ($data['type'] === Table::INDEX_INDEX) {
             $out = 'KEY ';
         }

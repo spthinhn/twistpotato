@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Collection;
 
@@ -25,6 +25,7 @@ use NoRewindIterator;
 class TestCollection extends \IteratorIterator implements CollectionInterface
 {
     use CollectionTrait;
+
 
     public function __construct($items)
     {
@@ -76,7 +77,7 @@ class CollectionTest extends TestCase
      *
      * @return void
      */
-    public function testEach()
+    public function testEeach()
     {
         $items = ['a' => 1, 'b' => 2, 'c' => 3];
         $collection = new Collection($items);
@@ -140,12 +141,6 @@ class CollectionTest extends TestCase
      */
     public function testReject()
     {
-        $collection = new Collection([]);
-        $result = $collection->reject(function ($v) {
-            return false;
-        });
-        $this->assertSame([], iterator_to_array($result));
-
         $items = ['a' => 1, 'b' => 2, 'c' => 3];
         $collection = new Collection($items);
         $result = $collection->reject(function ($v, $k, $items) use ($collection) {
@@ -217,7 +212,7 @@ class CollectionTest extends TestCase
 
         $callable->expects($this->never())
             ->method('__invoke');
-        $this->assertTrue($collection->every($callable));
+        $this->assertFalse($collection->every($callable));
     }
 
     /**
@@ -227,12 +222,6 @@ class CollectionTest extends TestCase
      */
     public function testSomeReturnTrue()
     {
-        $collection = new Collection([]);
-        $result = $collection->some(function ($v) {
-            return true;
-        });
-        $this->assertFalse($result);
-
         $items = ['a' => 1, 'b' => 2, 'c' => 3];
         $collection = new Collection($items);
         $callable = $this->getMockBuilder(\StdClass::class)
@@ -286,9 +275,6 @@ class CollectionTest extends TestCase
      */
     public function testContains()
     {
-        $collection = new Collection([]);
-        $this->assertFalse($collection->contains('a'));
-
         $items = ['a' => 1, 'b' => 2, 'c' => 3];
         $collection = new Collection($items);
         $this->assertTrue($collection->contains(2));
@@ -588,7 +574,7 @@ class CollectionTest extends TestCase
     {
         $data = [1, 2, 3, 4];
         $collection = (new Collection($data))->shuffle();
-        $this->assertCount(count($data), iterator_to_array($collection));
+        $this->assertEquals(count($data), count(iterator_to_array($collection)));
 
         foreach ($collection as $value) {
             $this->assertContains($value, $data);
@@ -604,7 +590,7 @@ class CollectionTest extends TestCase
     {
         $data = [1, 2, 3, 4];
         $collection = (new Collection($data))->sample(2);
-        $this->assertCount(2, iterator_to_array($collection));
+        $this->assertEquals(2, count(iterator_to_array($collection)));
 
         foreach ($collection as $value) {
             $this->assertContains($value, $data);
@@ -1567,8 +1553,8 @@ class CollectionTest extends TestCase
         });
         $this->assertEquals([3, 8], $zipped->toList());
 
-        $zipped = $collection->zipWith([3, 4], [5, 6, 7], function (...$args) {
-            return array_sum($args);
+        $zipped = $collection->zipWith([3, 4], [5, 6, 7], function () {
+            return array_sum(func_get_args());
         });
         $this->assertEquals([9, 12], $zipped->toList());
     }
@@ -1688,8 +1674,8 @@ class CollectionTest extends TestCase
     public function testSerializeSimpleCollection()
     {
         $collection = new Collection([1, 2, 3]);
-        $serialized = serialize($collection);
-        $unserialized = unserialize($serialized);
+        $selialized = serialize($collection);
+        $unserialized = unserialize($selialized);
         $this->assertEquals($collection->toList(), $unserialized->toList());
         $this->assertEquals($collection->toArray(), $unserialized->toArray());
     }
@@ -1703,8 +1689,8 @@ class CollectionTest extends TestCase
     {
         $collection = new Collection([1, 2, 3]);
         $collection = $collection->append(['a' => 4, 'b' => 5, 'c' => 6]);
-        $serialized = serialize($collection);
-        $unserialized = unserialize($serialized);
+        $selialized = serialize($collection);
+        $unserialized = unserialize($selialized);
         $this->assertEquals($collection->toList(), $unserialized->toList());
         $this->assertEquals($collection->toArray(), $unserialized->toArray());
     }
@@ -1725,8 +1711,8 @@ class CollectionTest extends TestCase
             return $e % 2;
         });
 
-        $serialized = serialize($collection);
-        $unserialized = unserialize($serialized);
+        $selialized = serialize($collection);
+        $unserialized = unserialize($selialized);
         $this->assertEquals($collection->toList(), $unserialized->toList());
         $this->assertEquals($collection->toArray(), $unserialized->toArray());
     }
@@ -1740,8 +1726,8 @@ class CollectionTest extends TestCase
     {
         $collection = new Collection([4, 5]);
         $collection = $collection->zip([1, 2]);
-        $serialized = serialize($collection);
-        $unserialized = unserialize($serialized);
+        $selialized = serialize($collection);
+        $unserialized = unserialize($selialized);
         $this->assertEquals($collection->toList(), $unserialized->toList());
     }
 
@@ -1784,213 +1770,6 @@ class CollectionTest extends TestCase
         $this->assertEquals($expected, $chunked);
     }
 
-    /**
-     * Tests the chunkWithKeys method with exact chunks
-     *
-     * @return void
-     */
-    public function testChunkWithKeys()
-    {
-        $collection = new Collection(['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5, 'f' => 6]);
-        $chunked = $collection->chunkWithKeys(2)->toList();
-        $expected = [['a' => 1, 'b' => 2], ['c' => 3, 'd' => 4], ['e' => 5, 'f' => 6]];
-        $this->assertEquals($expected, $chunked);
-    }
-
-    /**
-     * Tests the chunkWithKeys method with overflowing chunk size
-     *
-     * @return void
-     */
-    public function testChunkWithKeysOverflow()
-    {
-        $collection = new Collection(['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5, 'f' => 6, 'g' => 7]);
-        $chunked = $collection->chunkWithKeys(2)->toList();
-        $expected = [['a' => 1, 'b' => 2], ['c' => 3, 'd' => 4], ['e' => 5, 'f' => 6], ['g' => 7]];
-        $this->assertEquals($expected, $chunked);
-    }
-
-    /**
-     * Tests the chunkWithKeys method with non-scalar items
-     *
-     * @return void
-     */
-    public function testChunkWithKeysNested()
-    {
-        $collection = new Collection(['a' => 1, 'b' => 2, 'c' => 3, 'd' => [4, 5], 'e' => 6, 'f' => [7, [8, 9], 10], 'g' => 11]);
-        $chunked = $collection->chunkWithKeys(2)->toList();
-        $expected = [['a' => 1, 'b' => 2], ['c' => 3, 'd' => [4, 5]], ['e' => 6, 'f' => [7, [8, 9], 10]], ['g' => 11]];
-        $this->assertEquals($expected, $chunked);
-    }
-
-    /**
-     * Tests the chunkWithKeys method without preserving keys
-     *
-     * @return void
-     */
-    public function testChunkWithKeysNoPreserveKeys()
-    {
-        $collection = new Collection(['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5, 'f' => 6, 'g' => 7]);
-        $chunked = $collection->chunkWithKeys(2, false)->toList();
-        $expected = [[0 => 1, 1 => 2], [0 => 3, 1 => 4], [0 => 5, 1 => 6], [0 => 7]];
-        $this->assertEquals($expected, $chunked);
-    }
-
-    /**
-     * Tests cartesianProduct
-     *
-     * @return void
-     */
-    public function testCartesianProduct()
-    {
-        $collection = new Collection([]);
-
-        $result = $collection->cartesianProduct();
-
-        $expected = [];
-
-        $this->assertEquals($expected, $result->toList());
-
-        $collection = new Collection([['A', 'B', 'C'], [1, 2, 3]]);
-
-        $result = $collection->cartesianProduct();
-
-        $expected = [
-            ['A', 1],
-            ['A', 2],
-            ['A', 3],
-            ['B', 1],
-            ['B', 2],
-            ['B', 3],
-            ['C', 1],
-            ['C', 2],
-            ['C', 3],
-        ];
-
-        $this->assertEquals($expected, $result->toList());
-
-        $collection = new Collection([[1, 2, 3], ['A', 'B', 'C'], ['a', 'b', 'c']]);
-
-        $result = $collection->cartesianProduct(function ($value) {
-            return [strval($value[0]) . $value[1] . $value[2]];
-        }, function ($value) {
-            return $value[0] >= 2;
-        });
-
-        $expected = [
-            ['2Aa'],
-            ['2Ab'],
-            ['2Ac'],
-            ['2Ba'],
-            ['2Bb'],
-            ['2Bc'],
-            ['2Ca'],
-            ['2Cb'],
-            ['2Cc'],
-            ['3Aa'],
-            ['3Ab'],
-            ['3Ac'],
-            ['3Ba'],
-            ['3Bb'],
-            ['3Bc'],
-            ['3Ca'],
-            ['3Cb'],
-            ['3Cc'],
-        ];
-
-        $this->assertEquals($expected, $result->toList());
-
-        $collection = new Collection([['1', '2', '3', '4'], ['A', 'B', 'C'], ['name', 'surname', 'telephone']]);
-
-        $result = $collection->cartesianProduct(function ($value) {
-            return [$value[0] => [$value[1] => $value[2]]];
-        }, function ($value) {
-            return $value[2] !== 'surname';
-        });
-
-        $expected = [
-            [1 => ['A' => 'name']],
-            [1 => ['A' => 'telephone']],
-            [1 => ['B' => 'name']],
-            [1 => ['B' => 'telephone']],
-            [1 => ['C' => 'name']],
-            [1 => ['C' => 'telephone']],
-            [2 => ['A' => 'name']],
-            [2 => ['A' => 'telephone']],
-            [2 => ['B' => 'name']],
-            [2 => ['B' => 'telephone']],
-            [2 => ['C' => 'name']],
-            [2 => ['C' => 'telephone']],
-            [3 => ['A' => 'name']],
-            [3 => ['A' => 'telephone']],
-            [3 => ['B' => 'name']],
-            [3 => ['B' => 'telephone']],
-            [3 => ['C' => 'name']],
-            [3 => ['C' => 'telephone']],
-            [4 => ['A' => 'name']],
-            [4 => ['A' => 'telephone']],
-            [4 => ['B' => 'name']],
-            [4 => ['B' => 'telephone']],
-            [4 => ['C' => 'name']],
-            [4 => ['C' => 'telephone']],
-        ];
-
-        $this->assertEquals($expected, $result->toList());
-
-        $collection = new Collection([
-            [
-                'name1' => 'alex',
-                'name2' => 'kostas',
-                0 => 'leon',
-            ],
-            [
-                'val1' => 'alex@example.com',
-                24 => 'kostas@example.com',
-                'val2' => 'leon@example.com',
-            ],
-        ]);
-
-        $result = $collection->cartesianProduct();
-
-        $expected = [
-            ['alex', 'alex@example.com'],
-            ['alex', 'kostas@example.com'],
-            ['alex', 'leon@example.com'],
-            ['kostas', 'alex@example.com'],
-            ['kostas', 'kostas@example.com'],
-            ['kostas', 'leon@example.com'],
-            ['leon', 'alex@example.com'],
-            ['leon', 'kostas@example.com'],
-            ['leon', 'leon@example.com'],
-        ];
-
-        $this->assertEquals($expected, $result->toList());
-    }
-
-    /**
-     * Tests that an exception is thrown if the cartesian product is called with multidimensional arrays
-     *
-     * @expectedException \LogicException
-     * @return void
-     */
-    public function testCartesianProductMultidimensionalArray()
-    {
-        $collection = new Collection([
-            [
-                'names' => [
-                    'alex', 'kostas', 'leon'
-                ]
-            ],
-            [
-                'locations' => [
-                    'crete', 'london', 'paris'
-                ]
-            ],
-        ]);
-
-        $result = $collection->cartesianProduct();
-    }
-
     public function testTranspose()
     {
         $collection = new Collection([
@@ -1998,14 +1777,13 @@ class CollectionTest extends TestCase
             ['Product A', '200', '100', '50'],
             ['Product B', '300', '200', '100'],
             ['Product C', '400', '300', '200'],
-            ['Product D', '500', '400', '300'],
         ]);
         $transposed = $collection->transpose();
         $expected = [
-            ['Products', 'Product A', 'Product B', 'Product C', 'Product D'],
-            ['2012', '200', '300', '400', '500'],
-            ['2013', '100', '200', '300', '400'],
-            ['2014', '50', '100', '200', '300'],
+            ['Products', 'Product A', 'Product B', 'Product C'],
+            ['2012', '200', '300', '400'],
+            ['2013', '100', '200', '300'],
+            ['2014', '50', '100', '200'],
         ];
 
         $this->assertEquals($expected, $transposed->toList());

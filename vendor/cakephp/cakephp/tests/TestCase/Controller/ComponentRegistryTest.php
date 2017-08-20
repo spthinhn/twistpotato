@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         2.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Controller;
 
@@ -19,8 +19,8 @@ use Cake\Controller\Component\AuthComponent;
 use Cake\Controller\Component\CookieComponent;
 use Cake\Controller\Controller;
 use Cake\Core\Plugin;
-use Cake\Http\Response;
-use Cake\Http\ServerRequest;
+use Cake\Network\Request;
+use Cake\Network\Response;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -41,7 +41,7 @@ class ComponentRegistryTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $controller = new Controller(new ServerRequest(), new Response());
+        $controller = new Controller(new Request(), new Response());
         $this->Components = new ComponentRegistry($controller);
     }
 
@@ -120,7 +120,7 @@ class ComponentRegistryTest extends TestCase
     }
 
     /**
-     * test MissingComponent exception
+     * test missingcomponent exception
      *
      * @expectedException \Cake\Controller\Exception\MissingComponentException
      * @return void

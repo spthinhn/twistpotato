@@ -14,6 +14,7 @@ namespace DebugKit\Panel;
 
 use Cake\Controller\Controller;
 use Cake\Event\Event;
+use Cake\Routing\Router;
 use DebugKit\DebugPanel;
 
 /**
@@ -31,7 +32,6 @@ class RequestPanel extends DebugPanel
      */
     public function shutdown(Event $event)
     {
-        /* @var Controller $controller */
         $controller = $event->subject();
         $request = $controller->request;
         $this->_data = [

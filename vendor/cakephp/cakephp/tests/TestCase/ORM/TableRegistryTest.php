@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\ORM;
 
@@ -26,7 +26,7 @@ class TableRegistryTest extends TestCase
     /**
      * Original TableLocator.
      *
-     * @var \Cake\ORM\Locator\LocatorInterface
+     * @var Cake\ORM\Locator\LocatorInterface
      */
     protected $_originalLocator;
 
@@ -56,7 +56,7 @@ class TableRegistryTest extends TestCase
     /**
      * Sets and returns mock LocatorInterface instance.
      *
-     * @return \Cake\ORM\Locator\LocatorInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @return Cake\ORM\Locator\LocatorInterface
      */
     protected function _setMockLocator()
     {
@@ -81,7 +81,7 @@ class TableRegistryTest extends TestCase
     }
 
     /**
-     * Test that locator() method is returning TableLocator by default.
+     * Test that locator() method is returing TableLocator by default.
      *
      * @return void
      */

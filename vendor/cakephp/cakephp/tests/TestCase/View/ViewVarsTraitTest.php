@@ -1,15 +1,15 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\View;
 
@@ -21,11 +21,6 @@ use Cake\TestSuite\TestCase;
  */
 class ViewVarsTraitTest extends TestCase
 {
-
-    /**
-     * @var \Cake\Controller\Controller;
-     */
-    public $subject;
 
     /**
      * setup
@@ -84,7 +79,7 @@ class ViewVarsTraitTest extends TestCase
      *
      * @return void
      */
-    public function testSetTwoParamCombined()
+    public function testSetTwoParamCombind()
     {
         $keys = ['one', 'key'];
         $vals = ['two', 'val'];
@@ -160,7 +155,7 @@ class ViewVarsTraitTest extends TestCase
         $result = $this->subject->viewOptions([], false);
 
         $this->assertTrue(is_array($result));
-        $this->assertEmpty($result);
+        $this->assertTrue(empty($result));
     }
 
     /**
@@ -188,7 +183,7 @@ class ViewVarsTraitTest extends TestCase
     {
         $this->subject->passedArgs = 'test';
         $this->subject->createView();
-        $result = $this->subject->viewBuilder()->getOptions();
+        $result = $this->subject->viewbuilder()->options();
         $this->assertEquals(['passedArgs' => 'test'], $result);
     }
 
@@ -201,7 +196,7 @@ class ViewVarsTraitTest extends TestCase
     {
         $this->subject->viewClass = 'Json';
         $view = $this->subject->createView();
-        $this->assertInstanceOf('Cake\View\JsonView', $view);
+        $this->assertInstanceof('Cake\View\JsonView', $view);
     }
 
     /**
@@ -211,10 +206,10 @@ class ViewVarsTraitTest extends TestCase
      */
     public function testCreateViewViewBuilder()
     {
-        $this->subject->viewBuilder()->setClassName('Xml');
+        $this->subject->viewBuilder()->className('Xml');
         $this->subject->viewClass = 'Json';
         $view = $this->subject->createView();
-        $this->assertInstanceOf('Cake\View\XmlView', $view);
+        $this->assertInstanceof('Cake\View\XmlView', $view);
     }
 
     /**
@@ -224,10 +219,10 @@ class ViewVarsTraitTest extends TestCase
      */
     public function testCreateViewParameter()
     {
-        $this->subject->viewBuilder()->setClassName('View');
+        $this->subject->viewBuilder()->className('View');
         $this->subject->viewClass = 'Json';
         $view = $this->subject->createView('Xml');
-        $this->assertInstanceOf('Cake\View\XmlView', $view);
+        $this->assertInstanceof('Cake\View\XmlView', $view);
     }
 
     /**

@@ -2,17 +2,17 @@
 /**
  * RssHelperTest file
  *
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         1.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\View\Helper;
 
@@ -27,11 +27,6 @@ use Cake\View\View;
  */
 class RssHelperTest extends TestCase
 {
-
-    /**
-     * @var \Cake\View\Helper\RssHelper
-     */
-    public $Rss;
 
     /**
      * setUp method
@@ -139,11 +134,11 @@ class RssHelperTest extends TestCase
                 'link' => 'http://example.com'
             ],
             'cloud' => [
-                'domain' => 'rpc.sys.com',
-                'port' => '80',
-                'path' => '/RPC2',
-                'registerProcedure' => 'myCloud.rssPleaseNotify',
-                'protocol' => 'xml-rpc'
+                'domain' => "rpc.sys.com",
+                'port' => "80",
+                'path' => "/RPC2",
+                'registerProcedure' => "myCloud.rssPleaseNotify",
+                'protocol' => "xml-rpc"
             ]
         ];
         $content = 'content-here';
@@ -160,11 +155,11 @@ class RssHelperTest extends TestCase
                     '<link', 'http://example.com', '/link',
                 '/image',
                 'cloud' => [
-                    'domain' => 'rpc.sys.com',
-                    'port' => '80',
-                    'path' => '/RPC2',
-                    'registerProcedure' => 'myCloud.rssPleaseNotify',
-                    'protocol' => 'xml-rpc'
+                    'domain' => "rpc.sys.com",
+                    'port' => "80",
+                    'path' => "/RPC2",
+                    'registerProcedure' => "myCloud.rssPleaseNotify",
+                    'protocol' => "xml-rpc"
                 ],
             'content-here',
             '/channel',
@@ -207,9 +202,9 @@ class RssHelperTest extends TestCase
                 '/image',
                 'atom:link' => [
                     'xmlns:atom' => 'http://www.w3.org/2005/Atom',
-                    'href' => 'http://www.example.com/rss.xml',
-                    'rel' => 'self',
-                    'type' => 'application/rss+xml'
+                    'href' => "http://www.example.com/rss.xml",
+                    'rel' => "self",
+                    'type' => "application/rss+xml"
                 ],
             'content-here',
             '/channel',

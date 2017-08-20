@@ -12,6 +12,8 @@
  */
 namespace DebugKit\Panel;
 
+use Cake\Cache\Cache;
+use Cake\Controller\Controller;
 use Cake\ORM\TableRegistry;
 use DebugKit\DebugPanel;
 

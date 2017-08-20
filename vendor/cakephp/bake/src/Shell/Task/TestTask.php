@@ -93,21 +93,17 @@ class TestTask extends BakeTask
      *
      * @param string|null $type Class type.
      * @param string|null $name Name.
-     * @return array|null
+     * @return void|array
      */
     public function main($type = null, $name = null)
     {
         parent::main();
         if (empty($type) && empty($name)) {
-            $this->outputTypeChoices();
-
-            return null;
+            return $this->outputTypeChoices();
         }
 
         if ($this->param('all')) {
-            $this->_bakeAll($type);
-
-            return null;
+            return $this->_bakeAll($type);
         }
 
         if (empty($name)) {
@@ -235,7 +231,7 @@ class TestTask extends BakeTask
         if (class_exists($fullClassName)) {
             $methods = $this->getTestableMethods($fullClassName);
         }
-        $mock = $this->hasMockClass($type);
+        $mock = $this->hasMockClass($type, $fullClassName);
         list($preConstruct, $construction, $postConstruct) = $this->generateConstructor($type, $fullClassName);
         $uses = $this->generateUses($type, $fullClassName);
 
@@ -348,9 +344,6 @@ class TestTask extends BakeTask
         if ($suffix && strpos($class, $suffix) === false) {
             $class .= $suffix;
         }
-        if ($type === 'controller' && $this->param('prefix')) {
-            $subSpace .= '\\' . Inflector::camelize($this->param('prefix'));
-        }
 
         return $namespace . '\\' . $subSpace . '\\' . $class;
     }
@@ -432,19 +425,16 @@ class TestTask extends BakeTask
      * Process a model recursively and pull out all the
      * model names converting them to fixture names.
      *
-     * @param \Cake\ORM\Table $subject A Model class to scan for associations and pull fixtures off of.
+     * @param Model $subject A Model class to scan for associations and pull fixtures off of.
      * @return void
      */
     protected function _processModel($subject)
     {
-        if (!$subject instanceof Table) {
-            return;
-        }
-        $this->_addFixture($subject->getAlias());
+        $this->_addFixture($subject->alias());
         foreach ($subject->associations()->keys() as $alias) {
             $assoc = $subject->association($alias);
-            $target = $assoc->getTarget();
-            $name = $target->getAlias();
+            $target = $assoc->target();
+            $name = $target->alias();
             $subjectClass = get_class($subject);
 
             if ($subjectClass !== 'Cake\ORM\Table' && $subjectClass === get_class($target)) {
@@ -456,7 +446,7 @@ class TestTask extends BakeTask
             }
             if ($assoc->type() === Association::MANY_TO_MANY) {
                 $junction = $assoc->junction();
-                if (!isset($this->_fixtures[$junction->getAlias()])) {
+                if (!isset($this->_fixtures[$junction->alias()])) {
                     $this->_processModel($junction);
                 }
             }
@@ -524,9 +514,9 @@ class TestTask extends BakeTask
         $type = strtolower($type);
         $pre = $construct = $post = '';
         if ($type === 'table') {
-            $tableName = str_replace('Table', '', $className);
-            $pre = "\$config = TableRegistry::exists('{$tableName}') ? [] : ['className' => {$className}::class];";
-            $construct = "TableRegistry::get('{$tableName}', \$config);";
+            $className = str_replace('Table', '', $className);
+            $pre = "\$config = TableRegistry::exists('{$className}') ? [] : ['className' => '{$fullClassName}'];";
+            $construct = "TableRegistry::get('{$className}', \$config);";
         }
         if ($type === 'behavior' || $type === 'entity' || $type === 'form') {
             $construct = "new {$className}();";
@@ -592,7 +582,7 @@ class TestTask extends BakeTask
                 ];
                 $properties[] = [
                     'description' => 'Response mock',
-                    'type' => '\Cake\Http\Response|\PHPUnit_Framework_MockObject_MockObject',
+                    'type' => '\Cake\Network\Response|\PHPUnit_Framework_MockObject_MockObject',
                     'name' => 'response'
                 ];
                 break;
@@ -691,7 +681,6 @@ class TestTask extends BakeTask
         if ($this->plugin) {
             $namespace = $this->plugin;
         }
-
         $classTail = substr($className, strlen($namespace) + 1);
         $path = $path . $classTail . 'Test.php';
 
@@ -707,7 +696,7 @@ class TestTask extends BakeTask
     {
         $parser = parent::getOptionParser();
 
-        $parser->setDescription(
+        $parser->description(
             'Bake test case skeletons for classes.'
         )->addArgument('type', [
             'help' => 'Type of class to bake, can be any of the following:' .
@@ -733,9 +722,6 @@ class TestTask extends BakeTask
             'boolean' => true,
             'default' => false,
             'help' => 'Select if you want to bake without fixture.'
-        ])->addOption('prefix', [
-            'default' => false,
-            'help' => 'Use when baking tests for prefixed controllers.'
         ])->addOption('all', [
             'boolean' => true,
             'help' => 'Bake all classes of the given type'

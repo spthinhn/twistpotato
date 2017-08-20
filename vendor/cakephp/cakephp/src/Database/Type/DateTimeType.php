@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Database\Type;
 
@@ -29,15 +29,6 @@ use RuntimeException;
  */
 class DateTimeType extends Type implements TypeInterface
 {
-    /**
-     * Identifier name for this type.
-     *
-     * (This property is declared here again so that the inheritance from
-     * Cake\Database\Type can be removed in the future.)
-     *
-     * @var string|null
-     */
-    protected $_name;
 
     /**
      * The class to use for representing date objects
@@ -46,7 +37,7 @@ class DateTimeType extends Type implements TypeInterface
      * class is constructed. After that use `useMutable()` or `useImmutable()` instead.
      *
      * @var string
-     * @deprecated 3.2.0 Use DateTimeType::useMutable() or DateTimeType::useImmutable() instead.
+     * @deprecated Use DateTimeType::useMutable() or DateTimeType::useImmutable() instead.
      */
     public static $dateTimeClass = 'Cake\I18n\Time';
 
@@ -88,12 +79,18 @@ class DateTimeType extends Type implements TypeInterface
     protected $_className;
 
     /**
+     * Identifier name for this type
+     *
+     * @var string|null
+     */
+    protected $_name = null;
+
+    /**
      * {@inheritDoc}
      */
     public function __construct($name = null)
     {
         $this->_name = $name;
-
         $this->_setClassName(static::$dateTimeClass, 'DateTime');
     }
 
@@ -156,8 +153,7 @@ class DateTimeType extends Type implements TypeInterface
             $compare = $date = false;
             if ($value === '' || $value === null || $value === false || $value === true) {
                 return null;
-            }
-            if (is_numeric($value)) {
+            } elseif (is_numeric($value)) {
                 $date = new $class('@' . $value);
             } elseif (is_string($value) && $this->_useLocaleParser) {
                 return $this->_parseValue($value);
@@ -274,16 +270,6 @@ class DateTimeType extends Type implements TypeInterface
     }
 
     /**
-     * Get the classname used for building objects.
-     *
-     * @return string
-     */
-    public function getDateTimeClassName()
-    {
-        return $this->_className;
-    }
-
-    /**
      * Change the preferred class name to the mutable Time implementation.
      *
      * @return $this
@@ -304,7 +290,6 @@ class DateTimeType extends Type implements TypeInterface
      */
     protected function _parseValue($value)
     {
-        /* @var \Cake\I18n\Time $class */
         $class = $this->_className;
 
         return $class::parseDateTime($value, $this->_localeFormat);

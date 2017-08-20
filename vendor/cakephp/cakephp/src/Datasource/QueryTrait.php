@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Datasource;
 
@@ -37,7 +37,7 @@ trait QueryTrait
      *
      * When set, query execution will be bypassed.
      *
-     * @var \Cake\Datasource\ResultSetInterface|null
+     * @var \Cake\Datasource\ResultSetInterface
      * @see \Cake\Datasource\QueryTrait::setResult()
      */
     protected $_results;
@@ -54,7 +54,7 @@ trait QueryTrait
      * List of formatter classes or callbacks that will post-process the
      * results when fetched
      *
-     * @var callable[]
+     * @var array
      */
     protected $_formatters = [];
 
@@ -110,7 +110,7 @@ trait QueryTrait
      * This method is most useful when combined with results stored in a persistent cache.
      *
      * @param \Cake\Datasource\ResultSetInterface $results The results this query should return.
-     * @return $this
+     * @return $this The query instance.
      */
     public function setResult($results)
     {
@@ -166,7 +166,7 @@ trait QueryTrait
      *   When using a function, this query instance will be supplied as an argument.
      * @param string|\Cake\Cache\CacheEngine $config Either the name of the cache config to use, or
      *   a cache config instance.
-     * @return $this
+     * @return $this This instance
      */
     public function cache($key, $config = 'default')
     {
@@ -265,7 +265,7 @@ trait QueryTrait
      */
     public function all()
     {
-        if ($this->_results !== null) {
+        if (isset($this->_results)) {
             return $this->_results;
         }
 
@@ -393,7 +393,7 @@ trait QueryTrait
      * $singleUser = $query->select(['id', 'username'])->first();
      * ```
      *
-     * @return \Cake\Datasource\EntityInterface|array|null The first result from the ResultSet.
+     * @return mixed the first result from the ResultSet
      */
     public function first()
     {
@@ -408,19 +408,18 @@ trait QueryTrait
      * Get the first result from the executing query or raise an exception.
      *
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When there is no first record.
-     * @return \Cake\Datasource\EntityInterface|array The first result from the ResultSet.
+     * @return mixed The first result from the ResultSet.
      */
     public function firstOrFail()
     {
         $entity = $this->first();
-        if (!$entity) {
-            throw new RecordNotFoundException(sprintf(
-                'Record not found in table "%s"',
-                $this->repository()->table()
-            ));
+        if ($entity) {
+            return $entity;
         }
-
-        return $entity;
+        throw new RecordNotFoundException(sprintf(
+            'Record not found in table "%s"',
+            $this->repository()->table()
+        ));
     }
 
     /**
@@ -457,7 +456,7 @@ trait QueryTrait
         if (in_array($method, get_class_methods($resultSetClass))) {
             $results = $this->all();
 
-            return $results->$method(...$arguments);
+            return call_user_func_array([$results, $method], $arguments);
         }
         throw new BadMethodCallException(
             sprintf('Unknown method "%s"', $method)
@@ -469,7 +468,7 @@ trait QueryTrait
      * This is handy for passing all query clauses at once.
      *
      * @param array $options the options to be applied
-     * @return $this
+     * @return $this This object
      */
     abstract public function applyOptions(array $options);
 

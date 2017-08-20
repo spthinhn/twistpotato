@@ -1,15 +1,15 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright 2005-2011, Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace TestApp\Controller;
 
@@ -32,16 +32,12 @@ class AuthTestController extends Controller
     /**
      * testUrl property
      *
-     * @var string|array
+     * @var mixed
      */
     public $testUrl = null;
 
     /**
      * construct method
-     *
-     * @param \Cake\Http\ServerRequest|null $request Request object for this controller. Can be null for testing,
-     *   but expect that features that use the request parameters will not work.
-     * @param \Cake\Http\Response|null $response Response object for this controller.
      */
     public function __construct($request = null, $response = null)
     {
@@ -77,7 +73,7 @@ class AuthTestController extends Controller
      */
     public function add()
     {
-        echo 'add';
+        echo "add";
     }
 
     /**
@@ -87,7 +83,7 @@ class AuthTestController extends Controller
      */
     public function view()
     {
-        echo 'view';
+        echo "view";
     }
 
     /**
@@ -97,15 +93,15 @@ class AuthTestController extends Controller
      */
     public function camelCase()
     {
-        echo 'camelCase';
+        echo "camelCase";
     }
 
     /**
      * redirect method
      *
-     * @param string|array $url
-     * @param int $status
-     * @return \Cake\Http\Response|null
+     * @param mixed $url
+     * @param mixed $status
+     * @return void|\Cake\Network\Response
      */
     public function redirect($url, $status = null)
     {

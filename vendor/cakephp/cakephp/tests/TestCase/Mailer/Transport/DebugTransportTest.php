@@ -2,17 +2,17 @@
 /**
  * DebugTransportTest file
  *
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         2.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Mailer\Transport;
 
@@ -59,12 +59,12 @@ class DebugTransportTest extends TestCase
         $headers = "From: CakePHP Test <noreply@cakephp.org>\r\n";
         $headers .= "To: CakePHP <cake@cakephp.org>\r\n";
         $headers .= "Cc: Mark Story <mark@cakephp.org>, Juan Basso <juan@cakephp.org>\r\n";
-        $headers .= 'Date: ' . $date . "\r\n";
+        $headers .= "Date: " . $date . "\r\n";
         $headers .= "Message-ID: <4d9946cf-0a44-4907-88fe-1d0ccbdd56cb@localhost>\r\n";
         $headers .= "Subject: Testing Message\r\n";
         $headers .= "MIME-Version: 1.0\r\n";
         $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-        $headers .= 'Content-Transfer-Encoding: 8bit';
+        $headers .= "Content-Transfer-Encoding: 8bit";
 
         $data = "First Line\r\n";
         $data .= "Second Line\r\n";

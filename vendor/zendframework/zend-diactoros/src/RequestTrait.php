@@ -22,11 +22,14 @@ use Psr\Http\Message\UriInterface;
  * the environment. As such, this trait exists to provide the common code
  * between both client-side and server-side requests, and each can then
  * use the headers functionality required by their implementations.
+ *
+ * @property array $headers
+ * @property array $headerNames
+ * @property StreamInterface $stream
+ * @method bool hasHeader(string $header)
  */
 trait RequestTrait
 {
-    use MessageTrait;
-
     /**
      * @var string
      */
@@ -40,7 +43,7 @@ trait RequestTrait
     private $requestTarget;
 
     /**
-     * @var UriInterface
+     * @var null|UriInterface
      */
     private $uri;
 
@@ -63,14 +66,9 @@ trait RequestTrait
         $this->uri    = $this->createUri($uri);
         $this->stream = $this->getStream($body, 'wb+');
 
-        $this->setHeaders($headers);
-
-        // per PSR-7: attempt to set the Host header from a provided URI if no
-        // Host header is provided
-        if (! $this->hasHeader('Host') && $this->uri->getHost()) {
-            $this->headerNames['host'] = 'Host';
-            $this->headers['Host'] = [$this->getHostFromUri()];
-        }
+        list($this->headerNames, $headers) = $this->filterHeaders($headers);
+        $this->assertHeaders($headers);
+        $this->headers = $headers;
     }
 
     /**
@@ -125,6 +123,10 @@ trait RequestTrait
     {
         if (null !== $this->requestTarget) {
             return $this->requestTarget;
+        }
+
+        if (! $this->uri) {
+            return '/';
         }
 
         $target = $this->uri->getPath();
@@ -313,5 +315,19 @@ trait RequestTrait
         $host  = $this->uri->getHost();
         $host .= $this->uri->getPort() ? ':' . $this->uri->getPort() : '';
         return $host;
+    }
+
+    /**
+     * Ensure header names and values are valid.
+     *
+     * @param array $headers
+     * @throws InvalidArgumentException
+     */
+    private function assertHeaders(array $headers)
+    {
+        foreach ($headers as $name => $headerValues) {
+            HeaderSecurity::assertValidName($name);
+            array_walk($headerValues, __NAMESPACE__ . '\HeaderSecurity::assertValid');
+        }
     }
 }

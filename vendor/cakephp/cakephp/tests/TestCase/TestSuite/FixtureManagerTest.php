@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestSuite;
 
@@ -183,7 +183,7 @@ class FixtureManagerTest extends TestCase
     }
 
     /**
-     * Test loading plugin fixtures.
+     * Test loading app fixtures.
      *
      * @return void
      */
@@ -204,32 +204,11 @@ class FixtureManagerTest extends TestCase
     }
 
     /**
-     * Test loading plugin fixtures.
+     * Test loading app fixtures.
      *
      * @return void
      */
-    public function testFixturizePluginSubdirectory()
-    {
-        Plugin::load('TestPlugin');
-
-        $test = $this->getMockBuilder('Cake\TestSuite\TestCase')->getMock();
-        $test->fixtures = ['plugin.test_plugin.blog/comments'];
-        $this->manager->fixturize($test);
-        $fixtures = $this->manager->loaded();
-        $this->assertCount(1, $fixtures);
-        $this->assertArrayHasKey('plugin.test_plugin.blog/comments', $fixtures);
-        $this->assertInstanceOf(
-            'TestPlugin\Test\Fixture\Blog\CommentsFixture',
-            $fixtures['plugin.test_plugin.blog/comments']
-        );
-    }
-
-    /**
-     * Test loading plugin fixtures from a vendor namespaced plugin
-     *
-     * @return void
-     */
-    public function testFixturizeVendorPlugin()
+    public function testFixturizeCustom()
     {
         $test = $this->getMockBuilder('Cake\TestSuite\TestCase')->getMock();
         $test->fixtures = ['plugin.Company/TestPluginThree.articles'];
@@ -244,25 +223,6 @@ class FixtureManagerTest extends TestCase
     }
 
     /**
-     * Test loading fixtures with fully-qualified namespaces.
-     *
-     * @return void
-     */
-    public function testFixturizeClassName()
-    {
-        $test = $this->getMockBuilder('Cake\TestSuite\TestCase')->getMock();
-        $test->fixtures = ['Company\TestPluginThree\Test\Fixture\ArticlesFixture'];
-        $this->manager->fixturize($test);
-        $fixtures = $this->manager->loaded();
-        $this->assertCount(1, $fixtures);
-        $this->assertArrayHasKey('Company\TestPluginThree\Test\Fixture\ArticlesFixture', $fixtures);
-        $this->assertInstanceOf(
-            'Company\TestPluginThree\Test\Fixture\ArticlesFixture',
-            $fixtures['Company\TestPluginThree\Test\Fixture\ArticlesFixture']
-        );
-    }
-
-    /**
      * Test that unknown types are handled gracefully.
      *
      * @expectedException \UnexpectedValueException
@@ -273,58 +233,6 @@ class FixtureManagerTest extends TestCase
         $test = $this->getMockBuilder('Cake\TestSuite\TestCase')->getMock();
         $test->fixtures = ['derp.derp'];
         $this->manager->fixturize($test);
-    }
-
-    /**
-     * Test load uses aliased connections via a mock.
-     *
-     * Ensure that FixtureManager uses connection aliases
-     * protecting 'live' tables from being wiped by mistakes in
-     * fixture connection names.
-     *
-     * @return void
-     */
-    public function testLoadConnectionAliasUsage()
-    {
-        $connection = ConnectionManager::get('test');
-        $statement = $this->getMockBuilder('Cake\Database\StatementInterface')
-            ->getMock();
-
-        // This connection should _not_ be used.
-        $other = $this->getMockBuilder('Cake\Database\Connection')
-            ->setMethods(['execute'])
-            ->setConstructorArgs([['driver' => $connection->getDriver()]])
-            ->getMock();
-        $other->expects($this->never())
-            ->method('execute')
-            ->will($this->returnValue($statement));
-
-        // This connection should be used instead of
-        // the 'other' connection as the alias should not be ignored.
-        $testOther = $this->getMockBuilder('Cake\Database\Connection')
-            ->setMethods(['execute'])
-            ->setConstructorArgs([[
-                'database' => $connection->config()['database'],
-                'driver' => $connection->getDriver()
-            ]])
-            ->getMock();
-        $testOther->expects($this->atLeastOnce())
-            ->method('execute')
-            ->will($this->returnValue($statement));
-
-        ConnectionManager::config('other', $other);
-        ConnectionManager::config('test_other', $testOther);
-
-        // Connect the alias making test_other an alias of other.
-        ConnectionManager::alias('test_other', 'other');
-
-        $test = $this->getMockBuilder('Cake\TestSuite\TestCase')->getMock();
-        $test->fixtures = ['core.other_articles'];
-        $this->manager->fixturize($test);
-        $this->manager->load($test);
-
-        ConnectionManager::drop('other');
-        ConnectionManager::drop('test_other');
     }
 
     /**

@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         1.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\I18n;
 
@@ -50,13 +50,10 @@ class TimeTest extends TestCase
         Time::setTestNow($this->now);
         Time::setDefaultLocale($this->locale);
         Time::resetToStringFormat();
-        Time::setJsonEncodeFormat("yyyy-MM-dd'T'HH:mm:ssxxx");
 
         FrozenTime::setTestNow($this->frozenNow);
         FrozenTime::setDefaultLocale($this->locale);
         FrozenTime::resetToStringFormat();
-        FrozenTime::setJsonEncodeFormat("yyyy-MM-dd'T'HH:mm:ssxxx");
-
         date_default_timezone_set('UTC');
         I18n::locale(I18n::DEFAULT_LOCALE);
     }
@@ -506,11 +503,6 @@ class TimeTest extends TestCase
         $result = $time->i18nFormat(\IntlDateFormatter::FULL);
         $expected = 'Wednesday January 1 2014 12:00:00 AM GMT-01:30';
         $this->assertTimeFormat($expected, $result);
-
-        $time = new $class('2014-01-01T00:00Z');
-        $result = $time->i18nFormat(\IntlDateFormatter::FULL);
-        $expected = 'Wednesday January 1 2014 12:00:00 AM GMT';
-        $this->assertTimeFormat($expected, $result);
     }
 
     /**
@@ -715,7 +707,7 @@ class TimeTest extends TestCase
      * @dataProvider classNameProvider
      * @return void
      */
-    public function testJsonEncode($class)
+    public function testJsonEnconde($class)
     {
         if (version_compare(INTL_ICU_VERSION, '50.0', '<')) {
             $this->markTestSkipped('ICU 5x is needed');
@@ -726,28 +718,6 @@ class TimeTest extends TestCase
 
         $class::setJsonEncodeFormat('yyyy-MM-dd HH:mm:ss');
         $this->assertEquals('"2014-04-20 10:10:10"', json_encode($time));
-
-        $class::setJsonEncodeFormat($class::UNIX_TIMESTAMP_FORMAT);
-        $this->assertEquals('1397988610', json_encode($time));
-    }
-
-    /**
-     * Test jsonSerialize no side-effects
-     *
-     * @dataProvider classNameProvider
-     * @return void
-     */
-    public function testJsonEncodeSideEffectFree($class)
-    {
-        if (version_compare(INTL_ICU_VERSION, '50.0', '<')) {
-            $this->markTestSkipped('ICU 5x is needed');
-        }
-        $date = new \Cake\I18n\FrozenTime('2016-11-29 09:00:00');
-        $this->assertInstanceOf('DateTimeZone', $date->timezone);
-
-        $result = json_encode($date);
-        $this->assertEquals('"2016-11-29T09:00:00+00:00"', $result);
-        $this->assertInstanceOf('DateTimeZone', $date->getTimezone());
     }
 
     /**
@@ -912,7 +882,7 @@ class TimeTest extends TestCase
      * @param string $result
      * @return void
      */
-    public function assertTimeFormat($expected, $result, $message = '')
+    public function assertTimeFormat($expected, $result, $message = "")
     {
         $expected = str_replace([',', '(', ')', ' at', ' م.', ' ه‍.ش.', ' AP', ' AH', ' SAKA', 'à '], '', $expected);
         $expected = str_replace(['  '], ' ', $expected);
@@ -921,6 +891,6 @@ class TimeTest extends TestCase
         $result = str_replace(['گرینویچ'], 'GMT', $result);
         $result = str_replace(['  '], ' ', $result);
 
-        $this->assertSame($expected, $result, $message);
+        return $this->assertSame($expected, $result, $message);
     }
 }

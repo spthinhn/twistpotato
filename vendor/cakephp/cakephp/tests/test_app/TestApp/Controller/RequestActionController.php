@@ -1,15 +1,15 @@
 <?php
 /**
- * CakePHP(tm) Tests <https://book.cakephp.org/view/1196/Testing>
- * Copyright 2005-2011, Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
+ * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
+ * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace TestApp\Controller;
 
@@ -31,7 +31,7 @@ class RequestActionController extends AppController
     /**
      * test_request_action method
      *
-     * @return \Cake\Http\Response
+     * @return \Cake\Network\Response
      */
     public function test_request_action()
     {
@@ -45,7 +45,7 @@ class RequestActionController extends AppController
      *
      * @param mixed $id
      * @param mixed $other
-     * @return \Cake\Http\Response
+     * @return \Cake\Network\Response
      */
     public function another_ra_test($id, $other)
     {
@@ -57,7 +57,7 @@ class RequestActionController extends AppController
     /**
      * normal_request_action method
      *
-     * @return \Cake\Http\Response
+     * @return \Cake\Network\Response
      */
     public function normal_request_action()
     {
@@ -69,7 +69,7 @@ class RequestActionController extends AppController
     /**
      * returns $this->here as body
      *
-     * @return \Cake\Http\Response
+     * @return \Cake\Network\Response
      */
     public function return_here()
     {
@@ -92,7 +92,7 @@ class RequestActionController extends AppController
     /**
      * post pass, testing post passing
      *
-     * @return \Cake\Http\Response
+     * @return \Cake\Network\Response
      */
     public function post_pass()
     {
@@ -104,7 +104,7 @@ class RequestActionController extends AppController
     /**
      * query pass, testing query passing
      *
-     * @return \Cake\Http\Response
+     * @return \Cake\Network\Response
      */
     public function query_pass()
     {
@@ -116,7 +116,7 @@ class RequestActionController extends AppController
     /**
      * cookie pass, testing cookie passing
      *
-     * @return \Cake\Http\Response
+     * @return \Cake\Network\Response
      */
     public function cookie_pass()
     {
@@ -128,7 +128,7 @@ class RequestActionController extends AppController
     /**
      * test param passing and parsing.
      *
-     * @return \Cake\Http\Response
+     * @return \Cake\Network\Response
      */
     public function params_pass()
     {
@@ -149,7 +149,7 @@ class RequestActionController extends AppController
     /**
      * param check method.
      *
-     * @return \Cake\Http\Response
+     * @return \Cake\Network\Response
      */
     public function param_check()
     {
@@ -166,7 +166,7 @@ class RequestActionController extends AppController
     /**
      * Tests session transmission
      *
-     * @return \Cake\Http\Response
+     * @return \Cake\Network\Response
      */
     public function session_test()
     {
@@ -178,7 +178,7 @@ class RequestActionController extends AppController
     /**
      * Tests input data transmission
      *
-     * @return \Cake\Http\Response
+     * @return \Cake\Network\Response
      */
     public function input_test()
     {

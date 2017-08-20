@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Database\Expression;
 
@@ -54,7 +54,7 @@ class QueryExpression implements ExpressionInterface, Countable
      * expression objects. Optionally, you can set the conjunction keyword to be used
      * for joining each part of this level of the expression tree.
      *
-     * @param string|array|\Cake\Database\ExpressionInterface $conditions tree-like array structure containing all the conditions
+     * @param string|array|\Cake\Database\Expression\QueryExpression $conditions tree-like array structure containing all the conditions
      * to be added or nested inside this expression object.
      * @param array|\Cake\Database\TypeMap $types associative array of types to be associated with the values
      * passed in $conditions.
@@ -64,52 +64,30 @@ class QueryExpression implements ExpressionInterface, Countable
      */
     public function __construct($conditions = [], $types = [], $conjunction = 'AND')
     {
-        $this->setTypeMap($types);
-        $this->setConjunction(strtoupper($conjunction));
+        $this->typeMap($types);
+        $this->tieWith(strtoupper($conjunction));
         if (!empty($conditions)) {
-            $this->add($conditions, $this->getTypeMap()->getTypes());
+            $this->add($conditions, $this->typeMap()->types());
         }
-    }
-
-    /**
-     * Changes the conjunction for the conditions at this level of the expression tree.
-     *
-     * @param string $conjunction Value to be used for joining conditions
-     * @return $this
-     */
-    public function setConjunction($conjunction)
-    {
-        $this->_conjunction = strtoupper($conjunction);
-
-        return $this;
-    }
-
-    /**
-     * Gets the currently configured conjunction for the conditions at this level of the expression tree.
-     *
-     * @return string
-     */
-    public function getConjunction()
-    {
-        return $this->_conjunction;
     }
 
     /**
      * Changes the conjunction for the conditions at this level of the expression tree.
      * If called with no arguments it will return the currently configured value.
      *
-     * @deprecated 3.4.0 Use setConjunction()/getConjunction() instead.
      * @param string|null $conjunction value to be used for joining conditions. If null it
      * will not set any value, but return the currently stored one
      * @return string|$this
      */
     public function tieWith($conjunction = null)
     {
-        if ($conjunction !== null) {
-            return $this->setConjunction($conjunction);
+        if ($conjunction === null) {
+            return $this->_conjunction;
         }
 
-        return $this->getConjunction();
+        $this->_conjunction = strtoupper($conjunction);
+
+        return $this;
     }
 
     /**
@@ -122,7 +100,7 @@ class QueryExpression implements ExpressionInterface, Countable
      */
     public function type($conjunction = null)
     {
-        return $this->setConjunction($conjunction);
+        return $this->tieWith($conjunction);
     }
 
     /**
@@ -167,7 +145,7 @@ class QueryExpression implements ExpressionInterface, Countable
     /**
      * Adds a new condition to the expression object in the form "field = value".
      *
-     * @param string|\Cake\Database\ExpressionInterface $field Database field to be compared against value
+     * @param string $field Database field to be compared against value
      * @param mixed $value The value to be bound to $field for comparison
      * @param string|null $type the type name for $value as configured using the Type map.
      * If it is suffixed with "[]" and the value is an array then multiple placeholders
@@ -186,7 +164,7 @@ class QueryExpression implements ExpressionInterface, Countable
     /**
      * Adds a new condition to the expression object in the form "field != value".
      *
-     * @param string|\Cake\Database\ExpressionInterface $field Database field to be compared against value
+     * @param string $field Database field to be compared against value
      * @param mixed $value The value to be bound to $field for comparison
      * @param string|null $type the type name for $value as configured using the Type map.
      * If it is suffixed with "[]" and the value is an array then multiple placeholders
@@ -205,7 +183,7 @@ class QueryExpression implements ExpressionInterface, Countable
     /**
      * Adds a new condition to the expression object in the form "field > value".
      *
-     * @param string|\Cake\Database\ExpressionInterface $field Database field to be compared against value
+     * @param string $field Database field to be compared against value
      * @param mixed $value The value to be bound to $field for comparison
      * @param string|null $type the type name for $value as configured using the Type map.
      * @return $this
@@ -222,7 +200,7 @@ class QueryExpression implements ExpressionInterface, Countable
     /**
      * Adds a new condition to the expression object in the form "field < value".
      *
-     * @param string|\Cake\Database\ExpressionInterface $field Database field to be compared against value
+     * @param string $field Database field to be compared against value
      * @param mixed $value The value to be bound to $field for comparison
      * @param string|null $type the type name for $value as configured using the Type map.
      * @return $this
@@ -239,7 +217,7 @@ class QueryExpression implements ExpressionInterface, Countable
     /**
      * Adds a new condition to the expression object in the form "field >= value".
      *
-     * @param string|\Cake\Database\ExpressionInterface $field Database field to be compared against value
+     * @param string $field Database field to be compared against value
      * @param mixed $value The value to be bound to $field for comparison
      * @param string|null $type the type name for $value as configured using the Type map.
      * @return $this
@@ -256,7 +234,7 @@ class QueryExpression implements ExpressionInterface, Countable
     /**
      * Adds a new condition to the expression object in the form "field <= value".
      *
-     * @param string|\Cake\Database\ExpressionInterface $field Database field to be compared against value
+     * @param string $field Database field to be compared against value
      * @param mixed $value The value to be bound to $field for comparison
      * @param string|null $type the type name for $value as configured using the Type map.
      * @return $this
@@ -305,7 +283,7 @@ class QueryExpression implements ExpressionInterface, Countable
     /**
      * Adds a new condition to the expression object in the form "field LIKE value".
      *
-     * @param string|\Cake\Database\ExpressionInterface $field Database field to be compared against value
+     * @param string $field Database field to be compared against value
      * @param mixed $value The value to be bound to $field for comparison
      * @param string|null $type the type name for $value as configured using the Type map.
      * @return $this
@@ -322,7 +300,7 @@ class QueryExpression implements ExpressionInterface, Countable
     /**
      * Adds a new condition to the expression object in the form "field NOT LIKE value".
      *
-     * @param string|\Cake\Database\ExpressionInterface $field Database field to be compared against value
+     * @param string $field Database field to be compared against value
      * @param mixed $value The value to be bound to $field for comparison
      * @param string|null $type the type name for $value as configured using the Type map.
      * @return $this
@@ -340,7 +318,7 @@ class QueryExpression implements ExpressionInterface, Countable
      * Adds a new condition to the expression object in the form
      * "field IN (value1, value2)".
      *
-     * @param string|\Cake\Database\ExpressionInterface $field Database field to be compared against value
+     * @param string $field Database field to be compared against value
      * @param string|array $values the value to be bound to $field for comparison
      * @param string|null $type the type name for $value as configured using the Type map.
      * @return $this
@@ -377,7 +355,7 @@ class QueryExpression implements ExpressionInterface, Countable
      * Adds a new condition to the expression object in the form
      * "field NOT IN (value1, value2)".
      *
-     * @param string|\Cake\Database\ExpressionInterface $field Database field to be compared against value
+     * @param string $field Database field to be compared against value
      * @param array $values the value to be bound to $field for comparison
      * @param string|null $type the type name for $value as configured using the Type map.
      * @return $this
@@ -420,7 +398,7 @@ class QueryExpression implements ExpressionInterface, Countable
      * Adds a new condition to the expression object in the form
      * "field BETWEEN from AND to".
      *
-     * @param string|\Cake\Database\ExpressionInterface $field The field name to compare for values in between the range.
+     * @param mixed $field The field name to compare for values in between the range.
      * @param mixed $from The initial value of the range.
      * @param mixed $to The ending value in the comparison range.
      * @param string|null $type the type name for $value as configured using the Type map.
@@ -440,7 +418,7 @@ class QueryExpression implements ExpressionInterface, Countable
      * Returns a new QueryExpression object containing all the conditions passed
      * and set up the conjunction to be "AND"
      *
-     * @param string|array|\Cake\Database\ExpressionInterface $conditions to be joined with AND
+     * @param string|array|QueryExpression $conditions to be joined with AND
      * @param array $types associative array of fields pointing to the type of the
      * values that are being passed. Used for correctly binding values to statements.
      * @return \Cake\Database\Expression\QueryExpression
@@ -448,17 +426,17 @@ class QueryExpression implements ExpressionInterface, Countable
     public function and_($conditions, $types = [])
     {
         if ($this->isCallable($conditions)) {
-            return $conditions(new static([], $this->getTypeMap()->setTypes($types)));
+            return $conditions(new self([], $this->typeMap()->types($types)));
         }
 
-        return new static($conditions, $this->getTypeMap()->setTypes($types));
+        return new self($conditions, $this->typeMap()->types($types));
     }
 
     /**
      * Returns a new QueryExpression object containing all the conditions passed
      * and set up the conjunction to be "OR"
      *
-     * @param string|array|\Cake\Database\ExpressionInterface $conditions to be joined with OR
+     * @param string|array|QueryExpression $conditions to be joined with OR
      * @param array $types associative array of fields pointing to the type of the
      * values that are being passed. Used for correctly binding values to statements.
      * @return \Cake\Database\Expression\QueryExpression
@@ -466,10 +444,10 @@ class QueryExpression implements ExpressionInterface, Countable
     public function or_($conditions, $types = [])
     {
         if ($this->isCallable($conditions)) {
-            return $conditions(new static([], $this->getTypeMap()->setTypes($types), 'OR'));
+            return $conditions(new self([], $this->typeMap()->types($types), 'OR'));
         }
 
-        return new static($conditions, $this->getTypeMap()->setTypes($types), 'OR');
+        return new self($conditions, $this->typeMap()->types($types), 'OR');
     }
 // @codingStandardsIgnoreEnd
 
@@ -479,7 +457,7 @@ class QueryExpression implements ExpressionInterface, Countable
      * "NOT ( (condition1) AND (conditions2) )" conjunction depends on the one
      * currently configured for this object.
      *
-     * @param string|array|\Cake\Database\ExpressionInterface $conditions to be added and negated
+     * @param string|array|\Cake\Database\Expression\QueryExpression $conditions to be added and negated
      * @param array $types associative array of fields pointing to the type of the
      * values that are being passed. Used for correctly binding values to statements.
      * @return $this
@@ -673,7 +651,7 @@ class QueryExpression implements ExpressionInterface, Countable
     {
         $operators = ['and', 'or', 'xor'];
 
-        $typeMap = $this->getTypeMap()->setTypes($types);
+        $typeMap = $this->typeMap()->types($types);
 
         foreach ($conditions as $k => $c) {
             $numericKey = is_numeric($k);
@@ -683,7 +661,7 @@ class QueryExpression implements ExpressionInterface, Countable
             }
 
             if ($this->isCallable($c)) {
-                $expr = new static([], $typeMap);
+                $expr = new QueryExpression([], $typeMap);
                 $c = $c($expr, $this);
             }
 
@@ -693,12 +671,12 @@ class QueryExpression implements ExpressionInterface, Countable
             }
 
             if ($numericKey && is_array($c) || in_array(strtolower($k), $operators)) {
-                $this->_conditions[] = new static($c, $typeMap, $numericKey ? 'AND' : $k);
+                $this->_conditions[] = new self($c, $typeMap, $numericKey ? 'AND' : $k);
                 continue;
             }
 
             if (strtolower($k) === 'not') {
-                $this->_conditions[] = new UnaryExpression('NOT', new static($c, $typeMap));
+                $this->_conditions[] = new UnaryExpression('NOT', new self($c, $typeMap));
                 continue;
             }
 
@@ -739,7 +717,7 @@ class QueryExpression implements ExpressionInterface, Countable
             list($expression, $operator) = $parts;
         }
 
-        $type = $this->getTypeMap()->type($expression);
+        $type = $this->typeMap()->type($expression);
         $operator = strtolower(trim($operator));
 
         $typeMultiple = strpos($type, '[]') !== false;
@@ -785,14 +763,14 @@ class QueryExpression implements ExpressionInterface, Countable
     /**
      * Returns the type name for the passed field if it was stored in the typeMap
      *
-     * @param string|\Cake\Database\Expression\IdentifierExpression $field The field name to get a type for.
+     * @param string|\Cake\Database\Expression\QueryExpression $field The field name to get a type for.
      * @return string|null The computed type or null, if the type is unknown.
      */
     protected function _calculateType($field)
     {
         $field = $field instanceof IdentifierExpression ? $field->getIdentifier() : $field;
         if (is_string($field)) {
-            return $this->getTypeMap()->type($field);
+            return $this->typeMap()->type($field);
         }
 
         return null;

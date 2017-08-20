@@ -1,19 +1,20 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         1.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Network;
 
+use Cake\Core\Configure;
 use Cake\Network\Session;
 use Cake\Network\Session\CacheSession;
 use Cake\Network\Session\DatabaseSession;
@@ -40,25 +41,6 @@ class TestDatabaseSession extends DatabaseSession
     protected function _writeSession()
     {
         return true;
-    }
-}
-
-/**
- * Overwrite Session to simulate a web session even if the test runs on CLI.
- */
-class TestWebSession extends Session
-{
-
-    protected function _hasSession()
-    {
-        $isCLI = $this->_isCLI;
-        $this->_isCLI = false;
-
-        $result = parent::_hasSession();
-
-        $this->_isCLI = $isCLI;
-
-        return $result;
     }
 }
 
@@ -140,7 +122,7 @@ class SessionTest extends TestCase
             ]
         ];
 
-        Session::create($config);
+        $session = Session::create($config);
         $this->assertEquals('', ini_get('session.use_trans_sid'), 'Ini value is incorrect');
         $this->assertEquals('example.com', ini_get('session.referer_check'), 'Ini value is incorrect');
         $this->assertEquals('test', ini_get('session.name'), 'Ini value is incorrect');
@@ -155,10 +137,10 @@ class SessionTest extends TestCase
     {
         ini_set('session.cookie_path', '/foo');
 
-        new Session();
+        $session = new Session();
         $this->assertEquals('/', ini_get('session.cookie_path'));
 
-        new Session(['cookiePath' => '/base']);
+        $session = new Session(['cookiePath' => '/base']);
         $this->assertEquals('/base', ini_get('session.cookie_path'));
     }
 
@@ -180,11 +162,11 @@ class SessionTest extends TestCase
     }
 
     /**
-     * test read with simple values
+     * testSimpleRead method
      *
      * @return void
      */
-    public function testReadSimple()
+    public function testSimpleRead()
     {
         $session = new Session();
         $session->write('testing', '1,2,3');
@@ -199,7 +181,7 @@ class SessionTest extends TestCase
         $this->assertEquals(['1' => 'one', '2' => 'two', '3' => 'three'], $result);
 
         $result = $session->read();
-        $this->assertArrayHasKey('testing', $result);
+        $this->assertTrue(isset($result['testing']));
 
         $session->write('This.is.a.deep.array.my.friend', 'value');
         $result = $session->read('This.is.a.deep.array');
@@ -218,22 +200,7 @@ class SessionTest extends TestCase
     }
 
     /**
-     * Test writing simple keys
-     *
-     * @return void
-     */
-    public function testWriteSimple()
-    {
-        $session = new Session();
-        $session->write('', 'empty');
-        $this->assertEquals('empty', $session->read(''));
-
-        $session->write('Simple', ['values']);
-        $this->assertEquals(['values'], $session->read('Simple'));
-    }
-
-    /**
-     * test writing a hash of values
+     * test writing a hash of values/
      *
      * @return void
      */
@@ -305,15 +272,14 @@ class SessionTest extends TestCase
         $session = new Session();
         $result = $session->id();
         $expected = session_id();
-        $this->assertNotEmpty($result);
-        $this->assertSame($expected, $result);
+        $this->assertEquals($expected, $result);
 
         $session->id('MySessionId');
-        $this->assertSame('MySessionId', $session->id());
-        $this->assertSame('MySessionId', session_id());
+        $this->assertEquals('MySessionId', $session->id());
+        $this->assertEquals('MySessionId', session_id());
 
         $session->id('');
-        $this->assertSame('', session_id());
+        $this->assertEquals('', session_id());
     }
 
     /**
@@ -369,19 +335,6 @@ class SessionTest extends TestCase
     }
 
     /**
-     * test delete
-     *
-     * @return void
-     */
-    public function testDeleteEmptyString()
-    {
-        $session = new Session();
-        $session->write('', 'empty string');
-        $session->delete('');
-        $this->assertFalse($session->check(''));
-    }
-
-    /**
      * testDestroy method
      *
      * @return void
@@ -426,11 +379,11 @@ class SessionTest extends TestCase
     public function testCheckKeyWithSpaces()
     {
         $session = new Session();
-        $session->write('Session Test', 'test');
+        $session->write('Session Test', "test");
         $this->assertTrue($session->check('Session Test'));
         $session->delete('Session Test');
 
-        $session->write('Session Test.Test Case', 'test');
+        $session->write('Session Test.Test Case', "test");
         $this->assertTrue($session->check('Session Test.Test Case'));
     }
 
@@ -468,10 +421,6 @@ class SessionTest extends TestCase
     public function testReadingSavedEmpty()
     {
         $session = new Session();
-        $session->write('', 'empty string');
-        $this->assertTrue($session->check(''));
-        $this->assertEquals('empty string', $session->read(''));
-
         $session->write('SessionTestCase', 0);
         $this->assertEquals(0, $session->read('SessionTestCase'));
 
@@ -493,7 +442,7 @@ class SessionTest extends TestCase
      */
     public function testUsingAppLibsHandler()
     {
-        static::setAppNamespace();
+        Configure::write('App.namespace', 'TestApp');
         $config = [
             'defaults' => 'cake',
             'handler' => [
@@ -516,7 +465,7 @@ class SessionTest extends TestCase
      */
     public function testUsingPluginHandler()
     {
-        static::setAppNamespace();
+        Configure::write('App.namespace', 'TestApp');
         \Cake\Core\Plugin::load('TestPlugin');
 
         $config = [
@@ -538,7 +487,7 @@ class SessionTest extends TestCase
      */
     public function testEngineWithPreMadeInstance()
     {
-        static::setAppNamespace();
+        Configure::write('App.namespace', 'TestApp');
         $engine = new \TestApp\Network\Session\TestAppLibSession;
         $session = new Session(['handler' => ['engine' => $engine]]);
         $this->assertSame($engine, $session->engine());
@@ -587,85 +536,5 @@ class SessionTest extends TestCase
     {
         new Session(['cookie' => 'made_up_name']);
         $this->assertEquals('made_up_name', session_name());
-    }
-
-    /**
-     * Test that a call of check() starts the session when cookies are disabled in php.ini
-     */
-    public function testCheckStartsSessionWithCookiesDisabled()
-    {
-        $_COOKIE = [];
-        $_GET = [];
-
-        $session = new TestWebSession([
-            'ini' => [
-                'session.use_cookies' => 0,
-                'session.use_trans_sid' => 0,
-            ]
-        ]);
-
-        $this->assertFalse($session->started());
-        $session->check('something');
-        $this->assertTrue($session->started());
-    }
-
-    /**
-     * Test that a call of check() starts the session when a cookie is already set
-     */
-    public function testCheckStartsSessionWithCookie()
-    {
-        $_COOKIE[session_name()] = '123abc';
-        $_GET = [];
-
-        $session = new TestWebSession([
-            'ini' => [
-                'session.use_cookies' => 1,
-                'session.use_trans_sid' => 0,
-            ]
-        ]);
-
-        $this->assertFalse($session->started());
-        $session->check('something');
-        $this->assertTrue($session->started());
-    }
-
-    /**
-     * Test that a call of check() starts the session when the session ID is passed via URL and session.use_trans_sid is enabled
-     */
-    public function testCheckStartsSessionWithSIDinURL()
-    {
-        $_COOKIE = [];
-        $_GET[session_name()] = '123abc';
-
-        $session = new TestWebSession([
-            'ini' => [
-                'session.use_cookies' => 1,
-                'session.use_trans_sid' => 1,
-            ]
-        ]);
-
-        $this->assertFalse($session->started());
-        $session->check('something');
-        $this->assertTrue($session->started());
-    }
-
-    /**
-     * Test that a call of check() does not start the session when the session ID is passed via URL and session.use_trans_sid is disabled
-     */
-    public function testCheckDoesntStartSessionWithoutTransSID()
-    {
-        $_COOKIE = [];
-        $_GET[session_name()] = '123abc';
-
-        $session = new TestWebSession([
-            'ini' => [
-                'session.use_cookies' => 1,
-                'session.use_trans_sid' => 0,
-            ]
-        ]);
-
-        $this->assertFalse($session->started());
-        $session->check('something');
-        $this->assertFalse($session->started());
     }
 }

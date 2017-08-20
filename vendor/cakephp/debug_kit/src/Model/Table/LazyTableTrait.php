@@ -13,9 +13,6 @@
 namespace DebugKit\Model\Table;
 
 use Cake\Core\App;
-use Cake\Database\Connection;
-use Cake\Datasource\FixtureInterface;
-use PDOException;
 
 /**
  * A set of methods for building a database table when it is missing.
@@ -39,29 +36,18 @@ trait LazyTableTrait
      */
     public function ensureTables(array $fixtures)
     {
-        /* @var Connection $connection */
         $connection = $this->connection();
         $schema = $connection->schemaCollection();
-
-        try {
-            $existing = $schema->listTables();
-        } catch (PDOException $e) {
-            // Handle errors when SQLite blows up if the schema has changed.
-            if (strpos($e->getMessage(), 'schema has changed') !== false) {
-                $existing = $schema->listTables();
-            } else {
-                throw $e;
-            }
-        }
+        $existing = $schema->listTables();
 
         foreach ($fixtures as $name) {
             $class = App::className($name, 'Test/Fixture', 'Fixture');
             if ($class === false) {
                 throw new \RuntimeException("Unknown fixture '$name'.");
             }
-            /* @var FixtureInterface $fixture */
-            $fixture = new $class($connection->configName());
-            if (in_array($fixture->table, $existing)) {
+            $fixture = new $class($this->connection()->configName());
+            $table = $fixture->table;
+            if (in_array($table, $existing)) {
                 continue;
             }
             $fixture->create($connection);

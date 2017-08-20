@@ -1,22 +1,22 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Database;
 
+use Cake\Core\Configure;
 use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Query;
-use Cake\Database\StatementInterface;
 use Cake\Database\TypeMap;
 use Cake\Datasource\ConnectionManager;
 use Cake\TestSuite\TestCase;
@@ -723,7 +723,7 @@ class QueryTest extends TestCase
                     'id' => '1something-crazy',
                     'created <' => new \DateTime('2013-01-01 12:00')
                 ],
-                ['created' => 'datetime', 'id' => 'integer']
+                ['created' => 'datetime', 'id' => 'float']
             )
             ->execute();
         $this->assertCount(1, $result);
@@ -756,7 +756,7 @@ class QueryTest extends TestCase
      * Tests that passing an empty array type to any where condition will not
      * result in a SQL error, but an internal exception
      *
-     * @expectedException \Cake\Database\Exception
+     * @expectedException Cake\Database\Exception
      * @expectedExceptionMessage Impossible to generate condition with empty list of values for field
      * @return void
      */
@@ -773,7 +773,7 @@ class QueryTest extends TestCase
 
     /**
      * Tests exception message for impossible condition when using an expression
-     * @expectedException \Cake\Database\Exception
+     * @expectedException Cake\Database\Exception
      * @expectedExceptionMessage with empty list of values for field (SELECT 1)
      * @return void
      */
@@ -1365,26 +1365,6 @@ class QueryTest extends TestCase
             ->execute();
         $this->assertCount(5, $result);
         $result->closeCursor();
-    }
-
-    /**
-     * Tests that IN clauses generate correct placeholders
-     *
-     * @return void
-     */
-    public function testInClausePlaceholderGeneration()
-    {
-        $this->loadFixtures('Comments');
-        $query = new Query($this->connection);
-        $query->select(['id'])
-            ->from('comments')
-            ->where(['id IN' => [1, 2]])
-            ->sql();
-        $bindings = $query->valueBinder()->bindings();
-        $this->assertArrayHasKey(':c0', $bindings);
-        $this->assertEquals('c0', $bindings[':c0']['placeholder']);
-        $this->assertArrayHasKey(':c1', $bindings);
-        $this->assertEquals('c1', $bindings[':c1']['placeholder']);
     }
 
     /**
@@ -2671,29 +2651,6 @@ class QueryTest extends TestCase
     }
 
     /**
-     * Tests that delete queries that contain joins do trigger a notice,
-     * warning about possible incompatibilities with aliases being removed
-     * from the conditions.
-     *
-     *
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Aliases are being removed from conditions for UPDATE/DELETE queries, this can break references to joined tables.
-     * @return void
-     */
-    public function testDeleteRemovingAliasesCanBreakJoins()
-    {
-        $query = new Query($this->connection);
-
-        $query
-            ->delete('authors')
-            ->from(['a ' => 'authors'])
-            ->innerJoin('articles')
-            ->where(['a.id' => 1]);
-
-        $query->sql();
-    }
-
-    /**
      * Test setting select() & delete() modes.
      *
      * @return void
@@ -2729,20 +2686,6 @@ class QueryTest extends TestCase
         $result = $query->execute();
         $this->assertCount(1, $result);
         $result->closeCursor();
-    }
-
-    /**
-     * Test update with type checking
-     * by passing an array as table arg
-     *
-     * @expectedException \InvalidArgumentException
-     *
-     * @return void
-     */
-    public function testUpdateArgTypeChecking()
-    {
-        $query = new Query($this->connection);
-        $query->update(['Articles']);
     }
 
     /**
@@ -2888,68 +2831,6 @@ class QueryTest extends TestCase
         $this->assertQuotedQuery(' WHERE <id> = :c2$', $result, !$this->autoQuote);
         $result = $query->execute();
         $this->assertCount(1, $result);
-    }
-
-    /**
-     * Tests that aliases are stripped from update query conditions
-     * where possible.
-     *
-     * @return void
-     */
-    public function testUpdateStripAliasesFromConditions()
-    {
-        $query = new Query($this->connection);
-
-        $query
-            ->update('authors')
-            ->set(['name' => 'name'])
-            ->where([
-                'OR' => [
-                    'a.id' => 1,
-                    'AND' => [
-                        'b.name NOT IN' => ['foo', 'bar'],
-                        'OR' => [
-                            $query->newExpr()->eq(new IdentifierExpression('c.name'), 'zap'),
-                            'd.name' => 'baz',
-                            (new Query($this->connection))->select(['e.name'])->where(['e.name' => 'oof'])
-                        ]
-                    ]
-                ],
-            ]);
-
-        $this->assertQuotedQuery(
-            'UPDATE <authors> SET <name> = :c0 WHERE \(' .
-                '<id> = :c1 OR \(' .
-                    '<name> not in \(:c2,:c3\) AND \(' .
-                        '\(<c>\.<name>\) = :c4 OR <name> = :c5 OR \(SELECT <e>\.<name> WHERE <e>\.<name> = :c6\)' .
-                    '\)' .
-                '\)' .
-            '\)',
-            $query->sql(),
-            !$this->autoQuote
-        );
-    }
-
-    /**
-     * Tests that update queries that contain joins do trigger a notice,
-     * warning about possible incompatibilities with aliases being removed
-     * from the conditions.
-     *
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessage Aliases are being removed from conditions for UPDATE/DELETE queries, this can break references to joined tables.
-     * @return void
-     */
-    public function testUpdateRemovingAliasesCanBreakJoins()
-    {
-        $query = new Query($this->connection);
-
-        $query
-            ->update('authors')
-            ->set(['name' => 'name'])
-            ->innerJoin('articles')
-            ->where(['a.id' => 1]);
-
-        $query->sql();
     }
 
     /**
@@ -3882,44 +3763,6 @@ class QueryTest extends TestCase
     }
 
     /**
-     * Performs the simple update query and verifies the row count.
-     *
-     * @return void
-     */
-    public function testRowCountAndClose()
-    {
-        $this->loadFixtures('Authors');
-
-        $statementMock = $this->getMockBuilder(StatementInterface::class)
-            ->setMethods(['rowCount', 'closeCursor'])
-            ->getMockForAbstractClass();
-
-        $statementMock->expects($this->once())
-            ->method('rowCount')
-            ->willReturn(500);
-
-        $statementMock->expects($this->once())
-            ->method('closeCursor');
-
-        /* @var \Cake\ORM\Query|\PHPUnit_Framework_MockObject_MockObject $queryMock */
-        $queryMock = $this->getMockBuilder(Query::class)
-            ->setMethods(['execute'])
-            ->setConstructorArgs((array)$this->connection)
-            ->getMock();
-
-        $queryMock->expects($this->once())
-            ->method('execute')
-            ->willReturn($statementMock);
-
-        $rowCount = $queryMock->update('authors')
-            ->set('name', 'mark')
-            ->where(['id' => 1])
-            ->rowCountAndClose();
-
-        $this->assertEquals(500, $rowCount);
-    }
-
-    /**
      * Tests that case statements work correctly for various use-cases.
      *
      * @return void
@@ -4115,12 +3958,13 @@ class QueryTest extends TestCase
         $this->assertInstanceOf('DateTime', $result[0]['the_date']);
     }
 
+
     /**
-     * Tests that the json type can save and get data symmetrically
+     * Tests that the json type can save and get data symetrically
      *
      * @return void
      */
-    public function testSymmetricJsonType()
+    public function testSymetricJsonType()
     {
         $query = new Query($this->connection);
         $insert = $query
@@ -4327,20 +4171,6 @@ class QueryTest extends TestCase
             ->execute();
         $rows = $result->fetchAll('obj');
         $this->assertEquals($obj, $rows[0]);
-    }
-
-    /**
-     * Test that reading an undefined clause does not emit an error.
-     *
-     * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage The 'nope' clause is not defined. Valid clauses are: delete, update
-     * @return void
-     */
-    public function testClauseUndefined()
-    {
-        $query = new Query($this->connection);
-        $this->assertEmpty($query->clause('where'));
-        $query->clause('nope');
     }
 
     /**

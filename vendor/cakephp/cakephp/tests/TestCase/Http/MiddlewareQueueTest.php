@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.3.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Http;
 
@@ -35,7 +35,7 @@ class MiddlewareQueueTest extends TestCase
         parent::setUp();
 
         $this->appNamespace = Configure::read('App.namespace');
-        static::setAppNamespace();
+        Configure::write('App.namespace', 'TestApp');
     }
 
     /**
@@ -46,7 +46,8 @@ class MiddlewareQueueTest extends TestCase
     public function tearDown()
     {
         parent::tearDown();
-        static::setAppNamespace($this->appNamespace);
+
+        Configure::write('App.namespace', $this->appNamespace);
     }
 
     /**
@@ -233,7 +234,7 @@ class MiddlewareQueueTest extends TestCase
         };
         $two = function () {
         };
-        $three = new SampleMiddleware();
+        $three = new SampleMiddleWare();
 
         $queue = new MiddlewareQueue();
         $queue->add($one)->insertAt(-1, $two)->insertAt(-1, $three);
@@ -283,7 +284,7 @@ class MiddlewareQueueTest extends TestCase
     /**
      * Test insertBefore an invalid classname
      *
-     * @expectedException \LogicException
+     * @expectedException LogicException
      * @expectedExceptionMessage No middleware matching 'InvalidClassName' could be found.
      * @return void
      */

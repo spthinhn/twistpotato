@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\I18n;
 
@@ -22,16 +22,6 @@ use Cake\TestSuite\TestCase;
  */
 class IcuFormatterTest extends TestCase
 {
-    /**
-     * Tests that empty values can be used as formatting strings
-     *
-     * @return void
-     */
-    public function testFormatEmptyValues()
-    {
-        $formatter = new IcuFormatter();
-        $this->assertEquals('', $formatter->format('en_US', '', []));
-    }
 
     /**
      * Tests that variables are interpolated correctly
@@ -105,30 +95,72 @@ class IcuFormatterTest extends TestCase
      * Tests that passing a message in the wrong format will throw an exception
      *
      * @return void
-     * @expectedException \Exception
-     * @expectedExceptionMessage msgfmt_create: message formatter
      */
     public function testBadMessageFormat()
     {
-        $this->skipIf(version_compare(PHP_VERSION, '7', '>='));
+        if (version_compare(PHP_VERSION, '7', '<')) {
+            $this->setExpectedException(
+                'Exception',
+                'msgfmt_create: message formatter'
+            );
+        } else {
+            $this->setExpectedException(
+                'Exception',
+                'Constructor failed'
+            );
+        }
 
         $formatter = new IcuFormatter();
         $formatter->format('en_US', '{crazy format', ['some', 'vars']);
     }
 
     /**
-     * Tests that passing a message in the wrong format will throw an exception
+     * Tests that strings stored inside context namespaces can also be formatted
      *
      * @return void
-     * @expectedException \Exception
-     * @expectedExceptionMessage Constructor failed
      */
-    public function testBadMessageFormatPHP7()
+    public function testFormatWithContext()
     {
-        $this->skipIf(version_compare(PHP_VERSION, '7', '<'));
+        $messages = [
+            'simple' => [
+                '_context' => [
+                    'context a' => 'Text "a" {0}',
+                    'context b' => 'Text "b" {0}'
+                ]
+            ],
+            'complex' => [
+                '_context' => [
+                    'context b' => [
+                        0 => 'Only one',
+                        1 => 'there are {0}'
+                    ]
+                ]
+            ]
+        ];
 
         $formatter = new IcuFormatter();
-        $formatter->format('en_US', '{crazy format', ['some', 'vars']);
+        $this->assertEquals(
+            'Text "a" is good',
+            $formatter->format('en', $messages['simple'], ['_context' => 'context a', 'is good'])
+        );
+        $this->assertEquals(
+            'Text "b" is good',
+            $formatter->format('en', $messages['simple'], ['_context' => 'context b', 'is good'])
+        );
+        $this->assertEquals(
+            'Text "a" is good',
+            $formatter->format('en', $messages['simple'], ['is good'])
+        );
+
+        $this->assertEquals(
+            'Only one',
+            $formatter->format('en', $messages['complex'], ['_context' => 'context b', '_count' => 1])
+        );
+
+        $this->assertEquals(
+            'there are 2',
+            $formatter->format('en', $messages['complex'], ['_context' => 'context b', '_count' => 2, 2])
+        );
     }
 
     /**

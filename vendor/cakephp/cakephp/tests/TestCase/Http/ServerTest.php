@@ -1,21 +1,19 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.3.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase;
 
-use Cake\Event\Event;
-use Cake\Http\CallbackStream;
 use Cake\Http\Server;
 use Cake\TestSuite\TestCase;
 use TestApp\Http\BadResponseApplication;
@@ -23,8 +21,6 @@ use TestApp\Http\InvalidMiddlewareApplication;
 use TestApp\Http\MiddlewareApplication;
 use Zend\Diactoros\Response;
 use Zend\Diactoros\ServerRequestFactory;
-
-require_once __DIR__ . '/server_mocks.php';
 
 /**
  * Server test case
@@ -41,7 +37,6 @@ class ServerTest extends TestCase
         parent::setUp();
         $this->server = $_SERVER;
         $this->config = dirname(dirname(__DIR__));
-        $GLOBALS['mockedHeaders'] = [];
     }
 
     /**
@@ -118,7 +113,7 @@ class ServerTest extends TestCase
     /**
      * Test an application failing to build middleware properly
      *
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      * @expectedExceptionMessage The application `middleware` method
      */
     public function testRunWithApplicationNotMakingMiddleware()
@@ -145,7 +140,7 @@ class ServerTest extends TestCase
     /**
      * Test middleware not creating a response.
      *
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      * @expectedExceptionMessage Application did not create a response. Got "Not a response" instead.
      */
     public function testRunMiddlewareNoResponse()
@@ -178,26 +173,6 @@ class ServerTest extends TestCase
     }
 
     /**
-     * Test that emit invokes the appropriate methods on the emitter.
-     *
-     * @return void
-     */
-    public function testEmitCallbackStream()
-    {
-        $response = new Response('php://memory', 200, ['x-testing' => 'source header']);
-        $response = $response->withBody(new CallbackStream(function () {
-            echo 'body content';
-        }));
-
-        $app = new MiddlewareApplication($this->config);
-        $server = new Server($app);
-        ob_start();
-        $server->emit($response);
-        $result = ob_get_clean();
-        $this->assertEquals('body content', $result);
-    }
-
-    /**
      * Ensure that the Server.buildMiddleware event is fired.
      *
      * @return void
@@ -208,7 +183,7 @@ class ServerTest extends TestCase
         $server = new Server($app);
         $this->called = false;
 
-        $server->eventManager()->on('Server.buildMiddleware', function (Event $event, $middleware) {
+        $server->eventManager()->on('Server.buildMiddleware', function ($event, $middleware) {
             $this->assertInstanceOf('Cake\Http\MiddlewareQueue', $middleware);
             $middleware->add(function ($req, $res, $next) {
                 $this->called = true;

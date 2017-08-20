@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 use Cake\Core\Configure;
 
@@ -32,7 +32,7 @@ if (!function_exists('h')) {
      * @param string|null $charset Character set to use when escaping. Defaults to config value in `mb_internal_encoding()`
      * or 'UTF-8'.
      * @return string Wrapped text.
-     * @link https://book.cakephp.org/3.0/en/core-libraries/global-constants-and-functions.html#h
+     * @link http://book.cakephp.org/3.0/en/core-libraries/global-constants-and-functions.html#h
      */
     function h($text, $double = true, $charset = null)
     {
@@ -51,7 +51,7 @@ if (!function_exists('h')) {
             } else {
                 $text = '(object)' . get_class($text);
             }
-        } elseif (is_bool($text) || is_null($text) || is_int($text)) {
+        } elseif (is_bool($text)) {
             return $text;
         }
 
@@ -66,7 +66,7 @@ if (!function_exists('h')) {
             $charset = $double;
         }
 
-        return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, $charset ?: $defaultCharset, $double);
+        return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, ($charset) ? $charset : $defaultCharset, $double);
     }
 
 }
@@ -85,7 +85,7 @@ if (!function_exists('pluginSplit')) {
      * @param bool $dotAppend Set to true if you want the plugin to have a '.' appended to it.
      * @param string|null $plugin Optional default plugin to use if no plugin is found. Defaults to null.
      * @return array Array with 2 indexes. 0 => plugin name, 1 => class name.
-     * @link https://book.cakephp.org/3.0/en/core-libraries/global-constants-and-functions.html#pluginSplit
+     * @link http://book.cakephp.org/3.0/en/core-libraries/global-constants-and-functions.html#pluginSplit
      */
     function pluginSplit($name, $dotAppend = false, $plugin = null)
     {
@@ -135,7 +135,7 @@ if (!function_exists('pr')) {
      *
      * @param mixed $var Variable to print out.
      * @return mixed the same $var that was passed to this function
-     * @link https://book.cakephp.org/3.0/en/core-libraries/global-constants-and-functions.html#pr
+     * @link http://book.cakephp.org/3.0/en/core-libraries/global-constants-and-functions.html#pr
      * @see debug()
      */
     function pr($var)
@@ -164,7 +164,7 @@ if (!function_exists('pj')) {
      * @param mixed $var Variable to print out.
      * @return mixed the same $var that was passed to this function
      * @see pr()
-     * @link https://book.cakephp.org/3.0/en/core-libraries/global-constants-and-functions.html#pj
+     * @link http://book.cakephp.org/3.0/en/core-libraries/global-constants-and-functions.html#pj
      */
     function pj($var)
     {
@@ -190,7 +190,7 @@ if (!function_exists('env')) {
      * @param string $key Environment variable name.
      * @param string|null $default Specify a default value in case the environment variable is not defined.
      * @return string|null Environment variable setting.
-     * @link https://book.cakephp.org/3.0/en/core-libraries/global-constants-and-functions.html#env
+     * @link http://book.cakephp.org/3.0/en/core-libraries/global-constants-and-functions.html#env
      */
     function env($key, $default = null)
     {
@@ -199,7 +199,7 @@ if (!function_exists('env')) {
                 return (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
             }
 
-            return (strpos((string)env('SCRIPT_URI'), 'https://') === 0);
+            return (strpos(env('SCRIPT_URI'), 'https://') === 0);
         }
 
         if ($key === 'SCRIPT_NAME') {

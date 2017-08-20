@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\ORM\Behavior;
 
@@ -221,9 +221,9 @@ class TimestampBehaviorTest extends TestCase
     public function testGetTimestamp()
     {
         $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
-        $behavior = new TimestampBehavior($table);
+        $this->Behavior = new TimestampBehavior($table);
 
-        $return = $behavior->timestamp();
+        $return = $this->Behavior->timestamp();
         $this->assertInstanceOf(
             'DateTime',
             $return,
@@ -232,20 +232,22 @@ class TimestampBehaviorTest extends TestCase
 
         $now = Time::now();
         $this->assertEquals($now, $return);
+
+        return $this->Behavior;
     }
 
     /**
      * testGetTimestampPersists
      *
+     * @depends testGetTimestamp
      * @return void
      */
-    public function testGetTimestampPersists()
+    public function testGetTimestampPersists($behavior)
     {
-        $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
-        $behavior = new TimestampBehavior($table);
+        $this->Behavior = $behavior;
 
-        $initialValue = $behavior->timestamp();
-        $postValue = $behavior->timestamp();
+        $initialValue = $this->Behavior->timestamp();
+        $postValue = $this->Behavior->timestamp();
 
         $this->assertSame(
             $initialValue,
@@ -257,15 +259,15 @@ class TimestampBehaviorTest extends TestCase
     /**
      * testGetTimestampRefreshes
      *
+     * @depends testGetTimestamp
      * @return void
      */
-    public function testGetTimestampRefreshes()
+    public function testGetTimestampRefreshes($behavior)
     {
-        $table = $this->getMockBuilder('Cake\ORM\Table')->getMock();
-        $behavior = new TimestampBehavior($table);
+        $this->Behavior = $behavior;
 
-        $initialValue = $behavior->timestamp();
-        $postValue = $behavior->timestamp(null, true);
+        $initialValue = $this->Behavior->timestamp();
+        $postValue = $this->Behavior->timestamp(null, true);
 
         $this->assertNotSame(
             $initialValue,
@@ -395,7 +397,7 @@ class TimestampBehaviorTest extends TestCase
         $row = $table->find('all')->where(['id' => $entity->id])->first();
 
         $now = Time::now();
-        $this->assertEquals($now->toDateTimeString(), $row->created->toDateTimeString());
-        $this->assertEquals($now->toDateTimeString(), $row->updated->toDateTimeString());
+        $this->assertEquals($now, $row->created);
+        $this->assertEquals($now, $row->updated);
     }
 }

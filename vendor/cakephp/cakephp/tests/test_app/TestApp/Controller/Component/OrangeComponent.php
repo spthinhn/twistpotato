@@ -1,15 +1,15 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright 2005-2011, Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright 2005-2011, Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace TestApp\Controller\Component;
 
@@ -19,8 +19,6 @@ use Cake\Event\Event;
 
 /**
  * OrangeComponent class
- *
- * @property BananaComponent $Banana
  */
 class OrangeComponent extends Component
 {
@@ -31,13 +29,6 @@ class OrangeComponent extends Component
      * @var array
      */
     public $components = ['Banana'];
-
-    /**
-     * controller property
-     *
-     * @var Controller
-     */
-    public $Controller;
 
     /**
      * initialize method
@@ -55,7 +46,7 @@ class OrangeComponent extends Component
      * startup method
      *
      * @param Event $event
-     * @return void
+     * @return string
      */
     public function startup(Event $event)
     {

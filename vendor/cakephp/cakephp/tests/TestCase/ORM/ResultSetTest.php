@@ -1,21 +1,21 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\ORM;
 
+use Cake\Core\Configure;
 use Cake\Core\Plugin;
-use Cake\Database\Exception;
 use Cake\Datasource\ConnectionManager;
 use Cake\ORM\Entity;
 use Cake\ORM\ResultSet;
@@ -84,7 +84,7 @@ class ResultSetTest extends TestCase
         foreach ($results as $result) {
             $first[] = $result;
         }
-        $this->expectException(Exception::class);
+        $this->setExpectedException('Cake\Database\Exception');
         foreach ($results as $result) {
             $second[] = $result;
         }
@@ -139,7 +139,7 @@ class ResultSetTest extends TestCase
 
         // Use a loop to test Iterator implementation
         foreach ($results as $i => $row) {
-            $expected = new Entity($this->fixtureData[$i]);
+            $expected = new \Cake\ORM\Entity($this->fixtureData[$i]);
             $expected->isNew(false);
             $expected->source($this->table->alias());
             $expected->clean();
@@ -269,7 +269,7 @@ class ResultSetTest extends TestCase
      *
      * @return void
      */
-    public function testBelongsToEagerLoaderLeavesEmptyAssociation()
+    public function testBelongsToEagerLoaderLeavesEmptyAssocation()
     {
         $comments = TableRegistry::get('Comments');
         $comments->belongsTo('Articles');
@@ -292,44 +292,11 @@ class ResultSetTest extends TestCase
     }
 
     /**
-     * Test showing associated record is preserved when selecting only field with
-     * null value if auto fields is disabled.
-     *
-     * @return void
-     */
-    public function testBelongsToEagerLoaderWithAutoFieldsFalse()
-    {
-        $authors = TableRegistry::get('Authors');
-
-        $author = $authors->newEntity(['name' => null]);
-        $authors->save($author);
-
-        $articles = TableRegistry::get('Articles');
-        $articles->belongsTo('Authors');
-
-        $article = $articles->newEntity([
-            'author_id' => $author->id,
-            'title' => 'article with author with null name'
-        ]);
-        $articles->save($article);
-
-        $result = $articles->find()
-            ->select(['Articles.id', 'Articles.title', 'Authors.name'])
-            ->contain(['Authors'])
-            ->where(['Articles.id' => $article->id])
-            ->autoFields(false)
-            ->hydrate(false)
-            ->first();
-
-        $this->assertNotNull($result['author']);
-    }
-
-    /**
      * Test that eagerLoader leaves empty associations unpopulated.
      *
      * @return void
      */
-    public function testHasOneEagerLoaderLeavesEmptyAssociation()
+    public function testHasOneEagerLoaderLeavesEmptyAssocation()
     {
         $this->table->hasOne('Comments');
 
@@ -373,7 +340,7 @@ class ResultSetTest extends TestCase
         $result = new ResultSet($query, $statement);
 
         $result->valid();
-        $this->assertNotEmpty($result->current());
+        $data = $result->current();
     }
 
     /**

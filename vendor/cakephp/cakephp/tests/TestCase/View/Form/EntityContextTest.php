@@ -1,23 +1,23 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\View\Form;
 
 use ArrayIterator;
 use ArrayObject;
 use Cake\Collection\Collection;
-use Cake\Http\ServerRequest;
+use Cake\Network\Request;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
@@ -62,7 +62,7 @@ class EntityContextTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        $this->request = new ServerRequest();
+        $this->request = new Request();
     }
 
     /**
@@ -156,7 +156,7 @@ class EntityContextTest extends TestCase
      */
     public function testInvalidTable()
     {
-        $row = new \stdClass();
+        $row = new \StdClass();
         $context = new EntityContext($this->request, [
             'entity' => $row,
         ]);
@@ -171,7 +171,7 @@ class EntityContextTest extends TestCase
     public function testDefaultEntityError()
     {
         $context = new EntityContext($this->request, [
-            'entity' => new Entity,
+            'entity' => new \Cake\ORM\Entity,
         ]);
     }
 
@@ -182,7 +182,7 @@ class EntityContextTest extends TestCase
      */
     public function testTableFromEntitySource()
     {
-        $entity = new Entity();
+        $entity = new Entity;
         $entity->source('Articles');
         $context = new EntityContext($this->request, [
             'entity' => $entity,
@@ -461,8 +461,7 @@ class EntityContextTest extends TestCase
                 'name' => 'Test tag',
             ],
             'author' => new Entity([
-                'roles' => ['admin', 'publisher'],
-                'aliases' => new ArrayObject(['dave', 'david']),
+                'roles' => ['admin', 'publisher']
             ])
         ]);
         $context = new EntityContext($this->request, [
@@ -478,12 +477,11 @@ class EntityContextTest extends TestCase
         $result = $context->val('tag.name');
         $this->assertEquals($row->tag['name'], $result);
 
-        $result = $context->val('author.aliases.0');
-        $this->assertEquals($row->author->aliases[0], $result, 'ArrayAccess can be read');
+        $result = $context->val('tag.nope');
+        $this->assertNull($result);
 
-        $this->assertNull($context->val('author.aliases.3'));
-        $this->assertNull($context->val('tag.nope'));
-        $this->assertNull($context->val('author.roles.3'));
+        $result = $context->val('author.roles.3');
+        $this->assertNull($result);
     }
 
     /**
@@ -633,8 +631,6 @@ class EntityContextTest extends TestCase
      */
     public function testValAssociatedCustomIds()
     {
-        $this->_setupTables();
-
         $row = new Article([
             'title' => 'First post',
             'user' => new Entity([

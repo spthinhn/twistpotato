@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         0.10.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Network;
 
@@ -88,7 +88,7 @@ class Session
      * - timeout: The time in minutes the session should stay active
      *
      * @param array $sessionConfig Session config.
-     * @return static
+     * @return \Cake\Network\Session
      * @see \Cake\Network\Session::__construct()
      */
     public static function create($sessionConfig = [])
@@ -100,7 +100,7 @@ class Session
             }
         }
 
-        if (!isset($sessionConfig['ini']['session.cookie_secure']) && env('HTTPS') && ini_get('session.cookie_secure') != 1) {
+        if (!isset($sessionConfig['ini']['session.cookie_secure']) && env('HTTPS') && ini_get("session.cookie_secure") != 1) {
             $sessionConfig['ini']['session.cookie_secure'] = 1;
         }
 
@@ -112,7 +112,7 @@ class Session
             $sessionConfig['ini']['session.save_handler'] = 'user';
         }
 
-        if (!isset($sessionConfig['ini']['session.cookie_httponly']) && ini_get('session.cookie_httponly') != 1) {
+        if (!isset($sessionConfig['ini']['session.cookie_httponly']) && ini_get("session.cookie_httponly") != 1) {
             $sessionConfig['ini']['session.cookie_httponly'] = 1;
         }
 
@@ -288,7 +288,7 @@ class Session
         }
 
         foreach ($options as $setting => $value) {
-            if (ini_set($setting, (string)$value) === false) {
+            if (ini_set($setting, $value) === false) {
                 throw new RuntimeException(
                     sprintf('Unable to configure the session, setting %s failed.', $setting)
                 );
@@ -310,7 +310,6 @@ class Session
 
         if ($this->_isCLI) {
             $_SESSION = [];
-            $this->id('cli');
 
             return $this->_started = true;
         }
@@ -320,7 +319,7 @@ class Session
         }
 
         if (ini_get('session.use_cookies') && headers_sent($file, $line)) {
-            return false;
+            return;
         }
 
         if (!session_start()) {
@@ -356,6 +355,10 @@ class Session
      */
     public function check($name = null)
     {
+        if (empty($name)) {
+            return false;
+        }
+
         if ($this->_hasSession() && !$this->started()) {
             $this->start();
         }
@@ -371,11 +374,15 @@ class Session
      * Returns given session variable, or all of them, if no parameters given.
      *
      * @param string|null $name The name of the session variable (or a path as sent to Hash.extract)
-     * @return string|array|null The value of the session variable, null if session not available,
+     * @return string|null The value of the session variable, null if session not available,
      *   session not started, or provided name not found in the session.
      */
     public function read($name = null)
     {
+        if (empty($name) && $name !== null) {
+            return null;
+        }
+
         if ($this->_hasSession() && !$this->started()) {
             $this->start();
         }
@@ -415,11 +422,15 @@ class Session
      * Writes value to given session variable name.
      *
      * @param string|array $name Name of variable
-     * @param mixed $value Value to write
+     * @param string|null $value Value to write
      * @return void
      */
     public function write($name, $value = null)
     {
+        if (empty($name)) {
+            return;
+        }
+
         if (!$this->started()) {
             $this->start();
         }
@@ -538,8 +549,7 @@ class Session
     {
         return !ini_get('session.use_cookies')
             || isset($_COOKIE[session_name()])
-            || $this->_isCLI
-            || (ini_get('session.use_trans_sid') && isset($_GET[session_name()]));
+            || $this->_isCLI;
     }
 
     /**

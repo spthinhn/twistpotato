@@ -2,17 +2,17 @@
 /**
  * Database Session save handler. Allows saving session information into a model.
  *
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         2.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 namespace Cake\Network\Session;
@@ -95,8 +95,8 @@ class DatabaseSession implements SessionHandlerInterface
         $result = $this->_table
             ->find('all')
             ->select(['data'])
-            ->where([$this->_table->getPrimaryKey() => $id])
-            ->enableHydration(false)
+            ->where([$this->_table->primaryKey() => $id])
+            ->hydrate(false)
             ->first();
 
         if (empty($result)) {
@@ -130,7 +130,7 @@ class DatabaseSession implements SessionHandlerInterface
         }
         $expires = time() + $this->_timeout;
         $record = compact('data', 'expires');
-        $record[$this->_table->getPrimaryKey()] = $id;
+        $record[$this->_table->primaryKey()] = $id;
         $result = $this->_table->save(new Entity($record));
 
         return (bool)$result;
@@ -144,12 +144,10 @@ class DatabaseSession implements SessionHandlerInterface
      */
     public function destroy($id)
     {
-        $this->_table->delete(new Entity(
-            [$this->_table->getPrimaryKey() => $id],
+        return (bool)$this->_table->delete(new Entity(
+            [$this->_table->primaryKey() => $id],
             ['markNew' => false]
         ));
-
-        return true;
     }
 
     /**

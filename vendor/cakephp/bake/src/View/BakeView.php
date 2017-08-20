@@ -20,7 +20,7 @@ use Cake\Core\InstanceConfigTrait;
 use Cake\Event\EventManager;
 use Cake\Network\Request;
 use Cake\Network\Response;
-use Cake\Utility\Text;
+use Cake\Utility\Inflector;
 use Cake\View\View;
 
 class BakeView extends View
@@ -33,21 +33,17 @@ class BakeView extends View
      *
      * This config is read when evaluating a template file.
      *
-     * - `phpTagReplacements` are applied to the contents of a bake template, to allow php tags
-     *   to be treated as plain text
-     * - `replacements` are applied in order on the template contents before the template is evaluated.
+     * phpTagReplacements are applied to the contents of a bake template, to allow php tags
+     * to be treated as plain text
      *
-     * The default replacements are (in the following order):
-     *
-     * - swallow leading whitespace for <%- tags
-     * - swallow trailing whitespace for -%> tags
-     * - Add an extra newline to <%=, to counteract php automatically removing a newline
-     * - Replace remaining <=% with php short echo tags
-     * - Replace <% with php open tags
-     * - Replace %> with php close tags
-     *
-     * Replacements that start with `/` will be treated as regex replacements.
-     * All other values will be treated used with str_replace()
+     * replacements are applied in order on the template contents before the template is evaluated
+     * In order these:
+     *     swallow leading whitespace for <%- tags
+     *     swallow trailing whitespace for -%> tags
+     *     Add an extra newline to <%=, to counteract php automatically removing a newline
+     *     Replace remaining <=% with php short echo tags
+     *     Replace <% with php open tags
+     *     Replace %> with php close tags
      *
      * @var array
      */
@@ -184,7 +180,7 @@ class BakeView extends View
     {
         $viewString = $this->_getViewFileContents($viewFile);
 
-        $replacements = array_merge($this->getConfig('phpTagReplacements') + $this->getConfig('replacements'));
+        $replacements = array_merge($this->config('phpTagReplacements') + $this->config('replacements'));
 
         foreach ($replacements as $find => $replace) {
             if ($this->_isRegex($find)) {
@@ -194,7 +190,7 @@ class BakeView extends View
             }
         }
 
-        $this->__viewFile = $this->_tmpLocation . Text::slug(preg_replace('@.*Template[/\\\\]@', '', $viewFile)) . '.php';
+        $this->__viewFile = $this->_tmpLocation . Inflector::slug(preg_replace('@.*Template[/\\\\]@', '', $viewFile)) . '.php';
         file_put_contents($this->__viewFile, $viewString);
 
         unset($viewFile, $viewString, $replacements, $find, $replace);
@@ -205,7 +201,7 @@ class BakeView extends View
 
         $content = ob_get_clean();
 
-        $unPhp = $this->getConfig('phpTagReplacements');
+        $unPhp = $this->config('phpTagReplacements');
 
         return str_replace(array_values($unPhp), array_keys($unPhp), $content);
     }
@@ -248,6 +244,10 @@ class BakeView extends View
      */
     protected function _isRegex($maybeRegex)
     {
-        return substr($maybeRegex, 0, 1) === '/';
+        // @codingStandardsIgnoreStart
+        $isRegex = @preg_match($maybeRegex, '');
+        // @codingStandardsIgnoreEnd
+
+        return $isRegex !== false;
     }
 }

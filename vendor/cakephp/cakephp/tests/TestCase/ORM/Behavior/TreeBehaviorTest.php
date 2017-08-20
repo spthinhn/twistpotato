@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\ORM\Behavior;
 
@@ -227,7 +227,7 @@ class TreeBehaviorTest extends TestCase
         // leaf
         $nodeIds = [];
         $nodes = $table->find('children', ['for' => 5])->all();
-        $this->assertCount(0, $nodes->extract('id')->toArray());
+        $this->assertEquals(0, count($nodes->extract('id')->toArray()));
 
         // direct children
         $nodes = $table->find('children', ['for' => 1, 'direct' => true])->all();
@@ -256,15 +256,7 @@ class TreeBehaviorTest extends TestCase
     {
         $table = TableRegistry::get('MenuLinkTrees');
         $table->addBehavior('Tree', ['scope' => ['menu' => 'main-menu']]);
-        $query = $table->find('treeList');
-
-        $result = null;
-        $query->clause('order')->iterateParts(function ($dir, $field) use (&$result) {
-            $result = $field;
-        });
-        $this->assertEquals('MenuLinkTrees.lft', $result);
-
-        $result = $query->toArray();
+        $result = $table->find('treeList')->toArray();
         $expected = [
             1 => 'Link 1',
             2 => '_Link 2',
@@ -336,7 +328,7 @@ class TreeBehaviorTest extends TestCase
             '/lorem/ipsum.html' => '  4',
             '/what/the.html' => '   5',
             '/yeah/another-link.html' => '6',
-            'https://cakephp.org' => ' 7',
+            'http://cakephp.org' => ' 7',
             '/page/who-we-are.html' => '8'
         ];
         $this->assertEquals($expected, $result);
@@ -366,7 +358,7 @@ class TreeBehaviorTest extends TestCase
             '/lorem/ipsum.html' => '  4',
             '/what/the.html' => '   5',
             '/yeah/another-link.html' => '6',
-            'https://cakephp.org' => ' 7',
+            'http://cakephp.org' => ' 7',
             '/page/who-we-are.html' => '8'
         ];
         $this->assertEquals($expected, $result);
@@ -792,7 +784,7 @@ class TreeBehaviorTest extends TestCase
     }
 
     /**
-     * Tests that adding a child node as a descendant of one of the roots works
+     * Tests that adding a child node as a decendant of one of the roots works
      *
      * @return void
      */
@@ -897,7 +889,7 @@ class TreeBehaviorTest extends TestCase
     /**
      * Tests making a node its own parent as an existing entity
      *
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      * @expectedExceptionMessage Cannot set a node's parent as itself
      * @return void
      */
@@ -911,7 +903,7 @@ class TreeBehaviorTest extends TestCase
     /**
      * Tests making a node its own parent as a new entity.
      *
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      * @expectedExceptionMessage Cannot set a node's parent as itself
      * @return void
      */
@@ -1415,7 +1407,7 @@ class TreeBehaviorTest extends TestCase
         $entity = $this->table->get(4);
         $this->assertEquals(2, $entity->depth);
 
-        // Non leaf node so depth of descendants will also change
+        // Non leaf node so depth of descendents will also change
         $entity = $this->table->get(6);
         $this->assertEquals(1, $entity->depth);
 

@@ -1,22 +1,23 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.3.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Http;
 
 use Cake\Core\Configure;
 use Cake\Http\RequestTransformer;
 use Cake\Http\ServerRequestFactory;
+use Cake\Network\Request;
 use Cake\Network\Session;
 use Cake\TestSuite\TestCase;
 use Zend\Diactoros\Stream;
@@ -86,18 +87,12 @@ class RequestTransformerTest extends TestCase
             'SERVER_PORT' => 443,
         ];
         $psr = ServerRequestFactory::fromGlobals($server);
-        $psr = $psr->withHeader('Api-Token', 'abc123')
-            ->withAddedHeader('X-thing', 'one')
-            ->withAddedHeader('X-thing', 'two');
-
         $cake = RequestTransformer::toCake($psr);
         $this->assertEmpty($cake->query);
         $this->assertEmpty($cake->data);
         $this->assertEmpty($cake->cookie);
 
         $this->assertSame('application/json', $cake->header('accept'));
-        $this->assertSame('abc123', $cake->header('Api-Token'));
-        $this->assertSame('one,two', $cake->header('X-thing'));
         $this->assertSame('PATCH', $cake->method());
         $this->assertSame('https', $cake->scheme());
         $this->assertSame(443, $cake->port());

@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) Tests <https://book.cakephp.org/view/1196/Testing>
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @since         2.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Validation;
 
@@ -67,7 +67,7 @@ class ValidationRuleTest extends TestCase
         $Rule = new ValidationRule(['rule' => 'willFail']);
         $this->assertFalse($Rule->process($data, $providers, $context));
 
-        $Rule = new ValidationRule(['rule' => 'willPass', 'pass' => ['key' => 'value']]);
+        $Rule = new ValidationRule(['rule' => 'willPass']);
         $this->assertTrue($Rule->process($data, $providers, $context));
 
         $Rule = new ValidationRule(['rule' => 'willFail3']);

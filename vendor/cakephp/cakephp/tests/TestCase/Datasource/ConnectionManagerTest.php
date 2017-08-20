@@ -4,10 +4,10 @@
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         1.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Datasource;
 
@@ -17,41 +17,6 @@ use Cake\TestSuite\TestCase;
 
 class FakeConnection
 {
-    protected $_config = [];
-
-    /**
-     * Constructor.
-     *
-     * @param array $config configuration for connecting to database
-     */
-    public function __construct($config = [])
-    {
-        $this->_config = $config;
-    }
-
-    /**
-     * Returns the set config
-     *
-     * @return array
-     */
-    public function config()
-    {
-        return $this->_config;
-    }
-
-    /**
-     * Returns the set name
-     *
-     * @return string
-     */
-    public function configName()
-    {
-        if (empty($this->_config['name'])) {
-            return '';
-        }
-
-        return $this->_config['name'];
-    }
 }
 
 /**
@@ -313,31 +278,5 @@ class ConnectionManagerTest extends TestCase
 
         ConnectionManager::config('test_variant', $callable);
         $this->assertSame($connection, ConnectionManager::get('test_variant'));
-    }
-
-    /**
-     * Tests that setting a config will also correctly set the name for the connection
-     *
-     * @return void
-     */
-    public function testSetConfigName()
-    {
-        //Set with explicit name
-        ConnectionManager::config('test_variant', [
-            'className' => __NAMESPACE__ . '\FakeConnection',
-            'database' => ':memory:'
-        ]);
-        $result = ConnectionManager::get('test_variant');
-        $this->assertSame('test_variant', $result->configName());
-
-        ConnectionManager::drop('test_variant');
-        ConnectionManager::config([
-            'test_variant' => [
-                'className' => __NAMESPACE__ . '\FakeConnection',
-                'database' => ':memory:'
-            ]
-        ]);
-        $result = ConnectionManager::get('test_variant');
-        $this->assertSame('test_variant', $result->configName());
     }
 }

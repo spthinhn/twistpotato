@@ -2,24 +2,24 @@
 /**
  * XmlViewTest file
  *
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         2.1.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\View;
 
 use Cake\Controller\Controller;
 use Cake\Core\Configure;
-use Cake\Http\Response;
-use Cake\Http\ServerRequest;
+use Cake\Network\Request;
+use Cake\Network\Response;
 use Cake\TestSuite\TestCase;
 use Cake\Utility\Xml;
 
@@ -42,7 +42,7 @@ class XmlViewTest extends TestCase
      */
     public function testRenderWithoutView()
     {
-        $Request = new ServerRequest();
+        $Request = new Request();
         $Response = new Response();
         $Controller = new Controller($Request, $Response);
         $data = ['users' => ['user' => ['user1', 'user2']]];
@@ -90,7 +90,7 @@ class XmlViewTest extends TestCase
      */
     public function testRenderSerializeNoHelpers()
     {
-        $Request = new ServerRequest();
+        $Request = new Request();
         $Response = new Response();
         $Controller = new Controller($Request, $Response);
         $Controller->helpers = ['Html'];
@@ -111,7 +111,7 @@ class XmlViewTest extends TestCase
      */
     public function testRenderSerializeWithOptions()
     {
-        $Request = new ServerRequest();
+        $Request = new Request();
         $Response = new Response();
         $Controller = new Controller($Request, $Response);
         $data = [
@@ -146,7 +146,7 @@ class XmlViewTest extends TestCase
      */
     public function testRenderSerializeWithString()
     {
-        $Request = new ServerRequest();
+        $Request = new Request();
         $Response = new Response();
         $Controller = new Controller($Request, $Response);
         $data = [
@@ -183,7 +183,7 @@ class XmlViewTest extends TestCase
      */
     public function testRenderWithoutViewMultiple()
     {
-        $Request = new ServerRequest();
+        $Request = new Request();
         $Response = new Response();
         $Controller = new Controller($Request, $Response);
         $data = ['no' => 'nope', 'user' => 'fake', 'list' => ['item1', 'item2']];
@@ -215,7 +215,7 @@ class XmlViewTest extends TestCase
      */
     public function testRenderWithoutViewMultipleAndAlias()
     {
-        $Request = new ServerRequest();
+        $Request = new Request();
         $Response = new Response();
         $Controller = new Controller($Request, $Response);
         $data = ['original_name' => 'my epic name', 'user' => 'fake', 'list' => ['item1', 'item2']];
@@ -247,7 +247,7 @@ class XmlViewTest extends TestCase
      */
     public function testRenderWithSerializeTrue()
     {
-        $Request = new ServerRequest();
+        $Request = new Request();
         $Response = new Response();
         $Controller = new Controller($Request, $Response);
         $data = ['users' => ['user' => ['user1', 'user2']]];
@@ -278,7 +278,7 @@ class XmlViewTest extends TestCase
      */
     public function testRenderWithView()
     {
-        $Request = new ServerRequest();
+        $Request = new Request();
         $Response = new Response();
         $Controller = new Controller($Request, $Response);
         $Controller->name = 'Posts';

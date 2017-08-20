@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         1.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\I18n;
 
@@ -68,7 +68,7 @@ class I18nTest extends TestCase
     public function testDefaultTranslator()
     {
         $translator = I18n::translator();
-        $this->assertInstanceOf('Aura\Intl\TranslatorInterface', $translator);
+        $this->assertInstanceOf('Aura\Intl\Translator', $translator);
         $this->assertEquals('%d is 1 (po translated)', $translator->translate('%d = 1'));
     }
 
@@ -114,24 +114,6 @@ class I18nTest extends TestCase
 
         $result = $translator->translate('There are {0} things', ['_count' => 1]);
         $this->assertEquals('There is only one', $result);
-    }
-
-    /**
-     * Test plural rules are used for non-english languages
-     *
-     * @return void
-     */
-    public function testPluralSelectionRussian()
-    {
-        $translator = I18n::translator('default', 'ru');
-        $result = $translator->translate('{0} months', ['_count' => 1, 1]);
-        $this->assertEquals('1 months ends in 1, not 11', $result);
-
-        $result = $translator->translate('{0} months', ['_count' => 2, 2]);
-        $this->assertEquals('2 months ends in 2-4, not 12-14', $result);
-
-        $result = $translator->translate('{0} months', ['_count' => 7, 7]);
-        $this->assertEquals('7 months everything else', $result);
     }
 
     /**
@@ -242,52 +224,6 @@ class I18nTest extends TestCase
         I18n::defaultFormatter('sprintf');
         $this->assertEquals('%d is 1 (po translated)', __('%d = 1'));
         $this->assertEquals('1 is 1 (po translated)', __('%d = 1', 1));
-        $this->assertEquals('1 is 1 (po translated)', __('%d = 1', [1]));
-        $this->assertEquals('The red dog, and blue cat', __('The %s dog, and %s cat', ['red', 'blue']));
-        $this->assertEquals('The red dog, and blue cat', __('The %s dog, and %s cat', 'red', 'blue'));
-    }
-
-    /**
-     * Tests the __() functions with explict null params
-     *
-     * @return void
-     */
-    public function testBasicTranslateFunctionsWithNullParam()
-    {
-        $this->assertEquals('text {0}', __('text {0}'));
-        $this->assertEquals('text ', __('text {0}', null));
-
-        $this->assertEquals('text {0}', __n('text {0}', 'texts {0}', 1));
-        $this->assertEquals('text ', __n('text {0}', 'texts {0}', 1, null));
-
-        $this->assertEquals('text {0}', __d('default', 'text {0}'));
-        $this->assertEquals('text ', __d('default', 'text {0}', null));
-
-        $this->assertEquals('text {0}', __dn('default', 'text {0}', 'texts {0}', 1));
-        $this->assertEquals('text ', __dn('default', 'text {0}', 'texts {0}', 1, null));
-
-        $this->assertEquals('text {0}', __x('default', 'text {0}'));
-        $this->assertEquals('text ', __x('default', 'text {0}', null));
-
-        $this->assertEquals('text {0}', __xn('default', 'text {0}', 'texts {0}', 1));
-        $this->assertEquals('text ', __xn('default', 'text {0}', 'texts {0}', 1, null));
-
-        $this->assertEquals('text {0}', __dx('default', 'words', 'text {0}'));
-        $this->assertEquals('text ', __dx('default', 'words', 'text {0}', null));
-
-        $this->assertEquals('text {0}', __dxn('default', 'words', 'text {0}', 'texts {0}', 1));
-        $this->assertEquals('text ', __dxn('default', 'words', 'text {0}', 'texts {0}', 1, null));
-    }
-
-    /**
-     * Tests the __() function on a plural key
-     *
-     * @return void
-     */
-    public function testBasicTranslateFunctionPluralData()
-    {
-        I18n::defaultFormatter('sprintf');
-        $this->assertEquals('%d is 1 (po translated)', __('%d = 0 or > 1'));
     }
 
     /**
@@ -303,12 +239,6 @@ class I18nTest extends TestCase
 
         $result = __n('singular msg', '%d = 0 or > 1', 2);
         $this->assertEquals('2 is 2-4 (po translated)', $result);
-
-        $result = __n('%s %s and %s are good', '%s and %s are best', 1, ['red', 'blue']);
-        $this->assertEquals('1 red and blue are good', $result);
-
-        $result = __n('%s %s and %s are good', '%s and %s are best', 1, 'red', 'blue');
-        $this->assertEquals('1 red and blue are good', $result);
     }
 
     /**
@@ -331,9 +261,6 @@ class I18nTest extends TestCase
         $this->assertEquals('Le moo', __d('custom', 'Cow'));
 
         $result = __d('custom', 'The {0} is tasty', ['fruit']);
-        $this->assertEquals('The fruit is delicious', $result);
-
-        $result = __d('custom', 'The {0} is tasty', 'fruit');
         $this->assertEquals('The fruit is delicious', $result);
 
         $result = __d('custom', 'Average price {0}', ['9.99']);
@@ -378,95 +305,17 @@ class I18nTest extends TestCase
                         'character' => 'The letter {0}',
                         'communication' => 'She wrote a letter to {0}'
                     ]
-                ],
-                'letters' => [
-                    '_context' => [
-                        'character' => [
-                            'The letter {0}',
-                            'The letters {0} and {1}'
-                        ],
-                        'communication' => [
-                            'She wrote a letter to {0}',
-                            'She wrote a letter to {0} and {1}'
-                        ]
-                    ]
                 ]
             ]);
 
             return $package;
         });
 
-        $this->assertEquals('The letters A and B', __x('character', 'letters', ['A', 'B']));
         $this->assertEquals('The letter A', __x('character', 'letter', ['A']));
-
-        $this->assertEquals('The letters A and B', __x('character', 'letters', 'A', 'B'));
-        $this->assertEquals('The letter A', __x('character', 'letter', 'A'));
-
-        $this->assertEquals(
-            'She wrote a letter to Thomas and Sara',
-            __x('communication', 'letters', ['Thomas', 'Sara'])
-        );
         $this->assertEquals(
             'She wrote a letter to Thomas',
             __x('communication', 'letter', ['Thomas'])
         );
-
-        $this->assertEquals(
-            'She wrote a letter to Thomas and Sara',
-            __x('communication', 'letters', 'Thomas', 'Sara')
-        );
-        $this->assertEquals(
-            'She wrote a letter to Thomas',
-            __x('communication', 'letter', 'Thomas')
-        );
-    }
-
-    /**
-     * Tests the __x() function with no msgstr
-     *
-     * @return void
-     */
-    public function testBasicContextFunctionNoString()
-    {
-        I18n::translator('default', 'en_US', function () {
-            $package = new Package('default');
-            $package->setMessages([
-                'letter' => [
-                    '_context' => [
-                        'character' => '',
-                    ]
-                ]
-            ]);
-
-            return $package;
-        });
-
-        $this->assertEquals('letter', __x('character', 'letter'));
-        $this->assertEquals('letter', __x('unknown', 'letter'));
-    }
-
-    /**
-     * Tests the __x() function with an invalid context
-     *
-     * @return void
-     */
-    public function testBasicContextFunctionInvalidContext()
-    {
-        I18n::translator('default', 'en_US', function () {
-            $package = new Package('default');
-            $package->setMessages([
-                'letter' => [
-                    '_context' => [
-                        'noun' => 'a paper letter',
-                    ]
-                ]
-            ]);
-
-            return $package;
-        });
-
-        $this->assertEquals('letter', __x('garbage', 'letter'));
-        $this->assertEquals('a paper letter', __('letter'));
     }
 
     /**
@@ -512,15 +361,6 @@ class I18nTest extends TestCase
             'She wrote a letter to Thomas',
             __xn('communication', 'letter', 'letters', 1, ['Thomas'])
         );
-
-        $this->assertEquals(
-            'She wrote a letter to Thomas and Sara',
-            __xn('communication', 'letter', 'letters', 2, 'Thomas', 'Sara')
-        );
-        $this->assertEquals(
-            'She wrote a letter to Thomas',
-            __xn('communication', 'letter', 'letters', 1, 'Thomas')
-        );
     }
 
     /**
@@ -538,43 +378,16 @@ class I18nTest extends TestCase
                         'character' => 'The letter {0}',
                         'communication' => 'She wrote a letter to {0}'
                     ]
-                ],
-                'letters' => [
-                    '_context' => [
-                        'character' => [
-                            'The letter {0}',
-                            'The letters {0} and {1}'
-                        ],
-                        'communication' => [
-                            'She wrote a letter to {0}',
-                            'She wrote a letter to {0} and {1}'
-                        ]
-                    ]
                 ]
             ]);
 
             return $package;
         });
 
-        $this->assertEquals('The letters A and B', __dx('custom', 'character', 'letters', ['A', 'B']));
         $this->assertEquals('The letter A', __dx('custom', 'character', 'letter', ['A']));
-
-        $this->assertEquals(
-            'She wrote a letter to Thomas and Sara',
-            __dx('custom', 'communication', 'letters', ['Thomas', 'Sara'])
-        );
         $this->assertEquals(
             'She wrote a letter to Thomas',
             __dx('custom', 'communication', 'letter', ['Thomas'])
-        );
-
-        $this->assertEquals(
-            'She wrote a letter to Thomas and Sara',
-            __dx('custom', 'communication', 'letters', 'Thomas', 'Sara')
-        );
-        $this->assertEquals(
-            'She wrote a letter to Thomas',
-            __dx('custom', 'communication', 'letter', 'Thomas')
         );
     }
 
@@ -627,15 +440,6 @@ class I18nTest extends TestCase
             'She wrote a letter to Thomas',
             __dxn('custom', 'communication', 'letter', 'letters', 1, ['Thomas'])
         );
-
-        $this->assertEquals(
-            'She wrote a letter to Thomas and Sara',
-            __dxn('custom', 'communication', 'letter', 'letters', 2, 'Thomas', 'Sara')
-        );
-        $this->assertEquals(
-            'She wrote a letter to Thomas',
-            __dxn('custom', 'communication', 'letter', 'letters', 1, 'Thomas')
-        );
     }
 
     /**
@@ -665,7 +469,7 @@ class I18nTest extends TestCase
      *
      * @return void
      */
-    public function testLoaderFactory()
+    public function testloaderFactory()
     {
         I18n::config('custom', function ($name, $locale) {
             $this->assertEquals('custom', $name);
@@ -704,36 +508,6 @@ class I18nTest extends TestCase
 
         $translator = I18n::translator();
         $this->assertEquals('%d is 1 (po translated)', $translator->translate('%d = 1'));
-    }
-
-    /**
-     * Tests that it is possible to register a fallback translators factory
-     *
-     * @return void
-     */
-    public function testFallbackLoaderFactory()
-    {
-        I18n::config('_fallback', function ($name) {
-            $package = new Package('default');
-
-            if ($name == 'custom') {
-                $package->setMessages([
-                    'Cow' => 'Le Moo custom',
-                ]);
-            } else {
-                $package->setMessages([
-                    'Cow' => 'Le Moo default',
-                ]);
-            }
-
-            return $package;
-        });
-
-        $translator = I18n::translator('custom');
-        $this->assertEquals('Le Moo custom', $translator->translate('Cow'));
-
-        $translator = I18n::translator();
-        $this->assertEquals('Le Moo default', $translator->translate('Cow'));
     }
 
     /**

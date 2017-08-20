@@ -19,32 +19,6 @@ use InvalidArgumentException;
 /**
  * Provides the magic methods that allow read access
  * to magic properties.
- *
- * @property-read int $year
- * @property-read int $yearIso
- * @property-read int $month
- * @property-read int $day
- * @property-read int $hour
- * @property-read int $minute
- * @property-read int $second
- * @property-read int $micro
- * @property-read int $dayOfWeek
- * @property-read int $dayOfYear
- * @property-read int $weekOfYear
- * @property-read int $daysInMonth
- * @property-read int $timestamp
- * @property-read int $weekOfMonth
- * @property-read int $age
- * @property-read int $quarter
- * @property-read int $offset
- * @property-read int $offsetHours
- * @property-read boolean $dst
- * @property-read boolean $local
- * @property-read boolean $utc
- * @property-read \DateTimeZone $timezone
- * @property-read \DateTimeZone $tz
- * @property-read string $timezoneName
- * @property-read string $tzName
  */
 trait MagicPropertyTrait
 {
@@ -52,8 +26,8 @@ trait MagicPropertyTrait
      * Get a part of the ChronosInterface object
      *
      * @param string $name The property name to read.
-     * @return string|int|\DateTimeZone The property value.
-     * @throws \InvalidArgumentException
+     * @return string|int|DateTimeZone The property value.
+     * @throws InvalidArgumentException
      */
     public function __get($name)
     {
@@ -79,7 +53,7 @@ trait MagicPropertyTrait
                 return (int)ceil($this->day / ChronosInterface::DAYS_PER_WEEK);
 
             case $name === 'age':
-                return $this->diffInYears();
+                return (int)$this->diffInYears();
 
             case $name === 'quarter':
                 return (int)ceil($this->month / 3);

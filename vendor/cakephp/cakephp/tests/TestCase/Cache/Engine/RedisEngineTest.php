@@ -1,21 +1,24 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * RedisEngineTest file
+ *
+ * CakePHP(tm) Tests <http://book.cakephp.org/view/1196/Testing>
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://book.cakephp.org/view/1196/Testing CakePHP(tm) Tests
  * @since         2.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Cache\Engine;
 
 use Cake\Cache\Cache;
 use Cake\Cache\Engine\RedisEngine;
+use Cake\Core\Configure;
 use Cake\TestSuite\TestCase;
 
 /**
@@ -340,26 +343,6 @@ class RedisEngineTest extends TestCase
     }
 
     /**
-     * Test that increment and decrement set ttls.
-     *
-     * @return void
-     */
-    public function testIncrementDecrementExpiring()
-    {
-        $this->_configCache(['duration' => 1]);
-        Cache::delete('test_increment', 'redis');
-        Cache::delete('test_decrement', 'redis');
-
-        $this->assertSame(1, Cache::increment('test_increment', 1, 'redis'));
-        $this->assertSame(-1, Cache::decrement('test_decrement', 1, 'redis'));
-
-        sleep(2);
-
-        $this->assertFalse(Cache::read('test_increment', 'redis'));
-        $this->assertFalse(Cache::read('test_decrement', 'redis'));
-    }
-
-    /**
      * test clearing redis.
      *
      * @return void
@@ -436,7 +419,7 @@ class RedisEngineTest extends TestCase
     }
 
     /**
-     * Tests that deleting from a groups-enabled config is possible
+     * Tests that deleteing from a groups-enabled config is possible
      *
      * @return void
      */

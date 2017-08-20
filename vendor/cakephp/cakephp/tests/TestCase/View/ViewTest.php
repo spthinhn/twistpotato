@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         1.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\View;
 
@@ -21,7 +21,7 @@ use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
-use Cake\Http\ServerRequest;
+use Cake\Network\Request;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use Cake\View\Helper;
@@ -280,16 +280,6 @@ class ViewTest extends TestCase
     public $fixtures = ['core.posts', 'core.users'];
 
     /**
-     * @var \Cake\View\View
-     */
-    public $View;
-
-    /**
-     * @var ViewPostsController
-     */
-    public $PostsController;
-
-    /**
      * setUp method
      *
      * @return void
@@ -298,14 +288,14 @@ class ViewTest extends TestCase
     {
         parent::setUp();
 
-        $request = new ServerRequest();
+        $request = new Request();
         $this->Controller = new Controller($request);
         $this->PostsController = new ViewPostsController($request);
         $this->PostsController->index();
         $this->View = $this->PostsController->createView();
         $this->View->viewPath = 'Posts';
 
-        $themeRequest = new ServerRequest('posts/index');
+        $themeRequest = new Request('posts/index');
         $this->ThemeController = new Controller($themeRequest);
         $this->ThemePostsController = new ThemePostsController($themeRequest);
         $this->ThemePostsController->index();
@@ -340,8 +330,8 @@ class ViewTest extends TestCase
      */
     public function testGetTemplate()
     {
-        $request = $this->getMockBuilder('Cake\Http\ServerRequest')->getMock();
-        $response = $this->getMockBuilder('Cake\Http\Response')->getMock();
+        $request = $this->getMockBuilder('Cake\Network\Request')->getMock();
+        $response = $this->getMockBuilder('Cake\Network\Response')->getMock();
 
         $viewOptions = [
             'plugin' => null,
@@ -411,13 +401,13 @@ class ViewTest extends TestCase
      * Test that plugin files with absolute file paths are scoped
      * to the plugin and do now allow any file path.
      *
-     * @expectedException \Cake\View\Exception\MissingTemplateException
+     * @expectedException Cake\View\Exception\MissingTemplateException
      * @return void
      */
     public function testPluginGetTemplateAbsoluteFail()
     {
-        $request = $this->getMockBuilder('Cake\Http\ServerRequest')->getMock();
-        $response = $this->getMockBuilder('Cake\Http\Response')->getMock();
+        $request = $this->getMockBuilder('Cake\Network\Request')->getMock();
+        $response = $this->getMockBuilder('Cake\Network\Response')->getMock();
 
         $viewOptions = [
             'plugin' => null,
@@ -596,8 +586,8 @@ class ViewTest extends TestCase
             'name' => 'Pages',
             'viewPath' => 'Pages'
         ];
-        $request = $this->getMockBuilder('Cake\Http\ServerRequest')->getMock();
-        $response = $this->getMockBuilder('Cake\Http\Response')->getMock();
+        $request = $this->getMockBuilder('Cake\Network\Request')->getMock();
+        $response = $this->getMockBuilder('Cake\Network\Response')->getMock();
 
         $View = new TestView(null, null, null, $viewOptions);
 
@@ -642,8 +632,8 @@ class ViewTest extends TestCase
             'name' => 'Pages',
             'viewPath' => 'Pages',
         ];
-        $request = $this->getMockBuilder('Cake\Http\ServerRequest')->getMock();
-        $response = $this->getMockBuilder('Cake\Http\Response')->getMock();
+        $request = $this->getMockBuilder('Cake\Network\Request')->getMock();
+        $response = $this->getMockBuilder('Cake\Network\Response')->getMock();
 
         $view = new TestView(null, null, null, $viewOptions);
         $view->ext('.php');
@@ -762,8 +752,8 @@ class ViewTest extends TestCase
             'name' => 'Pages',
             'viewPath' => 'Pages',
         ];
-        $request = $this->getMockBuilder('Cake\Http\ServerRequest')->getMock();
-        $response = $this->getMockBuilder('Cake\Http\Response')->getMock();
+        $request = $this->getMockBuilder('Cake\Network\Request')->getMock();
+        $response = $this->getMockBuilder('Cake\Network\Response')->getMock();
 
         $view = new TestView(null, null, null, $viewOptions);
         $view->ext('.php');
@@ -782,8 +772,8 @@ class ViewTest extends TestCase
             'name' => 'Pages',
             'viewPath' => 'Pages'
         ];
-        $request = $this->getMockBuilder('Cake\Http\ServerRequest')->getMock();
-        $response = $this->getMockBuilder('Cake\Http\Response')->getMock();
+        $request = $this->getMockBuilder('Cake\Network\Request')->getMock();
+        $response = $this->getMockBuilder('Cake\Network\Response')->getMock();
 
         $View = new TestView($request, $response, null, $viewOptions);
         $View->getViewFileName('does_not_exist');
@@ -854,7 +844,7 @@ class ViewTest extends TestCase
         $this->assertFalse($result);
 
         $this->View->plugin = 'TestPlugin';
-        $result = $this->View->elementExists('plugin_element');
+        $result = $this->View->elementExists('test_plugin_element');
         $this->assertTrue($result);
     }
 
@@ -869,14 +859,11 @@ class ViewTest extends TestCase
         $this->assertEquals('this is the test element', $result);
 
         $result = $this->View->element('TestPlugin.plugin_element');
-        $this->assertEquals("Element in the TestPlugin\n", $result);
+        $this->assertEquals('this is the plugin element using params[plugin]', $result);
 
         $this->View->plugin = 'TestPlugin';
-        $result = $this->View->element('plugin_element');
-        $this->assertEquals("Element in the TestPlugin\n", $result);
-
-        $result = $this->View->element('plugin_element', [], ['plugin' => false]);
-        $this->assertEquals("Plugin element overridden in app\n", $result);
+        $result = $this->View->element('test_plugin_element');
+        $this->assertEquals('this is the test set using View::$plugin plugin element', $result);
     }
 
     /**
@@ -907,25 +894,23 @@ class ViewTest extends TestCase
     }
 
     /**
-     * Test loading non-existent view element
+     * Test elementInexistent method
      *
      * @expectedException \Cake\View\Exception\MissingElementException
-     * @expectedExceptionMessageRegExp $Element file \"Element[\\|/]non_existent_element\.ctp\" is missing$
      * @return void
      */
-    public function testElementNonExistent()
+    public function testElementInexistent()
     {
         $this->View->element('non_existent_element');
     }
 
     /**
-     * Test loading non-existent plugin view element
+     * Test elementInexistent3 method
      *
      * @expectedException \Cake\View\Exception\MissingElementException
-     * @expectedExceptionMessageRegExp $Element file "test_plugin\.Element[\\|/]plugin_element\.ctp\" is missing$
      * @return void
      */
-    public function testElementInexistentPluginElement()
+    public function testElementInexistent3()
     {
         $this->View->element('test_plugin.plugin_element');
     }
@@ -938,7 +923,7 @@ class ViewTest extends TestCase
     public function testElementCallbacks()
     {
         $count = 0;
-        $callback = function (Event $event, $file) use (&$count) {
+        $callback = function ($event, $file) use (&$count) {
             $count++;
         };
         $events = $this->View->eventManager();
@@ -1004,13 +989,13 @@ class ViewTest extends TestCase
         $expected = 'this is the test element';
         $this->assertEquals($expected, $result);
 
-        $result = Cache::read('element__test_element', 'test_view');
+        $result = Cache::read('element__test_element_cache_callbacks', 'test_view');
         $this->assertEquals($expected, $result);
 
         $result = $View->element('test_element', ['param' => 'one', 'foo' => 'two'], ['cache' => true]);
         $this->assertEquals($expected, $result);
 
-        $result = Cache::read('element__test_element_param_foo', 'test_view');
+        $result = Cache::read('element__test_element_cache_callbacks_param_foo', 'test_view');
         $this->assertEquals($expected, $result);
 
         $View->element('test_element', [
@@ -1029,7 +1014,7 @@ class ViewTest extends TestCase
         ], [
             'cache' => ['config' => 'test_view'],
         ]);
-        $result = Cache::read('element__test_element_param_foo', 'test_view');
+        $result = Cache::read('element__test_element_cache_callbacks_param_foo', 'test_view');
         $this->assertEquals($expected, $result);
 
         Cache::clear(true, 'test_view');
@@ -1550,7 +1535,7 @@ class ViewTest extends TestCase
     }
 
     /**
-     * Test checking a block's existence.
+     * Test checking a block's existance.
      *
      * @return void
      */
@@ -1590,9 +1575,9 @@ class ViewTest extends TestCase
      * Test setting a block's content to an object without __toString magic method
      *
      * This should produce a "Object of class TestObjectWithoutToString could not be converted to string" error
-     * which gets thrown as a \PHPUnit\Framework\Error\Error Exception by PHPUnit.
+     * which gets thrown as a PHPUnit_Framework_Error Exception by PHPUnit.
      *
-     * @expectedException \PHPUnit\Framework\Error\Error
+     * @expectedException \PHPUnit_Framework_Error
      * @return void
      */
     public function testBlockSetObjectWithoutToString()
@@ -1647,9 +1632,9 @@ class ViewTest extends TestCase
      * Test appending an object without __toString magic method to a block with append.
      *
      * This should produce a "Object of class TestObjectWithoutToString could not be converted to string" error
-     * which gets thrown as a \PHPUnit\Framework\Error\Error     Exception by PHPUnit.
+     * which gets thrown as a PHPUnit_Framework_Error Exception by PHPUnit.
      *
-     * @expectedException \PHPUnit\Framework\Error\Error
+     * @expectedException \PHPUnit_Framework_Error
      * @return void
      */
     public function testBlockAppendObjectWithoutToString()
@@ -1679,9 +1664,9 @@ class ViewTest extends TestCase
      * Test prepending an object without __toString magic method to a block with prepend.
      *
      * This should produce a "Object of class TestObjectWithoutToString could not be converted to string" error
-     * which gets thrown as a \PHPUnit\Framework\Error\Error Exception by PHPUnit.
+     * which gets thrown as a PHPUnit_Framework_Error Exception by PHPUnit.
      *
-     * @expectedException \PHPUnit\Framework\Error\Error
+     * @expectedException \PHPUnit_Framework_Error
      * @return void
      */
     public function testBlockPrependObjectWithoutToString()
@@ -1826,7 +1811,6 @@ TEXT;
         try {
             $this->View->layout = false;
             $this->View->render('extend_loop');
-            $this->fail('No exception');
         } catch (\LogicException $e) {
             ob_end_clean();
             $this->assertContains('cannot have views extend in a loop', $e->getMessage());

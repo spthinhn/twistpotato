@@ -1,21 +1,22 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.3.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Http;
 
-use Cake\Http\Response as CakeResponse;
 use Cake\Http\ResponseTransformer;
+use Cake\Network\Response as CakeResponse;
+use Cake\Network\Session;
 use Cake\TestSuite\TestCase;
 use Zend\Diactoros\Response as PsrResponse;
 use Zend\Diactoros\Stream;
@@ -63,7 +64,7 @@ class ResponseTransformerTest extends TestCase
     {
         $psr = new PsrResponse('php://memory', 401, []);
         $result = ResponseTransformer::toCake($psr);
-        $this->assertInstanceOf('Cake\Http\Response', $result);
+        $this->assertInstanceOf('Cake\Network\Response', $result);
     }
 
     /**
@@ -91,11 +92,7 @@ class ResponseTransformerTest extends TestCase
     {
         $psr = new PsrResponse('php://memory', 200, ['X-testing' => 'value']);
         $result = ResponseTransformer::toCake($psr);
-        $expected = [
-            'Content-Type' => 'text/html; charset=UTF-8',
-            'X-testing' => 'value'
-        ];
-        $this->assertSame($expected, $result->header());
+        $this->assertSame(['X-testing' => 'value'], $result->header());
     }
 
     /**
@@ -107,11 +104,7 @@ class ResponseTransformerTest extends TestCase
     {
         $psr = new PsrResponse('php://memory', 200, ['X-testing' => ['value', 'value2']]);
         $result = ResponseTransformer::toCake($psr);
-        $expected = [
-            'Content-Type' => 'text/html; charset=UTF-8',
-            'X-testing' => ['value', 'value2'],
-        ];
-        $this->assertSame($expected, $result->header());
+        $this->assertSame(['X-testing' => ['value', 'value2']], $result->header());
     }
 
     /**
@@ -213,6 +206,28 @@ class ResponseTransformerTest extends TestCase
     }
 
     /**
+     * Test conversion setting cookies including the session cookie
+     *
+     * @return void
+     */
+    public function testToPsrCookieWithSession()
+    {
+        $session = new Session();
+        $session->write('things', 'things');
+        $cake = new CakeResponse(['status' => 200]);
+        $cake->cookie([
+            'name' => 'remember_me',
+            'value' => 1
+        ]);
+        $result = ResponseTransformer::toPsr($cake);
+        $this->assertEquals(
+            'remember_me=1; Path=/,CAKEPHP=; Path=/; HttpOnly',
+            $result->getHeaderLine('Set-Cookie'),
+            'Session cookie data was not retained.'
+        );
+    }
+
+    /**
      * Test conversion setting multiple cookies
      *
      * @return void
@@ -277,6 +292,24 @@ class ResponseTransformerTest extends TestCase
      *
      * @return void
      */
+    public function testToPsrContentTypeStatusOmission()
+    {
+        $cake = new CakeResponse();
+        $cake->type('html');
+        $cake->statusCode(304);
+        $result = ResponseTransformer::toPsr($cake);
+        $this->assertSame('', $result->getHeaderLine('Content-Type'));
+
+        $cake->statusCode(204);
+        $result = ResponseTransformer::toPsr($cake);
+        $this->assertSame('', $result->getHeaderLine('Content-Type'));
+    }
+
+    /**
+     * Test conversion omitting content-type on 304 and 204 status codes
+     *
+     * @return void
+     */
     public function testToPsrContentTypeCharsetIsTypeSpecific()
     {
         $cake = new CakeResponse();
@@ -309,9 +342,9 @@ class ResponseTransformerTest extends TestCase
         ]);
         $result = ResponseTransformer::toPsr($cake);
         $expected = [
-            'Content-Type' => ['text/html; charset=UTF-8'],
             'X-testing' => ['one', 'two'],
             'Location' => ['http://example.com/testing'],
+            'Content-Type' => ['text/html; charset=UTF-8'],
         ];
         $this->assertSame($expected, $result->getHeaders());
     }
@@ -350,7 +383,7 @@ class ResponseTransformerTest extends TestCase
      */
     public function testToPsrBodyFileResponse()
     {
-        $cake = $this->getMockBuilder('Cake\Http\Response')
+        $cake = $this->getMockBuilder('Cake\Network\Response')
             ->setMethods(['_clearBuffer'])
             ->getMock();
         $cake->file(__FILE__, ['name' => 'some-file.php', 'download' => true]);
@@ -379,7 +412,7 @@ class ResponseTransformerTest extends TestCase
     public function testToPsrBodyFileResponseFileRange()
     {
         $_SERVER['HTTP_RANGE'] = 'bytes=10-20';
-        $cake = $this->getMockBuilder('Cake\Http\Response')
+        $cake = $this->getMockBuilder('Cake\Network\Response')
             ->setMethods(['_clearBuffer'])
             ->getMock();
         $path = TEST_APP . 'webroot/css/cake.generic.css';
@@ -387,7 +420,7 @@ class ResponseTransformerTest extends TestCase
 
         $result = ResponseTransformer::toPsr($cake);
         $this->assertEquals(
-            'bytes 10-20/15641',
+            'bytes 10-20/15640',
             $result->getHeaderLine('Content-Range'),
             'Content-Range header missing'
         );

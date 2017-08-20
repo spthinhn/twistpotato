@@ -1,20 +1,21 @@
 <?php
 /**
- * CakePHP :  Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP :  Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Console;
 
 use Cake\Console\ConsoleIo;
+use Cake\Core\Configure;
 use Cake\Log\Log;
 use Cake\TestSuite\TestCase;
 
@@ -32,7 +33,7 @@ class ConsoleIoTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        static::setAppNamespace();
+        Configure::write('App.namespace', 'TestApp');
 
         $this->out = $this->getMockBuilder('Cake\Console\ConsoleOutput')
             ->disableOriginalConstructor()
@@ -140,7 +141,7 @@ class ConsoleIoTest extends TestCase
     {
         $this->out->expects($this->at(0))
             ->method('write')
-            ->with('Just a test', 1);
+            ->with("Just a test", 1);
 
         $this->out->expects($this->at(1))
             ->method('write')
@@ -237,7 +238,7 @@ class ConsoleIoTest extends TestCase
     {
         $this->err->expects($this->at(0))
             ->method('write')
-            ->with('Just a test', 1);
+            ->with("Just a test", 1);
 
         $this->err->expects($this->at(1))
             ->method('write')
@@ -270,7 +271,7 @@ class ConsoleIoTest extends TestCase
         }
         $this->assertEquals($this->io->nl(), $newLine);
         $this->assertEquals($this->io->nl(true), $newLine);
-        $this->assertEquals('', $this->io->nl(false));
+        $this->assertEquals("", $this->io->nl(false));
         $this->assertEquals($this->io->nl(2), $newLine . $newLine);
         $this->assertEquals($this->io->nl(1), $newLine);
     }
@@ -288,13 +289,13 @@ class ConsoleIoTest extends TestCase
         $this->out->expects($this->at(1))->method('write')->with($bar, 1);
         $this->out->expects($this->at(2))->method('write')->with('', 0);
 
-        $this->out->expects($this->at(3))->method('write')->with('', true);
+        $this->out->expects($this->at(3))->method('write')->with("", true);
         $this->out->expects($this->at(4))->method('write')->with($bar, 1);
-        $this->out->expects($this->at(5))->method('write')->with('', true);
+        $this->out->expects($this->at(5))->method('write')->with("", true);
 
-        $this->out->expects($this->at(6))->method('write')->with('', 2);
+        $this->out->expects($this->at(6))->method('write')->with("", 2);
         $this->out->expects($this->at(7))->method('write')->with($bar, 1);
-        $this->out->expects($this->at(8))->method('write')->with('', 2);
+        $this->out->expects($this->at(8))->method('write')->with("", 2);
 
         $this->io->hr();
         $this->io->hr(true);
@@ -330,57 +331,6 @@ class ConsoleIoTest extends TestCase
 
         $this->io->out('Some <info>text</info> I want to overwrite', 0);
         $this->io->overwrite('Less text');
-    }
-
-    /**
-     * Test overwriting content with shorter content
-     *
-     * @return void
-     */
-    public function testOverwriteShorterContent()
-    {
-        $length = strlen('12345');
-
-        $this->out->expects($this->at(0))
-            ->method('write')
-            ->with('12345')
-            ->will($this->returnValue($length));
-
-        // Backspaces
-        $this->out->expects($this->at(1))
-            ->method('write')
-            ->with(str_repeat("\x08", $length), 0)
-            ->will($this->returnValue($length));
-
-        $this->out->expects($this->at(2))
-            ->method('write')
-            ->with('123', 0)
-            ->will($this->returnValue(3));
-
-        // 2 spaces output to pad up to 5 bytes
-        $this->out->expects($this->at(3))
-            ->method('write')
-            ->with(str_repeat(' ', $length - 3), 0)
-            ->will($this->returnValue($length - 3));
-
-        // Backspaces
-        $this->out->expects($this->at(4))
-            ->method('write')
-            ->with(str_repeat("\x08", $length), 0)
-            ->will($this->returnValue($length));
-
-        $this->out->expects($this->at(5))
-            ->method('write')
-            ->with('12', 0)
-            ->will($this->returnValue(2));
-
-        $this->out->expects($this->at(6))
-            ->method('write')
-            ->with(str_repeat(' ', $length - 2), 0);
-
-        $this->io->out('12345');
-        $this->io->overwrite('123', 0);
-        $this->io->overwrite('12', 0);
     }
 
     /**

@@ -1,14 +1,14 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace TestApp\Model\Table;
 
@@ -22,8 +22,8 @@ class TagsTable extends Table
 
     public function initialize(array $config)
     {
-        $this->belongsTo('Authors');
-        $this->belongsToMany('Articles');
+        $this->belongsTo('authors');
+        $this->belongsToMany('articles');
         $this->hasMany('ArticlesTags', ['propertyName' => 'extraInfo']);
     }
 }

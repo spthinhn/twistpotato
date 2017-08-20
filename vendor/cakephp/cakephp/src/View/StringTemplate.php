@@ -1,22 +1,21 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\View;
 
 use Cake\Core\Configure\Engine\PhpConfig;
 use Cake\Core\InstanceConfigTrait;
-use Cake\Utility\Hash;
 use RuntimeException;
 
 /**
@@ -30,7 +29,7 @@ class StringTemplate
 {
 
     use InstanceConfigTrait {
-        getConfig as get;
+        config as get;
     }
 
     /**
@@ -87,7 +86,8 @@ class StringTemplate
      *
      * @var array
      */
-    protected $_defaultConfig = [];
+    protected $_defaultConfig = [
+    ];
 
     /**
      * A stack of template sets that have been stashed temporarily.
@@ -156,7 +156,7 @@ class StringTemplate
      */
     public function add(array $templates)
     {
-        $this->setConfig($templates);
+        $this->config($templates);
         $this->_compileTemplates(array_keys($templates));
 
         return $this;
@@ -179,7 +179,6 @@ class StringTemplate
                 $this->_compiled[$name] = [null, null];
             }
 
-            $template = str_replace('%', '%%', $template);
             preg_match_all('#\{\{([\w\d\._]+)\}\}#', $template, $matches);
             $this->_compiled[$name] = [
                 str_replace($matches[0], '%s', $template),
@@ -213,7 +212,7 @@ class StringTemplate
      */
     public function remove($name)
     {
-        $this->setConfig($name, null);
+        $this->config($name, null);
         unset($this->_compiled[$name]);
     }
 
@@ -323,47 +322,5 @@ class StringTemplate
         }
 
         return $key . '="' . ($escape ? h($value) : $value) . '"';
-    }
-
-    /**
-     * Adds a class and returns a unique list either in array or space separated
-     *
-     * @param array|string $input The array or string to add the class to
-     * @param array|string $newClass the new class or classes to add
-     * @param string $useIndex if you are inputting an array with an element other than default of 'class'.
-     * @return array|string
-     */
-    public function addClass($input, $newClass, $useIndex = 'class')
-    {
-        // NOOP
-        if (empty($newClass)) {
-            return $input;
-        }
-
-        if (is_array($input)) {
-            $class = Hash::get($input, $useIndex, []);
-        } else {
-            $class = $input;
-            $input = [];
-        }
-
-        // Convert and sanitise the inputs
-        if (!is_array($class)) {
-            if (is_string($class) && !empty($class)) {
-                $class = explode(' ', $class);
-            } else {
-                $class = [];
-            }
-        }
-
-        if (is_string($newClass)) {
-            $newClass = explode(' ', $newClass);
-        }
-
-        $class = array_unique(array_merge($class, $newClass));
-
-        $input = Hash::insert($input, $useIndex, $class);
-
-        return $input;
     }
 }

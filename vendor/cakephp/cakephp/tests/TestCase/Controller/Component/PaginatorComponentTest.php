@@ -1,27 +1,26 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         2.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Controller\Component;
 
 use Cake\Controller\ComponentRegistry;
 use Cake\Controller\Component\PaginatorComponent;
 use Cake\Controller\Controller;
+use Cake\Core\Configure;
 use Cake\Datasource\ConnectionManager;
-use Cake\Datasource\EntityInterface;
-use Cake\Http\ServerRequest;
 use Cake\Network\Exception\NotFoundException;
-use Cake\ORM\Entity;
+use Cake\Network\Request;
 use Cake\ORM\TableRegistry;
 use Cake\TestSuite\TestCase;
 
@@ -47,10 +46,7 @@ class PaginatorComponentTest extends TestCase
      *
      * @var array
      */
-    public $fixtures = [
-        'core.posts', 'core.articles', 'core.articles_tags',
-        'core.authors', 'core.authors_tags', 'core.tags'
-    ];
+    public $fixtures = ['core.posts'];
 
     /**
      * Don't load data for fixtures for all tests
@@ -68,9 +64,9 @@ class PaginatorComponentTest extends TestCase
     {
         parent::setUp();
 
-        static::setAppNamespace();
+        Configure::write('App.namespace', 'TestApp');
 
-        $this->request = new ServerRequest('controller_posts/index');
+        $this->request = new Request('controller_posts/index');
         $this->request->params['pass'] = [];
         $controller = new Controller($this->request);
         $registry = new ComponentRegistry($controller);
@@ -203,34 +199,6 @@ class PaginatorComponentTest extends TestCase
 
         $this->Paginator->paginate($table, $settings);
         $this->assertEquals('popular', $this->request->params['paging']['PaginatorPosts']['finder']);
-    }
-
-    /**
-     * Test that nested eager loaders don't trigger invalid SQL errors.
-     *
-     * @return void
-     */
-    public function testPaginateNestedEagerLoader()
-    {
-        $this->loadFixtures('Articles', 'Tags', 'Authors', 'ArticlesTags', 'AuthorsTags');
-        $articles = TableRegistry::get('Articles');
-        $articles->belongsToMany('Tags');
-        $tags = TableRegistry::get('Tags');
-        $tags->belongsToMany('Authors');
-
-        $articles->eventManager()->on('Model.beforeFind', function ($event, $query) {
-            $query ->matching('Tags', function ($q) {
-                return $q->matching('Authors', function ($q) {
-                    return $q->where(['Authors.name' => 'larry']);
-                });
-            });
-        });
-        $results = $this->Paginator->paginate($articles, []);
-
-        $result = $results->first();
-        $this->assertInstanceOf(EntityInterface::class, $result);
-        $this->assertInstanceOf(EntityInterface::class, $result->_matchingData['Tags']);
-        $this->assertInstanceOf(EntityInterface::class, $result->_matchingData['Authors']);
     }
 
     /**
@@ -375,6 +343,7 @@ class PaginatorComponentTest extends TestCase
         ];
         $this->assertEquals($expected, $result);
 
+
         $settings = [
             'page' => 1,
             'limit' => 20,
@@ -510,8 +479,8 @@ class PaginatorComponentTest extends TestCase
         $result = $this->Paginator->mergeOptions('Post', $settings);
         $expected = [
             'page' => 1,
-            'limit' => 100,
-            'maxLimit' => 100,
+            'limit' => 200,
+            'maxLimit' => 200,
             'paramType' => 'named',
             'whitelist' => ['limit', 'sort', 'page', 'direction']
         ];
@@ -524,57 +493,9 @@ class PaginatorComponentTest extends TestCase
         $result = $this->Paginator->mergeOptions('Post', $settings);
         $expected = [
             'page' => 1,
-            'limit' => 10,
+            'limit' => 20,
             'maxLimit' => 10,
             'paramType' => 'named',
-            'whitelist' => ['limit', 'sort', 'page', 'direction']
-        ];
-        $this->assertEquals($expected, $result);
-    }
-
-    /**
-     * test getDefaults with limit > maxLimit in code.
-     *
-     * @return void
-     */
-    public function testGetDefaultMaxLimit()
-    {
-        $settings = [
-            'page' => 1,
-            'limit' => 2,
-            'maxLimit' => 10,
-            'order' => [
-                'Users.username' => 'asc'
-            ],
-        ];
-        $result = $this->Paginator->mergeOptions('Post', $settings);
-        $expected = [
-            'page' => 1,
-            'limit' => 2,
-            'maxLimit' => 10,
-            'order' => [
-                'Users.username' => 'asc'
-            ],
-            'whitelist' => ['limit', 'sort', 'page', 'direction']
-        ];
-        $this->assertEquals($expected, $result);
-
-        $settings = [
-            'page' => 1,
-            'limit' => 100,
-            'maxLimit' => 10,
-            'order' => [
-                'Users.username' => 'asc'
-            ],
-        ];
-        $result = $this->Paginator->mergeOptions('Post', $settings);
-        $expected = [
-            'page' => 1,
-            'limit' => 10,
-            'maxLimit' => 10,
-            'order' => [
-                'Users.username' => 'asc'
-            ],
             'whitelist' => ['limit', 'sort', 'page', 'direction']
         ];
         $this->assertEquals($expected, $result);
@@ -905,9 +826,6 @@ class PaginatorComponentTest extends TestCase
         $this->assertEquals([], $result['order']);
     }
 
-    /**
-     * @return array
-     */
     public function checkLimitProvider()
     {
         return [
@@ -931,7 +849,7 @@ class PaginatorComponentTest extends TestCase
                 ['limit' => 0, 'maxLimit' => 100],
                 1,
             ],
-            'limit = 0 v2' => [
+            'limit = 0' => [
                 ['limit' => 0, 'maxLimit' => 0],
                 1,
             ],
@@ -943,7 +861,7 @@ class PaginatorComponentTest extends TestCase
                 ['limit' => null, 'maxLimit' => null],
                 1,
             ],
-            'bad input, results in 1 v2' => [
+            'bad input, results in 1' => [
                 ['limit' => false, 'maxLimit' => false],
                 1,
             ],
@@ -1009,7 +927,7 @@ class PaginatorComponentTest extends TestCase
 
         $table = TableRegistry::get('PaginatorPosts');
         $data = ['author_id' => 3, 'title' => 'Fourth Post', 'body' => 'Article Body, unpublished', 'published' => 'N'];
-        $result = $table->save(new Entity($data));
+        $result = $table->save(new \Cake\ORM\Entity($data));
         $this->assertNotEmpty($result);
 
         $result = $this->Paginator->paginate($table);
@@ -1064,7 +982,7 @@ class PaginatorComponentTest extends TestCase
         $this->loadFixtures('Posts');
         $table = TableRegistry::get('PaginatorPosts');
         $data = ['author_id' => 3, 'title' => 'Fourth Article', 'body' => 'Article Body, unpublished', 'published' => 'N'];
-        $table->save(new Entity($data));
+        $table->save(new \Cake\ORM\Entity($data));
 
         $settings = [
             'finder' => 'list',

@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Database\Log;
 
@@ -72,7 +72,7 @@ class QueryLoggerTest extends TestCase
      *
      * @return void
      */
-    public function testStringInterpolationNotNamed()
+    public function testStringInterpolation2()
     {
         $logger = $this->getMockBuilder('\Cake\Database\Log\QueryLogger')
             ->setMethods(['_log'])
@@ -92,7 +92,7 @@ class QueryLoggerTest extends TestCase
      *
      * @return void
      */
-    public function testStringInterpolationDuplicate()
+    public function testStringInterpolation3()
     {
         $logger = $this->getMockBuilder('\Cake\Database\Log\QueryLogger')
             ->setMethods(['_log'])
@@ -124,26 +124,6 @@ class QueryLoggerTest extends TestCase
         $logger->expects($this->once())->method('_log')->with($query);
         $logger->log($query);
         $expected = "duration=0 rows=0 SELECT a FROM b where a = 'string' AND b = 'test' AND c = 5 AND d = 3";
-        $this->assertEquals($expected, (string)$query);
-    }
-
-    /**
-     * Tests that placeholders are replaced with correctly escaped strings
-     *
-     * @return void
-     */
-    public function testStringInterpolationSpecialChars()
-    {
-        $logger = $this->getMockBuilder('\Cake\Database\Log\QueryLogger')
-            ->setMethods(['_log'])
-            ->getMock();
-        $query = new LoggedQuery;
-        $query->query = 'SELECT a FROM b where a = :p1 AND b = :p2 AND c = :p3 AND d = :p4';
-        $query->params = ['p1' => '$2y$10$dUAIj', 'p2' => '$0.23', 'p3' => 'a\\0b\\1c\\d', 'p4' => "a'b"];
-
-        $logger->expects($this->once())->method('_log')->with($query);
-        $logger->log($query);
-        $expected = "duration=0 rows=0 SELECT a FROM b where a = '\$2y\$10\$dUAIj' AND b = '\$0.23' AND c = 'a\\\\0b\\\\1c\\\\d' AND d = 'a''b'";
         $this->assertEquals($expected, (string)$query);
     }
 

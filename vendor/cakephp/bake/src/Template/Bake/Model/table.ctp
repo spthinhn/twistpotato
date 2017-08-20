@@ -18,8 +18,7 @@ $annotations = [];
 foreach ($associations as $type => $assocs) {
     foreach ($assocs as $assoc) {
         $typeStr = Inflector::camelize($type);
-        $tableFqn = $associationInfo[$assoc['alias']]['targetFqn'];
-        $annotations[] = "@property {$tableFqn}|\Cake\ORM\Association\\{$typeStr} \${$assoc['alias']}";
+        $annotations[] = "@property \Cake\ORM\Association\\{$typeStr} \${$assoc['alias']}";
     }
 }
 $annotations[] = "@method \\{$namespace}\\Model\\Entity\\{$entity} get(\$primaryKey, \$options = [])";
@@ -28,7 +27,7 @@ $annotations[] = "@method \\{$namespace}\\Model\\Entity\\{$entity}[] newEntities
 $annotations[] = "@method \\{$namespace}\\Model\\Entity\\{$entity}|bool save(\\Cake\\Datasource\\EntityInterface \$entity, \$options = [])";
 $annotations[] = "@method \\{$namespace}\\Model\\Entity\\{$entity} patchEntity(\\Cake\\Datasource\\EntityInterface \$entity, array \$data, array \$options = [])";
 $annotations[] = "@method \\{$namespace}\\Model\\Entity\\{$entity}[] patchEntities(\$entities, array \$data, array \$options = [])";
-$annotations[] = "@method \\{$namespace}\\Model\\Entity\\{$entity} findOrCreate(\$search, callable \$callback = null, \$options = [])";
+$annotations[] = "@method \\{$namespace}\\Model\\Entity\\{$entity} findOrCreate(\$search, callable \$callback = null)";
 foreach ($behaviors as $behavior => $behaviorData) {
     $annotations[] = "@mixin \Cake\ORM\Behavior\\{$behavior}Behavior";
 }
@@ -63,16 +62,16 @@ class <%= $name %>Table extends Table
         parent::initialize($config);
 
 <% if (!empty($table)): %>
-        $this->setTable('<%= $table %>');
+        $this->table('<%= $table %>');
 <% endif %>
 <% if (!empty($displayField)): %>
-        $this->setDisplayField('<%= $displayField %>');
+        $this->displayField('<%= $displayField %>');
 <% endif %>
 <% if (!empty($primaryKey)): %>
 <% if (count($primaryKey) > 1): %>
-        $this->setPrimaryKey([<%= $this->Bake->stringifyList((array)$primaryKey, ['indent' => false]) %>]);
+        $this->primaryKey([<%= $this->Bake->stringifyList((array)$primaryKey, ['indent' => false]) %>]);
 <% else: %>
-        $this->setPrimaryKey('<%= current((array)$primaryKey) %>');
+        $this->primaryKey('<%= current((array)$primaryKey) %>');
 <% endif %>
 <% endif %>
 <% if (!empty($behaviors)): %>

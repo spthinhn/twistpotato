@@ -1,15 +1,15 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The Open Group Test Suite License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Database;
 
@@ -129,7 +129,7 @@ class FunctionsBuilderTest extends TestCase
     {
         $function = $this->functions->concat(['title' => 'literal', ' is a string']);
         $this->assertInstanceOf('Cake\Database\Expression\FunctionExpression', $function);
-        $this->assertEquals('CONCAT(title, :param0)', $function->sql(new ValueBinder));
+        $this->assertEquals("CONCAT(title, :c0)", $function->sql(new ValueBinder));
         $this->assertEquals('string', $function->returnType());
     }
 
@@ -142,7 +142,7 @@ class FunctionsBuilderTest extends TestCase
     {
         $function = $this->functions->coalesce(['NULL' => 'literal', '1', 'a'], ['a' => 'date']);
         $this->assertInstanceOf('Cake\Database\Expression\FunctionExpression', $function);
-        $this->assertEquals('COALESCE(NULL, :param0, :param1)', $function->sql(new ValueBinder));
+        $this->assertEquals("COALESCE(NULL, :c0, :c1)", $function->sql(new ValueBinder));
         $this->assertEquals('date', $function->returnType());
     }
 
@@ -155,17 +155,17 @@ class FunctionsBuilderTest extends TestCase
     {
         $function = $this->functions->now();
         $this->assertInstanceOf('Cake\Database\Expression\FunctionExpression', $function);
-        $this->assertEquals('NOW()', $function->sql(new ValueBinder));
+        $this->assertEquals("NOW()", $function->sql(new ValueBinder));
         $this->assertEquals('datetime', $function->returnType());
 
         $function = $this->functions->now('date');
         $this->assertInstanceOf('Cake\Database\Expression\FunctionExpression', $function);
-        $this->assertEquals('CURRENT_DATE()', $function->sql(new ValueBinder));
+        $this->assertEquals("CURRENT_DATE()", $function->sql(new ValueBinder));
         $this->assertEquals('date', $function->returnType());
 
         $function = $this->functions->now('time');
         $this->assertInstanceOf('Cake\Database\Expression\FunctionExpression', $function);
-        $this->assertEquals('CURRENT_TIME()', $function->sql(new ValueBinder));
+        $this->assertEquals("CURRENT_TIME()", $function->sql(new ValueBinder));
         $this->assertEquals('time', $function->returnType());
     }
 
@@ -178,12 +178,12 @@ class FunctionsBuilderTest extends TestCase
     {
         $function = $this->functions->extract('day', 'created');
         $this->assertInstanceOf('Cake\Database\Expression\FunctionExpression', $function);
-        $this->assertEquals('EXTRACT(day FROM created)', $function->sql(new ValueBinder));
+        $this->assertEquals("EXTRACT(day FROM created)", $function->sql(new ValueBinder));
         $this->assertEquals('integer', $function->returnType());
 
         $function = $this->functions->datePart('year', 'modified');
         $this->assertInstanceOf('Cake\Database\Expression\FunctionExpression', $function);
-        $this->assertEquals('EXTRACT(year FROM modified)', $function->sql(new ValueBinder));
+        $this->assertEquals("EXTRACT(year FROM modified)", $function->sql(new ValueBinder));
         $this->assertEquals('integer', $function->returnType());
     }
 
@@ -196,7 +196,7 @@ class FunctionsBuilderTest extends TestCase
     {
         $function = $this->functions->dateAdd('created', -3, 'day');
         $this->assertInstanceOf('Cake\Database\Expression\FunctionExpression', $function);
-        $this->assertEquals('DATE_ADD(created, INTERVAL -3 day)', $function->sql(new ValueBinder));
+        $this->assertEquals("DATE_ADD(created, INTERVAL -3 day)", $function->sql(new ValueBinder));
         $this->assertEquals('datetime', $function->returnType());
     }
 
@@ -209,12 +209,12 @@ class FunctionsBuilderTest extends TestCase
     {
         $function = $this->functions->dayOfWeek('created');
         $this->assertInstanceOf('Cake\Database\Expression\FunctionExpression', $function);
-        $this->assertEquals('DAYOFWEEK(created)', $function->sql(new ValueBinder));
+        $this->assertEquals("DAYOFWEEK(created)", $function->sql(new ValueBinder));
         $this->assertEquals('integer', $function->returnType());
 
         $function = $this->functions->weekday('created');
         $this->assertInstanceOf('Cake\Database\Expression\FunctionExpression', $function);
-        $this->assertEquals('DAYOFWEEK(created)', $function->sql(new ValueBinder));
+        $this->assertEquals("DAYOFWEEK(created)", $function->sql(new ValueBinder));
         $this->assertEquals('integer', $function->returnType());
     }
 }

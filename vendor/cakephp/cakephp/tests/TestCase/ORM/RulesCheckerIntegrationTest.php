@@ -1,20 +1,19 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\ORM;
 
-use Cake\Event\Event;
 use Cake\ORM\Entity;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\TableRegistry;
@@ -94,10 +93,10 @@ class RulesCheckerIntegrationTest extends TestCase
      */
     public function testSaveHasOneWithValidationError()
     {
-        $entity = new Entity([
+        $entity = new \Cake\ORM\Entity([
             'name' => 'Jose'
         ]);
-        $entity->article = new Entity([
+        $entity->article = new \Cake\ORM\Entity([
             'title' => 'A Title',
             'body' => 'A body'
         ]);
@@ -133,15 +132,15 @@ class RulesCheckerIntegrationTest extends TestCase
      */
     public function testSaveHasManyWithErrorsAtomic()
     {
-        $entity = new Entity([
+        $entity = new \Cake\ORM\Entity([
             'name' => 'Jose'
         ]);
         $entity->articles = [
-            new Entity([
+            new \Cake\ORM\Entity([
                 'title' => '1',
                 'body' => 'A body'
             ]),
-            new Entity([
+            new \Cake\ORM\Entity([
                 'title' => 'Another Title',
                 'body' => 'Another body'
             ])
@@ -182,15 +181,15 @@ class RulesCheckerIntegrationTest extends TestCase
      */
     public function testSaveHasManyWithErrorsNonAtomic()
     {
-        $entity = new Entity([
+        $entity = new \Cake\ORM\Entity([
             'name' => 'Jose'
         ]);
         $entity->articles = [
-            new Entity([
+            new \Cake\ORM\Entity([
                 'title' => 'A title',
                 'body' => 'A body'
             ]),
-            new Entity([
+            new \Cake\ORM\Entity([
                 'title' => '1',
                 'body' => 'Another body'
             ])
@@ -226,15 +225,15 @@ class RulesCheckerIntegrationTest extends TestCase
      */
     public function testSaveBelongsToManyWithValidationErrorInJointEntity()
     {
-        $entity = new Entity([
+        $entity = new \Cake\ORM\Entity([
             'title' => 'A Title',
             'body' => 'A body'
         ]);
         $entity->tags = [
-            new Entity([
+            new \Cake\ORM\Entity([
                 'name' => 'Something New'
             ]),
-            new Entity([
+            new \Cake\ORM\Entity([
                 'name' => '100'
             ])
         ];
@@ -266,15 +265,15 @@ class RulesCheckerIntegrationTest extends TestCase
      */
     public function testSaveBelongsToManyWithValidationErrorInJointEntityNonAtomic()
     {
-        $entity = new Entity([
+        $entity = new \Cake\ORM\Entity([
             'title' => 'A Title',
             'body' => 'A body'
         ]);
         $entity->tags = [
-            new Entity([
+            new \Cake\ORM\Entity([
                 'name' => 'Something New'
             ]),
-            new Entity([
+            new \Cake\ORM\Entity([
                 'name' => 'New one'
             ])
         ];
@@ -634,7 +633,7 @@ class RulesCheckerIntegrationTest extends TestCase
      * Tests existsIn with invalid associations
      *
      * @group save
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      * @expectedExceptionMessage ExistsIn rule for 'author_id' is invalid. 'NotValid' is not associated with 'Cake\ORM\Table'.
      * @return void
      */
@@ -690,9 +689,8 @@ class RulesCheckerIntegrationTest extends TestCase
         $rules = $table->rulesChecker();
         $rules->add($rules->existsIn('author_id', TableRegistry::get('Authors'), 'Nope'));
 
-        $table->eventManager()->on(
-            'Model.beforeRules',
-            function (Event $event, Entity $entity, \ArrayObject $options, $operation) {
+        $table->eventManager()->attach(
+            function ($event, Entity $entity, \ArrayObject $options, $operation) {
                 $this->assertEquals(
                     [
                         'atomic' => true,
@@ -707,7 +705,8 @@ class RulesCheckerIntegrationTest extends TestCase
                 $event->stopPropagation();
 
                 return true;
-            }
+            },
+            'Model.beforeRules'
         );
 
         $this->assertSame($entity, $table->save($entity));
@@ -730,9 +729,8 @@ class RulesCheckerIntegrationTest extends TestCase
         $rules = $table->rulesChecker();
         $rules->add($rules->existsIn('author_id', TableRegistry::get('Authors'), 'Nope'));
 
-        $table->eventManager()->on(
-            'Model.afterRules',
-            function (Event $event, Entity $entity, \ArrayObject $options, $result, $operation) {
+        $table->eventManager()->attach(
+            function ($event, Entity $entity, \ArrayObject $options, $result, $operation) {
                 $this->assertEquals(
                     [
                         'atomic' => true,
@@ -748,7 +746,8 @@ class RulesCheckerIntegrationTest extends TestCase
                 $event->stopPropagation();
 
                 return true;
-            }
+            },
+            'Model.afterRules'
         );
 
         $this->assertSame($entity, $table->save($entity));
@@ -768,9 +767,9 @@ class RulesCheckerIntegrationTest extends TestCase
         ]);
 
         $table = TableRegistry::get('Articles');
-        $table->eventManager()->on('Model.buildRules', function (Event $event, RulesChecker $rules) {
+        $table->eventManager()->attach(function ($event, $rules) {
             $rules->add($rules->existsIn('author_id', TableRegistry::get('Authors'), 'Nope'));
-        });
+        }, 'Model.buildRules');
 
         $this->assertFalse($table->save($entity));
     }
@@ -796,7 +795,7 @@ class RulesCheckerIntegrationTest extends TestCase
     }
 
     /**
-     * Tests isUnique rule with conflicting columns
+     * Tests isUnique rule with coflicting columns
      *
      * @group save
      * @return void
@@ -813,7 +812,7 @@ class RulesCheckerIntegrationTest extends TestCase
         $rules = $table->rulesChecker();
         $rules->add($rules->isUnique(['author_id']));
 
-        $table->Authors->eventManager()->on('Model.beforeFind', function (Event $event, $query) {
+        $table->Authors->eventManager()->on('Model.beforeFind', function ($event, $query) {
             $query->leftJoin(['a2' => 'authors']);
         });
 
@@ -842,7 +841,7 @@ class RulesCheckerIntegrationTest extends TestCase
     }
 
     /**
-     * Tests the existsIn with conflicting columns
+     * Tests the existsIn with coflicting columns
      *
      * @group save
      * @return void
@@ -859,7 +858,7 @@ class RulesCheckerIntegrationTest extends TestCase
         $rules = $table->rulesChecker();
         $rules->add($rules->existsIn('author_id', 'Authors'));
 
-        $table->Authors->eventManager()->on('Model.beforeFind', function (Event $event, $query) {
+        $table->Authors->eventManager()->on('Model.beforeFind', function ($event, $query) {
             $query->leftJoin(['a2' => 'authors']);
         });
 
@@ -870,7 +869,7 @@ class RulesCheckerIntegrationTest extends TestCase
     /**
      * Tests that using an array in existsIn() sets the error message correctly
      *
-     * @return void
+     * @return
      */
     public function testExistsInErrorWithArrayField()
     {
@@ -1303,15 +1302,15 @@ class RulesCheckerIntegrationTest extends TestCase
      */
     public function testAvoidExistsInOnAutomaticSaving()
     {
-        $entity = new Entity([
+        $entity = new \Cake\ORM\Entity([
             'name' => 'Jose'
         ]);
         $entity->articles = [
-            new Entity([
+            new \Cake\ORM\Entity([
                 'title' => '1',
                 'body' => 'A body'
             ]),
-            new Entity([
+            new \Cake\ORM\Entity([
                 'title' => 'Another Title',
                 'body' => 'Another body'
             ])
@@ -1366,15 +1365,15 @@ class RulesCheckerIntegrationTest extends TestCase
      */
     public function testCountOfAssociatedItems()
     {
-        $entity = new Entity([
+        $entity = new \Cake\ORM\Entity([
             'title' => 'A Title',
             'body' => 'A body'
         ]);
         $entity->tags = [
-            new Entity([
+            new \Cake\ORM\Entity([
                 'name' => 'Something New'
             ]),
-            new Entity([
+            new \Cake\ORM\Entity([
                 'name' => '100'
             ])
         ];

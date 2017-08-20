@@ -6,16 +6,16 @@
  * Routes are very important mechanism that allows you to freely connect
  * different URLs to chosen controllers and their actions (functions).
  *
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 use Cake\Core\Plugin;
@@ -49,17 +49,13 @@ Router::scope('/', function (RouteBuilder $routes) {
      * its action called 'display', and we pass a param to select the view file
      * to use (in this case, src/Template/Pages/home.ctp)...
      */
-    $routes->connect('/', ['controller' => 'Pages', 'action' => 'index']);
-    $routes->connect('/introduce', ['controller' => 'Pages', 'action' => 'introduce']);
-    $routes->connect('/products', ['controller' => 'Pages', 'action' => 'products']);
-    $routes->connect('/product', ['controller' => 'Pages', 'action' => 'product']);
-    $routes->connect('/blogs', ['controller' => 'Pages', 'action' => 'blogs']);
-    $routes->connect('/blog', ['controller' => 'Pages', 'action' => 'blog']);
-    $routes->connect('/contact', ['controller' => 'Pages', 'action' => 'contact']);
+    $routes->connect('/', ['controller' => 'Pages', 'action' => 'index', 'index']);
+    $routes->connect('/thiet-ke-website/mau/website-gioi-thieu', ['controller' => 'Pages', 'action' => 'gioithieu', 'gioithieu']);
 
     /**
      * ...and connect the rest of 'Pages' controller's URLs.
      */
+    // $routes->connect('/pages/*', ['controller' => 'Pages', 'action' => 'display']);
 
     /**
      * Connect catchall routes for all controllers.
@@ -77,11 +73,11 @@ Router::scope('/', function (RouteBuilder $routes) {
      * You can remove these routes once you've connected the
      * routes you want in your application.
      */
-    $routes->fallbacks(DashedRoute::class);
+    $routes->fallbacks('DashedRoute');
 });
 
 /**
- * Load all plugin routes. See the Plugin documentation on
+ * Load all plugin routes.  See the Plugin documentation on
  * how to customize the loading of plugin routes.
  */
 Plugin::routes();

@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         0.2.9
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Filesystem;
 
@@ -26,23 +26,23 @@ class File
      * Folder object of the file
      *
      * @var \Cake\Filesystem\Folder
-     * @link https://book.cakephp.org/3.0/en/core-libraries/file-folder.html
+     * @link http://book.cakephp.org/3.0/en/core-libraries/file-folder.html
      */
-    public $Folder;
+    public $Folder = null;
 
     /**
      * File name
      *
      * @var string
-     * https://book.cakephp.org/3.0/en/core-libraries/file-folder.html#Cake\Filesystem\File::$name
+     * http://book.cakephp.org/3.0/en/core-libraries/file-folder.html#Cake\Filesystem\File::$name
      */
-    public $name;
+    public $name = null;
 
     /**
      * File info
      *
      * @var array
-     * https://book.cakephp.org/3.0/en/core-libraries/file-folder.html#Cake\Filesystem\File::$info
+     * http://book.cakephp.org/3.0/en/core-libraries/file-folder.html#Cake\Filesystem\File::$info
      */
     public $info = [];
 
@@ -50,17 +50,17 @@ class File
      * Holds the file handler resource if the file is opened
      *
      * @var resource
-     * https://book.cakephp.org/3.0/en/core-libraries/file-folder.html#Cake\Filesystem\File::$handle
+     * http://book.cakephp.org/3.0/en/core-libraries/file-folder.html#Cake\Filesystem\File::$handle
      */
-    public $handle;
+    public $handle = null;
 
     /**
      * Enable locking for file reading and writing
      *
      * @var bool
-     * https://book.cakephp.org/3.0/en/core-libraries/file-folder.html#Cake\Filesystem\File::$lock
+     * http://book.cakephp.org/3.0/en/core-libraries/file-folder.html#Cake\Filesystem\File::$lock
      */
-    public $lock;
+    public $lock = null;
 
     /**
      * Path property
@@ -68,9 +68,9 @@ class File
      * Current file's absolute path
      *
      * @var mixed
-     * https://book.cakephp.org/3.0/en/core-libraries/file-folder.html#Cake\Filesystem\File::$path
+     * http://book.cakephp.org/3.0/en/core-libraries/file-folder.html#Cake\Filesystem\File::$path
      */
-    public $path;
+    public $path = null;
 
     /**
      * Constructor
@@ -78,7 +78,7 @@ class File
      * @param string $path Path to file
      * @param bool $create Create file if it does not exist (if true)
      * @param int $mode Mode to apply to the folder holding the file
-     * @link https://book.cakephp.org/3.0/en/core-libraries/file-folder.html#file-api
+     * @link http://book.cakephp.org/3.0/en/core-libraries/file-folder.html#file-api
      */
     public function __construct($path, $create = false, $mode = 0755)
     {
@@ -106,7 +106,6 @@ class File
     public function create()
     {
         $dir = $this->Folder->pwd();
-
         if (is_dir($dir) && is_writable($dir) && !$this->exists()) {
             if (touch($this->path)) {
                 return true;
@@ -128,8 +127,10 @@ class File
         if (!$force && is_resource($this->handle)) {
             return true;
         }
-        if ($this->exists() === false && $this->create() === false) {
-            return false;
+        if ($this->exists() === false) {
+            if ($this->create() === false) {
+                return false;
+            }
         }
 
         $this->handle = fopen($this->path, $mode);
@@ -218,7 +219,7 @@ class File
      * Write given data to this file.
      *
      * @param string $data Data to write to this File.
-     * @param string $mode Mode of writing. {@link https://secure.php.net/fwrite See fwrite()}.
+     * @param string $mode Mode of writing. {@link http://php.net/fwrite See fwrite()}.
      * @param bool $force Force the file to open
      * @return bool Success
      */
@@ -226,8 +227,10 @@ class File
     {
         $success = false;
         if ($this->open($mode, $force) === true) {
-            if ($this->lock !== null && flock($this->handle, LOCK_EX) === false) {
-                return false;
+            if ($this->lock !== null) {
+                if (flock($this->handle, LOCK_EX) === false) {
+                    return false;
+                }
             }
 
             if (fwrite($this->handle, $data) !== false) {
@@ -368,14 +371,14 @@ class File
             $ext = $this->ext();
         }
 
-        return preg_replace("/(?:[^\w\.-]+)/", '_', basename($name, $ext));
+        return preg_replace("/(?:[^\w\.-]+)/", "_", basename($name, $ext));
     }
 
     /**
      * Get md5 Checksum of file with previous check of Filesize
      *
      * @param int|bool $maxsize in MB or true to force
-     * @return string|false md5 Checksum {@link https://secure.php.net/md5_file See md5_file()}, or false in case of an error
+     * @return string|false md5 Checksum {@link http://php.net/md5_file See md5_file()}, or false in case of an error
      */
     public function md5($maxsize = 5)
     {
@@ -561,8 +564,8 @@ class File
     }
 
     /**
-     * Gets the mime type of the file. Uses the finfo extension if
-     * it's available, otherwise falls back to mime_content_type().
+     * Get the mime type of the file. Uses the finfo extension if
+     * its available, otherwise falls back to mime_content_type
      *
      * @return false|string The mimetype of the file, or false if reading fails.
      */
@@ -617,8 +620,10 @@ class File
             return false;
         }
 
-        if ($this->lock !== null && flock($this->handle, LOCK_EX) === false) {
-            return false;
+        if ($this->lock !== null) {
+            if (flock($this->handle, LOCK_EX) === false) {
+                return false;
+            }
         }
 
         $replaced = $this->write(str_replace($search, $replace, $this->read()), 'w', true);

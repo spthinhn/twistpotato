@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\ORM;
 
@@ -277,29 +277,6 @@ class EagerLoaderTest extends TestCase
     }
 
     /**
-     * Tests setting containments using direct key value pairs works just as with key array.
-     *
-     * @return void
-     */
-    public function testContainKeyValueNotation()
-    {
-        $loader = new EagerLoader;
-        $loader->contain([
-            'clients',
-            'companies' => 'categories',
-        ]);
-        $expected = [
-            'clients' => [
-            ],
-            'companies' => [
-                'categories' => [
-                ],
-            ],
-        ];
-        $this->assertEquals($expected, $loader->contain());
-    }
-
-    /**
      * Tests that it is possible to pass a function as the array value for contain
      *
      * @return void
@@ -436,7 +413,22 @@ class EagerLoaderTest extends TestCase
     }
 
     /**
-     * Tests that the path for getting to a deep association is materialized in an
+     * Check that normalizing contains checks alias names.
+     *
+     * @expectedException \InvalidArgumentException
+     * @expectedExceptionMessage You have contained 'Clients' but that association was bound as 'clients'
+     * @return void
+     */
+    public function testNormalizedChecksAliasNames()
+    {
+        $contains = ['Clients'];
+        $loader = new EagerLoader;
+        $loader->contain($contains);
+        $loader->normalized($this->table);
+    }
+
+    /**
+     * Tests that the path for gettings to a deep assocition is materialized in an
      * array key
      *
      * @return void
@@ -537,22 +529,5 @@ class EagerLoaderTest extends TestCase
         }
 
         return $elements;
-    }
-
-    /**
-     * Asserts that matching('something') and setMatching('something') return consistent type.
-     *
-     * @return void
-     */
-    public function testSetMatchingReturnType()
-    {
-        $loader = new EagerLoader();
-        $result = $loader->setMatching('clients');
-        $this->assertInstanceOf(EagerLoader::class, $result);
-        $this->assertArrayHasKey('clients', $loader->getMatching());
-
-        $result = $loader->matching('customers');
-        $this->assertArrayHasKey('customers', $result);
-        $this->assertArrayHasKey('customers', $loader->getMatching());
     }
 }

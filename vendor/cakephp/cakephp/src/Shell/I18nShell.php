@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         1.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Shell;
 
@@ -21,8 +21,6 @@ use DirectoryIterator;
 
 /**
  * Shell for I18N management.
- *
- * @property \Cake\Shell\Task\ExtractTask $Extract
  */
 class I18nShell extends Shell
 {
@@ -35,17 +33,9 @@ class I18nShell extends Shell
     public $tasks = ['Extract'];
 
     /**
-     * @var string[]
-     */
-    protected $_paths;
-
-    /**
      * Override main() for help message hook
      *
      * @return void
-     * @throws \InvalidArgumentException
-     * @throws \Cake\Core\Exception\MissingPluginException
-     * @throws \Cake\Console\Exception\StopException
      */
     public function main()
     {
@@ -82,8 +72,7 @@ class I18nShell extends Shell
      * Inits PO file from POT file.
      *
      * @param string|null $language Language code to use.
-     * @return void
-     * @throws \Cake\Console\Exception\StopException
+     * @return int|null
      */
     public function init($language = null)
     {
@@ -91,7 +80,7 @@ class I18nShell extends Shell
             $language = $this->in('Please specify language code, e.g. `en`, `eng`, `en_US` etc.');
         }
         if (strlen($language) < 2) {
-            $this->abort('Invalid language code. Valid is `en`, `eng`, `en_US` etc.');
+            return $this->error('Invalid language code. Valid is `en`, `eng`, `en_US` etc.');
         }
 
         $this->_paths = [APP];
@@ -115,7 +104,7 @@ class I18nShell extends Shell
             }
             $filename = $fileinfo->getFilename();
             $newFilename = $fileinfo->getBasename('.pot');
-            $newFilename .= '.po';
+            $newFilename = $newFilename . '.po';
 
             $this->createFile($targetFolder . $newFilename, file_get_contents($sourceFolder . $filename));
             $count++;
@@ -128,7 +117,6 @@ class I18nShell extends Shell
      * Gets the option parser instance and configures it.
      *
      * @return \Cake\Console\ConsoleOptionParser
-     * @throws \Cake\Console\Exception\ConsoleException
      */
     public function getOptionParser()
     {
@@ -152,7 +140,7 @@ class I18nShell extends Shell
             ]
         ];
 
-        $parser->setDescription(
+        $parser->description(
             'I18n Shell generates .pot files(s) with translations.'
         )->addSubcommand('extract', [
             'help' => 'Extract the po translations from your application',

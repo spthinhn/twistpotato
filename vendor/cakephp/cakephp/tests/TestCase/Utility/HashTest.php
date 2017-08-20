@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         2.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Utility;
 
@@ -394,20 +394,6 @@ class HashTest extends TestCase
     }
 
     /**
-     * Test that get() can extract '' key data.
-     *
-     * @return void
-     */
-    public function testGetEmptyKey()
-    {
-        $data = [
-            '' => 'some value'
-        ];
-        $result = Hash::get($data, '');
-        $this->assertSame($data[''], $result);
-    }
-
-    /**
      * Test get() for invalid $data type
      *
      * @expectedException \InvalidArgumentException
@@ -470,19 +456,19 @@ class HashTest extends TestCase
     {
         $data = [];
         $result = Hash::maxDimensions($data);
-        $this->assertSame(0, $result);
+        $this->assertEquals(0, $result);
 
         $data = ['a', 'b'];
         $result = Hash::maxDimensions($data);
-        $this->assertSame(1, $result);
+        $this->assertEquals(1, $result);
 
         $data = ['1' => '1.1', '2', '3' => ['3.1' => '3.1.1']];
         $result = Hash::maxDimensions($data);
-        $this->assertSame(2, $result);
+        $this->assertEquals($result, 2);
 
         $data = ['1' => ['1.1' => '1.1.1'], '2', '3' => ['3.1' => ['3.1.1' => '3.1.1.1']]];
         $result = Hash::maxDimensions($data);
-        $this->assertSame(3, $result);
+        $this->assertEquals($result, 3);
 
         $data = [
             '1' => ['1.1' => '1.1.1'],
@@ -490,7 +476,7 @@ class HashTest extends TestCase
             '3' => ['3.1' => ['3.1.1' => '3.1.1.1']]
         ];
         $result = Hash::maxDimensions($data);
-        $this->assertSame(4, $result);
+        $this->assertEquals($result, 4);
 
         $data = [
            '1' => [
@@ -505,14 +491,7 @@ class HashTest extends TestCase
            '2' => ['2.1' => '2.1.1']
         ];
         $result = Hash::maxDimensions($data);
-        $this->assertSame(5, $result);
-
-        $data = [
-           '1' => false,
-           '2' => ['2.1' => '2.1.1']
-        ];
-        $result = Hash::maxDimensions($data);
-        $this->assertSame(2, $result);
+        $this->assertEquals($result, 5);
     }
 
     /**
@@ -857,21 +836,8 @@ class HashTest extends TestCase
      */
     public function testFilter()
     {
-        $result = Hash::filter([
-            '0',
-            false,
-            true,
-            0,
-            0.0,
-            ['one thing', 'I can tell you', 'is you got to be', false]
-        ]);
-        $expected = [
-            0 => '0',
-            2 => true,
-            3 => 0,
-            4 => 0.0,
-            5 => ['one thing', 'I can tell you', 'is you got to be']
-        ];
+        $result = Hash::filter(['0', false, true, 0, ['one thing', 'I can tell you', 'is you got to be', false]]);
+        $expected = ['0', 2 => true, 3 => 0, 4 => ['one thing', 'I can tell you', 'is you got to be']];
         $this->assertSame($expected, $result);
 
         $result = Hash::filter([1, [false]]);
@@ -937,7 +903,7 @@ class HashTest extends TestCase
     /**
      * Test passing invalid argument type
      *
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Invalid data type, must be an array or \ArrayAccess instance.
      * @return void
      */
@@ -1829,6 +1795,7 @@ class HashTest extends TestCase
         $this->assertEquals($expected, $result);
     }
 
+
     /**
      * test sorting with string ignoring case.
      *
@@ -2187,7 +2154,7 @@ class HashTest extends TestCase
     public function testCombine()
     {
         $result = Hash::combine([], '{n}.User.id', '{n}.User.Data');
-        $this->assertEmpty($result);
+        $this->assertTrue(empty($result));
 
         $a = static::userData();
 

@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.3.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Http;
 
@@ -18,7 +18,9 @@ use Cake\Event\EventDispatcherTrait;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
+use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmitterInterface;
+use Zend\Diactoros\Response\SapiStreamEmitter;
 
 /**
  * Runs an application invoking all the PSR7 middleware and the registered application.
@@ -68,8 +70,8 @@ class Server
     public function run(ServerRequestInterface $request = null, ResponseInterface $response = null)
     {
         $this->app->bootstrap();
-        $response = $response ?: new Response();
         $request = $request ?: ServerRequestFactory::fromGlobals();
+        $response = $response ?: new Response();
 
         $middleware = $this->app->middleware(new MiddlewareQueue());
         if (!($middleware instanceof MiddlewareQueue)) {
@@ -100,7 +102,7 @@ class Server
     public function emit(ResponseInterface $response, EmitterInterface $emitter = null)
     {
         if (!$emitter) {
-            $emitter = new ResponseEmitter();
+            $emitter = new SapiStreamEmitter();
         }
         $emitter->emit($response);
     }
@@ -121,7 +123,7 @@ class Server
     /**
      * Get the current application.
      *
-     * @return \Cake\Http\BaseApplication The application that will be run.
+     * @return BaseApplication The application that will be run.
      */
     public function getApp()
     {

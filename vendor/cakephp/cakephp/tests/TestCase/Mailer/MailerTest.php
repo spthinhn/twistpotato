@@ -1,19 +1,18 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  * @since         3.1.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Mailer;
 
 use Cake\TestSuite\TestCase;
-use RuntimeException;
 use TestApp\Mailer\TestMailer;
 
 class MailerTest extends TestCase
@@ -53,7 +52,6 @@ class MailerTest extends TestCase
         $result = (new TestMailer())->layout('foo');
         $this->assertInstanceOf('TestApp\Mailer\TestMailer', $result);
         $this->assertEquals('foo', $result->viewBuilder()->layout());
-        $this->assertEquals('foo', $result->getLayout());
     }
 
     public function testProxies()
@@ -84,35 +82,18 @@ class MailerTest extends TestCase
         $this->assertInstanceOf('TestApp\Mailer\TestMailer', $result);
     }
 
-    /**
-     * Test that get/set methods can be proxied.
-     *
-     * @return void
-     */
-    public function testGetSetProxies()
-    {
-        $mailer = new TestMailer();
-        $result = $mailer->setLayout('custom')
-            ->setTo('test@example.com')
-            ->setCc('cc@example.com');
-        $this->assertSame($result, $mailer);
-
-        $this->assertSame(['test@example.com' => 'test@example.com'], $result->getTo());
-        $this->assertSame(['cc@example.com' => 'cc@example.com'], $result->getCc());
-    }
-
     public function testSet()
     {
-        $email = $this->getMockForEmail('setViewVars');
+        $email = $this->getMockForEmail('viewVars');
         $email->expects($this->once())
-            ->method('setViewVars')
+            ->method('viewVars')
             ->with(['key' => 'value']);
         $result = (new TestMailer($email))->set('key', 'value');
         $this->assertInstanceOf('TestApp\Mailer\TestMailer', $result);
 
-        $email = $this->getMockForEmail('setViewVars');
+        $email = $this->getMockForEmail('viewVars');
         $email->expects($this->once())
-            ->method('setViewVars')
+            ->method('viewVars')
             ->with(['key' => 'value']);
         $result = (new TestMailer($email))->set(['key' => 'value']);
         $this->assertInstanceOf('TestApp\Mailer\TestMailer', $result);
@@ -158,33 +139,6 @@ class MailerTest extends TestCase
     }
 
     /**
-     * Test that mailers call reset() when send fails
-     */
-    public function testSendFailsEmailIsReset()
-    {
-        $email = $this->getMockForEmail(['send', 'reset']);
-        $email->expects($this->once())
-            ->method('send')
-            ->will($this->throwException(new RuntimeException('kaboom')));
-
-        $mailer = $this->getMockBuilder('TestApp\Mailer\TestMailer')
-            ->setMethods(['welcome', 'reset'])
-            ->setConstructorArgs([$email])
-            ->getMock();
-
-        // Mailer should be reset even if sending fails.
-        $mailer->expects($this->once())
-            ->method('reset');
-
-        try {
-            $mailer->send('welcome', ['foo', 'bar']);
-            $this->fail('Exception should bubble up.');
-        } catch (RuntimeException $e) {
-            $this->assertTrue(true, 'Exception was raised');
-        }
-    }
-
-    /**
      * test that initial email instance config is restored after email is sent.
      *
      * @return [type]
@@ -211,7 +165,7 @@ class MailerTest extends TestCase
     }
 
     /**
-     * @expectedException \Cake\Mailer\Exception\MissingActionException
+     * @expectedException Cake\Mailer\Exception\MissingActionException
      * @expectedExceptionMessage Mail TestMailer::test() could not be found, or is not accessible.
      */
     public function testMissingActionThrowsException()

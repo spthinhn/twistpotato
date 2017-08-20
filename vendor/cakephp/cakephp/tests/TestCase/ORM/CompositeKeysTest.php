@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\ORM;
 
@@ -34,7 +34,7 @@ class OpenArticleEntity extends Entity
 }
 
 /**
- * Integration tests for table operations involving composite keys
+ * Integration tetss for table operations involving composite keys
  */
 class CompositeKeyTest extends TestCase
 {
@@ -302,7 +302,7 @@ class CompositeKeyTest extends TestCase
     }
 
     /**
-     * Tests loading belongsTo with composite keys
+     * Tests loding belongsTo with composite keys
      *
      * @dataProvider strategiesProviderBelongsTo
      * @return void
@@ -409,7 +409,7 @@ class CompositeKeyTest extends TestCase
      */
     public function testSaveNewEntity()
     {
-        $entity = new Entity([
+        $entity = new \Cake\ORM\Entity([
             'id' => 5,
             'site_id' => 1,
             'title' => 'Fifth Article',
@@ -435,7 +435,7 @@ class CompositeKeyTest extends TestCase
      */
     public function testSaveNewEntityMissingKey()
     {
-        $entity = new Entity([
+        $entity = new \Cake\ORM\Entity([
             'id' => 5,
             'title' => 'Fifth Article',
             'body' => 'Fifth Article Body',
@@ -453,7 +453,7 @@ class CompositeKeyTest extends TestCase
     public function testDelete()
     {
         $table = TableRegistry::get('SiteAuthors');
-        $table->save(new Entity(['id' => 1, 'site_id' => 2]));
+        $table->save(new \Cake\ORM\Entity(['id' => 1, 'site_id' => 2]));
         $entity = $table->get([1, 1]);
         $result = $table->delete($entity);
         $this->assertTrue($result);
@@ -672,7 +672,7 @@ class CompositeKeyTest extends TestCase
     }
 
     /**
-     * Tests that loadInto() is capable of handling composite primary keys
+     * Tets that loadInto() is capable of handling composite primary keys
      *
      * @return void
      */
@@ -694,8 +694,8 @@ class CompositeKeyTest extends TestCase
     }
 
     /**
-     * Tests that loadInto() is capable of handling composite primary keys
-     * when loading belongsTo associations
+     * Tets that loadInto() is capable of handling composite primary keys
+     * when loading belongsTo assocaitions
      *
      * @return void
      */
@@ -716,7 +716,7 @@ class CompositeKeyTest extends TestCase
     }
 
     /**
-     * Tests that loadInto() is capable of handling composite primary keys
+     * Tets that loadInto() is capable of handling composite primary keys
      * when loading into multiple entities
      *
      * @return void
@@ -749,7 +749,7 @@ class CompositeKeyTest extends TestCase
     {
         $this->skipIf(
             $this->connection->driver() instanceof \Cake\Database\Driver\Sqlite,
-            'SQLite does not support the requirements of this test.'
+            'SQLite does not support the requrirements of this test.'
         );
     }
 }

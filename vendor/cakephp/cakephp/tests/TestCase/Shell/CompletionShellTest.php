@@ -1,21 +1,22 @@
 <?php
 /**
- * CakePHP :  Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP :  Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP Project
  * @since         2.5.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Shell;
 
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOutput;
+use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\TestSuite\TestCase;
 
@@ -47,7 +48,7 @@ class CompletionShellTest extends TestCase
     public function setUp()
     {
         parent::setUp();
-        static::setAppNamespace();
+        Configure::write('App.namespace', 'TestApp');
         Plugin::load(['TestPlugin', 'TestPluginTwo']);
 
         $this->out = new TestCompletionStringOutput();
@@ -73,12 +74,12 @@ class CompletionShellTest extends TestCase
     {
         parent::tearDown();
         unset($this->Shell);
-        static::setAppNamespace('App');
+        Configure::write('App.namespace', 'App');
         Plugin::unload();
     }
 
     /**
-     * test that the startup method suppresses the shell header
+     * test that the startup method supresses the shell header
      *
      * @return void
      */
@@ -101,7 +102,7 @@ class CompletionShellTest extends TestCase
         $this->Shell->runCommand(['main']);
         $output = $this->out->output;
 
-        $expected = '/This command is not intended to be called manually/';
+        $expected = "/This command is not intended to be called manually/";
         $this->assertRegExp($expected, $output);
     }
 
@@ -115,7 +116,7 @@ class CompletionShellTest extends TestCase
         $this->Shell->runCommand(['commands']);
         $output = $this->out->output;
 
-        $expected = 'TestPlugin.example TestPlugin.sample TestPluginTwo.example unique welcome ' .
+        $expected = "TestPlugin.example TestPlugin.sample TestPluginTwo.example unique welcome " .
             "cache i18n orm_cache plugin routes server i18m sample testing_dispatch\n";
         $this->assertTextEquals($expected, $output);
     }
@@ -130,12 +131,12 @@ class CompletionShellTest extends TestCase
         $this->Shell->runCommand(['options']);
         $output = $this->out->output;
 
-        $expected = '';
+        $expected = "";
         $this->assertTextEquals($expected, $output);
     }
 
     /**
-     * test that options with a non-existing command returns nothing
+     * test that options with a nonexisting command returns nothing
      *
      * @return void
      */
@@ -143,7 +144,7 @@ class CompletionShellTest extends TestCase
     {
         $this->Shell->runCommand(['options', 'foo']);
         $output = $this->out->output;
-        $expected = '';
+        $expected = "";
         $this->assertTextEquals($expected, $output);
     }
 
@@ -290,7 +291,7 @@ class CompletionShellTest extends TestCase
     }
 
     /**
-     * test that subcommands with a non-existing command returns nothing
+     * test that subcommands with a nonexisting command returns nothing
      *
      * @return void
      */

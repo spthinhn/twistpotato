@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         1.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Cache\Engine;
 
@@ -36,9 +36,9 @@ class FileEngine extends CacheEngine
     /**
      * Instance of SplFileObject class
      *
-     * @var \SplFileObject|null
+     * @var \SplFileObject
      */
-    protected $_File;
+    protected $_File = null;
 
     /**
      * The default config used unless overridden by runtime configuration
@@ -98,7 +98,7 @@ class FileEngine extends CacheEngine
         if (substr($this->_config['path'], -1) !== DIRECTORY_SEPARATOR) {
             $this->_config['path'] .= DIRECTORY_SEPARATOR;
         }
-        if ($this->_groupPrefix) {
+        if (!empty($this->_groupPrefix)) {
             $this->_groupPrefix = str_replace('_', DIRECTORY_SEPARATOR, $this->_groupPrefix);
         }
 
@@ -193,7 +193,9 @@ class FileEngine extends CacheEngine
         $time = time();
         $cachetime = (int)$this->_File->current();
 
-        if ($cachetime < $time || ($time + $this->_config['duration']) < $cachetime) {
+        if ($cachetime !== false &&
+            ($cachetime < $time || ($time + $this->_config['duration']) < $cachetime)
+        ) {
             if ($this->_config['lock']) {
                 $this->_File->flock(LOCK_UN);
             }
@@ -375,7 +377,7 @@ class FileEngine extends CacheEngine
     protected function _setKey($key, $createKey = false)
     {
         $groups = null;
-        if ($this->_groupPrefix) {
+        if (!empty($this->_groupPrefix)) {
             $groups = vsprintf($this->_groupPrefix, $this->groups());
         }
         $dir = $this->_config['path'] . $groups;

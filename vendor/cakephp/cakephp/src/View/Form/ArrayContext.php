@@ -1,20 +1,20 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\View\Form;
 
-use Cake\Http\ServerRequest;
+use Cake\Network\Request;
 use Cake\Utility\Hash;
 
 /**
@@ -31,7 +31,7 @@ use Cake\Utility\Hash;
  * - `required` A nested array of fields, relationships and boolean
  *   flags to indicate a field is required.
  * - `schema` An array of data that emulate the column structures that
- *   Cake\Database\Schema\Schema uses. This array allows you to control
+ *   Cake\Database\Schema\Table uses. This array allows you to control
  *   the inferred type for fields and allows auto generation of attributes
  *   like maxlength, step and other HTML attributes. If you want
  *   primary key/id detection to work. Make sure you have provided a `_constraints`
@@ -63,7 +63,7 @@ class ArrayContext implements ContextInterface
     /**
      * The request object.
      *
-     * @var \Cake\Http\ServerRequest
+     * @var \Cake\Network\Request
      */
     protected $_request;
 
@@ -77,10 +77,10 @@ class ArrayContext implements ContextInterface
     /**
      * Constructor.
      *
-     * @param \Cake\Http\ServerRequest $request The request object.
+     * @param \Cake\Network\Request $request The request object.
      * @param array $context Context info.
      */
-    public function __construct(ServerRequest $request, array $context)
+    public function __construct(Request $request, array $context)
     {
         $this->_request = $request;
         $context += [
@@ -166,7 +166,7 @@ class ArrayContext implements ContextInterface
             'schemaDefault' => true
         ];
 
-        $val = $this->_request->getData($field);
+        $val = $this->_request->data($field);
         if ($val !== null) {
             return $val;
         }

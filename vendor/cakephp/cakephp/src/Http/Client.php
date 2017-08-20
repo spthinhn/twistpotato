@@ -1,15 +1,15 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Http;
 
@@ -19,7 +19,6 @@ use Cake\Core\InstanceConfigTrait;
 use Cake\Http\Client\CookieCollection;
 use Cake\Http\Client\Request;
 use Cake\Utility\Hash;
-use Zend\Diactoros\Uri;
 
 /**
  * The end user interface for doing HTTP requests.
@@ -51,7 +50,7 @@ use Zend\Diactoros\Uri;
  *
  * You can use the 'cookieJar' constructor option to provide a custom
  * cookie jar instance you've restored from cache/disk. By default
- * an empty instance of Cake\Http\Client\CookieCollection will be created.
+ * an empty instance of Cake\Network\Http\CookieCollection will be created.
  *
  * ### Sending request bodies
  *
@@ -125,7 +124,7 @@ class Client
 
     /**
      * Adapter for sending requests. Defaults to
-     * Cake\Http\Client\Adapter\Stream
+     * Cake\Network\Http\Adapter\Stream
      *
      * @var \Cake\Http\Client\Adapter\Stream
      */
@@ -156,10 +155,10 @@ class Client
      */
     public function __construct($config = [])
     {
-        $this->setConfig($config);
+        $this->config($config);
 
         $adapter = $this->_config['adapter'];
-        $this->setConfig('adapter', null);
+        $this->config('adapter', null);
         if (is_string($adapter)) {
             $adapter = new $adapter();
         }
@@ -167,7 +166,7 @@ class Client
 
         if (!empty($this->_config['cookieJar'])) {
             $this->_cookies = $this->_config['cookieJar'];
-            $this->setConfig('cookieJar', null);
+            $this->config('cookieJar', null);
         } else {
             $this->_cookies = new CookieCollection();
         }
@@ -201,7 +200,7 @@ class Client
     public function get($url, $data = [], array $options = [])
     {
         $options = $this->_mergeOptions($options);
-        $body = null;
+        $body = [];
         if (isset($data['_content'])) {
             $body = $data['_content'];
             unset($data['_content']);
@@ -372,45 +371,8 @@ class Client
      */
     public function send(Request $request, $options = [])
     {
-        $redirects = 0;
-        if (isset($options['redirect'])) {
-            $redirects = (int)$options['redirect'];
-            unset($options['redirect']);
-        }
-
-        do {
-            $response = $this->_sendRequest($request, $options);
-
-            $handleRedirect = $response->isRedirect() && $redirects-- > 0;
-            if ($handleRedirect) {
-                $url = $request->getUri();
-                $request->cookie($this->_cookies->get($url));
-
-                $location = $response->getHeaderLine('Location');
-                $locationUrl = $this->buildUrl($location, [], [
-                    'host' => $url->getHost(),
-                    'port' => $url->getPort(),
-                    'scheme' => $url->getScheme()
-                ]);
-
-                $request = $request->withUri(new Uri($locationUrl));
-            }
-        } while ($handleRedirect);
-
-        return $response;
-    }
-
-    /**
-     * Send a request without redirection.
-     *
-     * @param \Cake\Http\Client\Request $request The request to send.
-     * @param array $options Additional options to use.
-     * @return \Cake\Http\Client\Response
-     */
-    protected function _sendRequest(Request $request, $options)
-    {
         $responses = $this->_adapter->send($request, $options);
-        $url = $request->getUri();
+        $url = $request->url();
         foreach ($responses as $response) {
             $this->_cookies->store($response, $url);
         }
@@ -587,5 +549,3 @@ class Client
         return new $class($this, $options);
     }
 }
-// @deprecated Backwards compatibility with earler 3.x versions.
-class_alias('Cake\Http\Client', 'Cake\Network\Http\Client');

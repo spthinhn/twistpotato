@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.2.1
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Routing\Route;
 
@@ -190,21 +190,6 @@ class InflectedRouteTest extends TestCase
         $this->assertEquals('Media', $result['controller']);
         $this->assertEquals('search_it', $result['action']);
         $this->assertEquals(['tv_shows'], $result['pass']);
-    }
-
-    /**
-     * Test that parse() checks methods.
-     *
-     * @return void
-     */
-    public function testParseMethodMatch()
-    {
-        $route = new InflectedRoute('/:controller/:action', ['_method' => 'POST']);
-        $this->assertFalse($route->parse('/blog_posts/add_new', 'GET'));
-
-        $result = $route->parse('/blog_posts/add_new', 'POST');
-        $this->assertEquals('BlogPosts', $result['controller']);
-        $this->assertEquals('add_new', $result['action']);
     }
 
     /**

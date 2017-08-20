@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         1.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Core;
 
@@ -82,7 +82,7 @@ class ConfigureTest extends TestCase
     /**
      * testReadOrFail method
      *
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      * @expectedExceptionMessage Expected configuration key "This.Key.Does.Not.exist" not found
      * @return void
      */
@@ -249,11 +249,11 @@ class ConfigureTest extends TestCase
      */
     public function testCheckKeyWithSpaces()
     {
-        $this->assertTrue(Configure::write('Configure Test', 'test'));
+        $this->assertTrue(Configure::write('Configure Test', "test"));
         $this->assertTrue(Configure::check('Configure Test'));
         Configure::delete('Configure Test');
 
-        $this->assertTrue(Configure::write('Configure Test.Test Case', 'test'));
+        $this->assertTrue(Configure::write('Configure Test.Test Case', "test"));
         $this->assertTrue(Configure::check('Configure Test.Test Case'));
     }
 
@@ -274,7 +274,7 @@ class ConfigureTest extends TestCase
      * @expectedException \RuntimeException
      * @return void
      */
-    public function testLoadExceptionOnNonExistentFile()
+    public function testLoadExceptionOnNonExistantFile()
     {
         Configure::config('test', new PhpConfig());
         Configure::load('non_existing_configuration_file', 'test');
@@ -515,7 +515,7 @@ class ConfigureTest extends TestCase
         Configure::config('test_Engine', new PhpConfig(TMP));
 
         $result = Configure::dump('config_test', 'test_Engine');
-        $this->assertGreaterThan(0, $result);
+        $this->assertTrue($result > 0);
         $result = file_get_contents(TMP . 'config_test.php');
         $this->assertContains('<?php', $result);
         $this->assertContains('return ', $result);
@@ -535,7 +535,7 @@ class ConfigureTest extends TestCase
         Configure::write('Error', ['test' => 'value']);
 
         $result = Configure::dump('config_test', 'test_Engine', ['Error']);
-        $this->assertGreaterThan(0, $result);
+        $this->assertTrue($result > 0);
         $result = file_get_contents(TMP . 'config_test.php');
         $this->assertContains('<?php', $result);
         $this->assertContains('return ', $result);

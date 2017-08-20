@@ -2,22 +2,23 @@
 /**
  * HelperTest file
  *
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         1.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\View;
 
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
+use Cake\Network\Request;
 use Cake\Routing\Router;
 use Cake\TestSuite\TestCase;
 use Cake\View\Helper;
@@ -42,6 +43,20 @@ class TestHelper extends Helper
      * @var array
      */
     public $helpers = ['Html', 'TestPlugin.OtherHelper'];
+
+    /**
+     * expose a method as public
+     *
+     * @param string $options
+     * @param string $exclude
+     * @param string $insertBefore
+     * @param string $insertAfter
+     * @return void
+     */
+    public function parseAttributes($options, $exclude = null, $insertBefore = ' ', $insertAfter = null)
+    {
+        return $this->_parseAttributes($options, $exclude, $insertBefore, $insertAfter);
+    }
 }
 
 /**
@@ -49,11 +64,6 @@ class TestHelper extends Helper
  */
 class HelperTest extends TestCase
 {
-
-    /**
-     * @var \Cake\View\View
-     */
-    public $View;
 
     /**
      * setUp method
@@ -66,6 +76,8 @@ class HelperTest extends TestCase
 
         Router::reload();
         $this->View = new View();
+        $this->Helper = new Helper($this->View);
+        $this->Helper->request = new Request();
     }
 
     /**
@@ -79,7 +91,7 @@ class HelperTest extends TestCase
         Configure::delete('Asset');
 
         Plugin::unload();
-        unset($this->View);
+        unset($this->Helper, $this->View);
     }
 
     /**
@@ -147,17 +159,6 @@ class HelperTest extends TestCase
 
         $resultA->testprop = 1;
         $this->assertEquals($resultA->testprop, $resultB->testprop);
-    }
-
-    /**
-     * test getting view instance
-     *
-     * @return void
-     */
-    public function testGetView()
-    {
-        $Helper = new TestHelper($this->View);
-        $this->assertSame($this->View, $Helper->getView());
     }
 
     /**

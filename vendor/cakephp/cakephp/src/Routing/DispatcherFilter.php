@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         2.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Routing;
 
@@ -101,7 +101,7 @@ class DispatcherFilter implements EventListenerInterface
         if (!isset($config['priority'])) {
             $config['priority'] = $this->_priority;
         }
-        $this->setConfig($config);
+        $this->config($config);
         if (isset($config['when']) && !is_callable($config['when'])) {
             throw new InvalidArgumentException('"when" conditions must be a callable.');
         }
@@ -138,7 +138,7 @@ class DispatcherFilter implements EventListenerInterface
      */
     public function handle(Event $event)
     {
-        $name = $event->getName();
+        $name = $event->name();
         list(, $method) = explode('.', $name);
         if (empty($this->_config['for']) && empty($this->_config['when'])) {
             return $this->{$method}($event);
@@ -156,8 +156,7 @@ class DispatcherFilter implements EventListenerInterface
      */
     public function matches(Event $event)
     {
-        /* @var \Cake\Http\ServerRequest $request */
-        $request = $event->getData('request');
+        $request = $event->data['request'];
         $pass = true;
         if (!empty($this->_config['for'])) {
             $len = strlen('preg:');
@@ -170,7 +169,7 @@ class DispatcherFilter implements EventListenerInterface
             }
         }
         if ($pass && !empty($this->_config['when'])) {
-            $response = $event->getData('response');
+            $response = $event->data['response'];
             $pass = $this->_config['when']($request, $response);
         }
 
@@ -182,7 +181,7 @@ class DispatcherFilter implements EventListenerInterface
      * If used with default priority, it will be called after the Router has parsed the
      * URL and set the routing params into the request object.
      *
-     * If a Cake\Http\Response object instance is returned, it will be served at the end of the
+     * If a Cake\Network\Response object instance is returned, it will be served at the end of the
      * event cycle, not calling any controller as a result. This will also have the effect of
      * not calling the after event in the dispatcher.
      *

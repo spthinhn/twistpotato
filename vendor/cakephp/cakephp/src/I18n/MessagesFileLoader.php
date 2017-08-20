@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\I18n;
 
@@ -70,7 +70,7 @@ class MessagesFileLoader
      * $package = $loader();
      * ```
      *
-     * Load and parse src/Locale/fr_FR/validation.mo
+     * Load and parse  src/Locale/fr_FR/validation.mo
      *
      * ```
      * $loader = new MessagesFileLoader('validation', 'fr_FR', 'mo');
@@ -130,7 +130,7 @@ class MessagesFileLoader
         }
 
         $name = ucfirst($ext);
-        $class = App::className($name, 'I18n\Parser', 'FileParser');
+        $class = App::classname($name, 'I18n\Parser', 'FileParser');
 
         if (!$class) {
             throw new RuntimeException(sprintf('Could not find class %s', "{$name}FileParser"));

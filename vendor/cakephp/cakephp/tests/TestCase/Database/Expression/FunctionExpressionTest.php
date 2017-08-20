@@ -1,15 +1,15 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The Open Group Test Suite License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Database\Expression;
 
@@ -44,15 +44,15 @@ class FunctionExpressionTest extends TestCase
     {
         $f = new FunctionExpression('MyFunction', ['foo', 'bar']);
         $binder = new ValueBinder;
-        $this->assertEquals('MyFunction(:param0, :param1)', $f->sql($binder));
+        $this->assertEquals("MyFunction(:c0, :c1)", $f->sql($binder));
 
-        $this->assertEquals('foo', $binder->bindings()[':param0']['value']);
-        $this->assertEquals('bar', $binder->bindings()[':param1']['value']);
+        $this->assertEquals('foo', $binder->bindings()[':c0']['value']);
+        $this->assertEquals('bar', $binder->bindings()[':c1']['value']);
 
         $binder = new ValueBinder;
         $f = new FunctionExpression('MyFunction', ['bar']);
-        $this->assertEquals('MyFunction(:param0)', $f->sql($binder));
-        $this->assertEquals('bar', $binder->bindings()[':param0']['value']);
+        $this->assertEquals("MyFunction(:c0)", $f->sql($binder));
+        $this->assertEquals('bar', $binder->bindings()[':c0']['value']);
     }
 
     /**
@@ -64,7 +64,7 @@ class FunctionExpressionTest extends TestCase
     {
         $binder = new ValueBinder;
         $f = new FunctionExpression('MyFunction', ['foo' => 'literal', 'bar']);
-        $this->assertEquals('MyFunction(foo, :param0)', $f->sql($binder));
+        $this->assertEquals("MyFunction(foo, :c0)", $f->sql($binder));
     }
 
     /**
@@ -78,7 +78,7 @@ class FunctionExpressionTest extends TestCase
         $binder = new ValueBinder;
         $f = new FunctionExpression('MyFunction', ['foo', 'bar']);
         $g = new FunctionExpression('Wrapper', ['bar' => 'literal', $f]);
-        $this->assertEquals('Wrapper(bar, (MyFunction(:param0, :param1)))', $g->sql($binder));
+        $this->assertEquals("Wrapper(bar, (MyFunction(:c0, :c1)))", $g->sql($binder));
     }
 
     /**

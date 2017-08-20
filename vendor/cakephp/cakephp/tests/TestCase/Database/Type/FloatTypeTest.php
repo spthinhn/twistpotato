@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Database\Type;
 
@@ -18,32 +18,13 @@ use Cake\Database\Type;
 use Cake\Database\Type\FloatType;
 use Cake\I18n\I18n;
 use Cake\TestSuite\TestCase;
-use PDO;
+use \PDO;
 
 /**
  * Test for the Float type.
  */
 class FloatTypeTest extends TestCase
 {
-    /**
-     * @var \Cake\Database\Type\FloatType
-     */
-    public $type;
-
-    /**
-     * @var \Cake\Database\Driver
-     */
-    public $driver;
-
-    /**
-     * @var string
-     */
-    public $numberClass;
-
-    /**
-     * @var string
-     */
-    public $localeString;
 
     /**
      * Setup
@@ -55,10 +36,10 @@ class FloatTypeTest extends TestCase
         parent::setUp();
         $this->type = Type::build('float');
         $this->driver = $this->getMockBuilder('Cake\Database\Driver')->getMock();
-        $this->localeString = I18n::locale();
+        $this->locale = I18n::locale();
         $this->numberClass = FloatType::$numberClass;
 
-        I18n::locale($this->localeString);
+        I18n::locale($this->locale);
     }
 
     /**
@@ -69,7 +50,7 @@ class FloatTypeTest extends TestCase
     public function tearDown()
     {
         parent::tearDown();
-        I18n::locale($this->localeString);
+        I18n::locale($this->locale);
         FloatType::$numberClass = $this->numberClass;
     }
 
@@ -92,7 +73,7 @@ class FloatTypeTest extends TestCase
         $this->assertSame(2.0, $result);
 
         $result = $this->type->toPHP(['3', '4'], $this->driver);
-        $this->assertSame(1.0, $result);
+        $this->assertSame(1, $result);
     }
 
     /**
@@ -118,7 +99,7 @@ class FloatTypeTest extends TestCase
         $this->assertSame(2.51, $result);
 
         $result = $this->type->toDatabase(['3', '4'], $this->driver);
-        $this->assertSame(1.0, $result);
+        $this->assertSame(1, $result);
     }
 
     /**
@@ -128,20 +109,20 @@ class FloatTypeTest extends TestCase
      */
     public function testMarshal()
     {
-        $result = $this->type->marshal('some data');
+        $result = $this->type->marshal('some data', $this->driver);
         $this->assertSame('some data', $result);
 
-        $result = $this->type->marshal('');
+        $result = $this->type->marshal('', $this->driver);
         $this->assertNull($result);
 
-        $result = $this->type->marshal('2.51');
+        $result = $this->type->marshal('2.51', $this->driver);
         $this->assertSame(2.51, $result);
 
-        $result = $this->type->marshal('3.5 bears');
+        $result = $this->type->marshal('3.5 bears', $this->driver);
         $this->assertSame('3.5 bears', $result);
 
-        $result = $this->type->marshal(['3', '4']);
-        $this->assertSame(1.0, $result);
+        $result = $this->type->marshal(['3', '4'], $this->driver);
+        $this->assertSame(1, $result);
     }
 
     /**
@@ -173,7 +154,7 @@ class FloatTypeTest extends TestCase
     /**
      * Test that exceptions are raised on invalid parsers.
      *
-     * @expectedException \RuntimeException
+     * @expectedException RuntimeException
      * @return void
      */
     public function testUseLocaleParsingInvalid()

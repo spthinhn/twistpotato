@@ -50,7 +50,7 @@ class EventFiredWithTest extends TestCase
      * tests trying to assert data key=>value when an event is fired multiple times
      *
      * @return void
-     * @expectedException \PHPUnit\Framework\AssertionFailedError
+     * @expectedException \PHPUnit_Framework_AssertionFailedError
      */
     public function testMatchesInvalid()
     {

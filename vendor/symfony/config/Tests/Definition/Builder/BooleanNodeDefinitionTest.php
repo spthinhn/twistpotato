@@ -11,13 +11,12 @@
 
 namespace Symfony\Component\Config\Tests\Definition\Builder;
 
-use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\Definition\Builder\BooleanNodeDefinition;
 
-class BooleanNodeDefinitionTest extends TestCase
+class BooleanNodeDefinitionTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidDefinitionException
+     * @expectedException Symfony\Component\Config\Definition\Exception\InvalidDefinitionException
      * @expectedExceptionMessage ->cannotBeEmpty() is not applicable to BooleanNodeDefinition.
      */
     public function testCannotBeEmptyThrowsAnException()

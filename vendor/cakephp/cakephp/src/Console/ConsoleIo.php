@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Console;
 
@@ -101,10 +101,10 @@ class ConsoleIo
      */
     public function __construct(ConsoleOutput $out = null, ConsoleOutput $err = null, ConsoleInput $in = null, HelperRegistry $helpers = null)
     {
-        $this->_out = $out ?: new ConsoleOutput('php://stdout');
-        $this->_err = $err ?: new ConsoleOutput('php://stderr');
-        $this->_in = $in ?: new ConsoleInput('php://stdin');
-        $this->_helpers = $helpers ?: new HelperRegistry();
+        $this->_out = $out ? $out : new ConsoleOutput('php://stdout');
+        $this->_err = $err ? $err : new ConsoleOutput('php://stderr');
+        $this->_in = $in ? $in : new ConsoleInput('php://stdin');
+        $this->_helpers = $helpers ? $helpers : new HelperRegistry();
         $this->_helpers->setIo($this);
     }
 
@@ -128,7 +128,7 @@ class ConsoleIo
      *
      * @param string|array $message A string or an array of strings to output
      * @param int $newlines Number of newlines to append
-     * @return int|bool The number of bytes returned from writing to stdout.
+     * @return int|bool Returns the number of bytes returned from writing to stdout.
      */
     public function verbose($message, $newlines = 1)
     {
@@ -140,7 +140,7 @@ class ConsoleIo
      *
      * @param string|array $message A string or an array of strings to output
      * @param int $newlines Number of newlines to append
-     * @return int|bool The number of bytes returned from writing to stdout.
+     * @return int|bool Returns the number of bytes returned from writing to stdout.
      */
     public function quiet($message, $newlines = 1)
     {
@@ -161,7 +161,7 @@ class ConsoleIo
      * @param string|array $message A string or an array of strings to output
      * @param int $newlines Number of newlines to append
      * @param int $level The message's output level, see above.
-     * @return int|bool The number of bytes returned from writing to stdout.
+     * @return int|bool Returns the number of bytes returned from writing to stdout.
      */
     public function out($message = '', $newlines = 1, $level = ConsoleIo::NORMAL)
     {
@@ -205,11 +205,6 @@ class ConsoleIo
         if ($newlines) {
             $this->out($this->nl($newlines), 0);
         }
-
-        // Store length of content + fill so if the new content
-        // is shorter than the old content the next overwrite
-        // will work.
-        $this->_lastWritten = $newBytes + $fill;
     }
 
     /**
@@ -218,11 +213,11 @@ class ConsoleIo
      *
      * @param string|array $message A string or an array of strings to output
      * @param int $newlines Number of newlines to append
-     * @return int|bool The number of bytes returned from writing to stderr.
+     * @return void
      */
     public function err($message = '', $newlines = 1)
     {
-        return $this->_err->write($message, $newlines);
+        $this->_err->write($message, $newlines);
     }
 
     /**
@@ -382,13 +377,13 @@ class ConsoleIo
                 'types' => $outLevels,
                 'stream' => $this->_out
             ]);
-            Log::setConfig('stdout', ['engine' => $stdout]);
+            Log::config('stdout', ['engine' => $stdout]);
         }
         $stderr = new ConsoleLog([
             'types' => ['emergency', 'alert', 'critical', 'error', 'warning'],
             'stream' => $this->_err,
         ]);
-        Log::setConfig('stderr', ['engine' => $stderr]);
+        Log::config('stderr', ['engine' => $stderr]);
     }
 
     /**

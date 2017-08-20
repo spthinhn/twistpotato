@@ -139,7 +139,7 @@ class BenchmarkShell extends Shell
     /**
      * Get option parser.
      *
-     * @return \Cake\Console\ConsoleOptionParser
+     * @return \Cake\Console\OptionParser
      */
     public function getOptionParser()
     {

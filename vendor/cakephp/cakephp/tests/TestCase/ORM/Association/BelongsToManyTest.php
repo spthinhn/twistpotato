@@ -1,22 +1,21 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\ORM\Association;
 
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\ConnectionManager;
-use Cake\Event\Event;
 use Cake\ORM\Association\BelongsToMany;
 use Cake\ORM\Entity;
 use Cake\ORM\TableRegistry;
@@ -67,19 +66,14 @@ class BelongsToManyTest extends TestCase
     }
 
     /**
-     * Tests that foreignKey() returns the correct configured value
+     * Tear down
      *
      * @return void
      */
-    public function testForeignKey()
+    public function tearDown()
     {
-        $assoc = new BelongsToMany('Test', [
-            'sourceTable' => $this->article,
-            'targetTable' => $this->tag
-        ]);
-        $this->assertEquals('article_id', $assoc->foreignKey());
-        $this->assertEquals('another_key', $assoc->foreignKey('another_key'));
-        $this->assertEquals('another_key', $assoc->foreignKey());
+        parent::tearDown();
+        TableRegistry::clear();
     }
 
     /**
@@ -143,8 +137,7 @@ class BelongsToManyTest extends TestCase
     {
         $assoc = new BelongsToMany('Test', [
             'sourceTable' => $this->article,
-            'targetTable' => $this->tag,
-            'strategy' => 'subquery'
+            'targetTable' => $this->tag
         ]);
         $junction = $assoc->junction();
         $this->assertInstanceOf('Cake\ORM\Table', $junction);
@@ -172,10 +165,6 @@ class BelongsToManyTest extends TestCase
 
         $assoc->junction('ArticlesTags');
         $this->assertSame($junction, $assoc->junction());
-
-        $this->assertSame($assoc->strategy(), $this->tag->association('Articles')->strategy());
-        $this->assertSame($assoc->strategy(), $this->tag->association('ArticlesTags')->strategy());
-        $this->assertSame($assoc->strategy(), $this->article->association('ArticlesTags')->strategy());
     }
 
     /**
@@ -186,7 +175,7 @@ class BelongsToManyTest extends TestCase
     public function testJunctionConnection()
     {
         $mock = $this->getMockBuilder('Cake\Database\Connection')
-                ->setMethods(['setDriver'])
+                ->setMethods(['driver'])
                 ->setConstructorArgs(['name' => 'other_source'])
                 ->getMock();
         ConnectionManager::config('other_source', $mock);
@@ -197,7 +186,7 @@ class BelongsToManyTest extends TestCase
             'targetTable' => $this->tag
         ]);
         $junction = $assoc->junction();
-        $this->assertSame($mock, $junction->getConnection());
+        $this->assertSame($mock, $junction->connection());
         ConnectionManager::drop('other_source');
     }
 
@@ -379,7 +368,7 @@ class BelongsToManyTest extends TestCase
      * Test linking entities having a non persisted source entity
      *
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Source entity needs to be persisted before links can be created or removed
+     * @expectedExceptionMessage Source entity needs to be persisted before proceeding
      * @return void
      */
     public function testLinkWithNotPersistedSource()
@@ -396,10 +385,10 @@ class BelongsToManyTest extends TestCase
     }
 
     /**
-     * Test liking entities having a non persisted target entity
+     * Test liking entities having a non persited target entity
      *
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Cannot link entities that have not been persisted yet
+     * @expectedExceptionMessage Cannot link not persisted entities
      * @return void
      */
     public function testLinkWithNotPersistedTarget()
@@ -416,88 +405,15 @@ class BelongsToManyTest extends TestCase
     }
 
     /**
-     * Tests that linking entities will persist correctly with append strategy
-     *
-     * @return void
-     */
-    public function testLinkSuccessSaveAppend()
-    {
-        $articles = TableRegistry::get('Articles');
-        $tags = TableRegistry::get('Tags');
-
-        $config = [
-            'sourceTable' => $articles,
-            'targetTable' => $tags,
-            'joinTable' => 'articles_tags',
-            'saveStrategy' => BelongsToMany::SAVE_APPEND,
-        ];
-        $assoc = $articles->belongsToMany('Tags', $config);
-
-        // Load without tags as that is a main use case for append strategies
-        $article = $articles->get(1);
-        $opts = ['markNew' => false];
-        $tags = [
-            new Entity(['id' => 2, 'name' => 'add'], $opts),
-            new Entity(['id' => 3, 'name' => 'adder'], $opts)
-        ];
-
-        $this->assertTrue($assoc->link($article, $tags));
-        $this->assertCount(2, $article->tags, 'In-memory tags are incorrect');
-        $this->assertSame([2, 3], collection($article->tags)->extract('id')->toList());
-
-        $article = $articles->get(1, ['contain' => ['Tags']]);
-        $this->assertCount(3, $article->tags, 'Persisted tags are wrong');
-        $this->assertSame([1, 2, 3], collection($article->tags)->extract('id')->toList());
-    }
-
-    /**
-     * Tests that linking the same tag to multiple articles works
-     *
-     * @return void
-     */
-    public function testLinkSaveAppendSharedTarget()
-    {
-        $articles = TableRegistry::get('Articles');
-        $tags = TableRegistry::get('Tags');
-        $articlesTags = TableRegistry::get('ArticlesTags');
-        $articlesTags->deleteAll('1=1');
-
-        $config = [
-            'sourceTable' => $articles,
-            'targetTable' => $tags,
-            'joinTable' => 'articles_tags',
-            'saveStrategy' => BelongsToMany::SAVE_APPEND,
-        ];
-        $assoc = $articles->belongsToMany('Tags', $config);
-
-        $articleOne = $articles->get(1);
-        $articleTwo = $articles->get(2);
-
-        $tagTwo = $tags->get(2);
-        $tagThree = $tags->get(3);
-
-        $this->assertTrue($assoc->link($articleOne, [$tagThree, $tagTwo]));
-        $this->assertTrue($assoc->link($articleTwo, [$tagThree]));
-
-        $this->assertCount(2, $articleOne->tags, 'In-memory tags are incorrect');
-        $this->assertSame([3, 2], collection($articleOne->tags)->extract('id')->toList());
-
-        $this->assertCount(1, $articleTwo->tags, 'In-memory tags are incorrect');
-        $this->assertSame([3], collection($articleTwo->tags)->extract('id')->toList());
-        $rows = $articlesTags->find()->all();
-        $this->assertCount(3, $rows, '3 link rows should be created.');
-    }
-
-    /**
      * Tests that liking entities will validate data and pass on to _saveLinks
      *
      * @return void
      */
-    public function testLinkSuccessWithMocks()
+    public function testLinkSuccess()
     {
         $connection = ConnectionManager::get('test');
         $joint = $this->getMockBuilder('\Cake\ORM\Table')
-            ->setMethods(['save', 'getPrimaryKey'])
+            ->setMethods(['save'])
             ->setConstructorArgs([['alias' => 'ArticlesTags', 'connection' => $connection]])
             ->getMock();
 
@@ -514,10 +430,7 @@ class BelongsToManyTest extends TestCase
         $tags = [new Entity(['id' => 2], $opts), new Entity(['id' => 3], $opts)];
         $saveOptions = ['foo' => 'bar'];
 
-        $joint->method('getPrimaryKey')
-            ->will($this->returnValue(['article_id', 'tag_id']));
-
-        $joint->expects($this->at(1))
+        $joint->expects($this->at(0))
             ->method('save')
             ->will($this->returnCallback(function ($e, $opts) use ($entity) {
                 $expected = ['article_id' => 1, 'tag_id' => 2];
@@ -528,7 +441,7 @@ class BelongsToManyTest extends TestCase
                 return $entity;
             }));
 
-        $joint->expects($this->at(2))
+        $joint->expects($this->at(1))
             ->method('save')
             ->will($this->returnCallback(function ($e, $opts) use ($entity) {
                 $expected = ['article_id' => 1, 'tag_id' => 3];
@@ -544,10 +457,10 @@ class BelongsToManyTest extends TestCase
     }
 
     /**
-     * Test liking entities having a non persisted source entity
+     * Test liking entities having a non persited source entity
      *
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Source entity needs to be persisted before links can be created or removed
+     * @expectedExceptionMessage Source entity needs to be persisted before proceeding
      * @return void
      */
     public function testUnlinkWithNotPersistedSource()
@@ -564,10 +477,10 @@ class BelongsToManyTest extends TestCase
     }
 
     /**
-     * Test liking entities having a non persisted target entity
+     * Test liking entities having a non persited target entity
      *
      * @expectedException \InvalidArgumentException
-     * @expectedExceptionMessage Cannot link entities that have not been persisted
+     * @expectedExceptionMessage Cannot link not persisted entities
      * @return void
      */
     public function testUnlinkWithNotPersistedTarget()
@@ -777,7 +690,7 @@ class BelongsToManyTest extends TestCase
     {
         $articles = TableRegistry::get('Articles');
         $tags = TableRegistry::get('Tags');
-        $tags->eventManager()->on('Model.buildRules', function (Event $event, $rules) {
+        $tags->eventManager()->on('Model.buildRules', function ($event, $rules) {
             $rules->add(function () {
                 return false;
             }, 'rule', ['errorField' => 'name', 'message' => 'Bad data']);
@@ -822,7 +735,7 @@ class BelongsToManyTest extends TestCase
     /**
      * Test that saveAssociated() fails on non-empty, non-iterable value
      *
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @expectedExceptionMessage Could not save tags, it cannot be traversed
      * @return void
      */
@@ -1011,7 +924,7 @@ class BelongsToManyTest extends TestCase
             'targetTable' => $this->tag
         ]);
         $this->assertEquals('tag_id', $assoc->targetForeignKey());
-        $this->assertEquals('another_key', $assoc->targetForeignKey('another_key'));
+        $assoc->targetForeignKey('another_key');
         $this->assertEquals('another_key', $assoc->targetForeignKey());
 
         $assoc = new BelongsToMany('Test', [
@@ -1023,7 +936,7 @@ class BelongsToManyTest extends TestCase
     }
 
     /**
-     * Tests that custom foreignKeys are properly transmitted to involved associations
+     * Tests that custom foreignKeys are properly trasmitted to involved associations
      * when they are customized
      *
      * @return void
@@ -1121,25 +1034,8 @@ class BelongsToManyTest extends TestCase
     }
 
     /**
-     * Tests that eager loading requires association keys
-     *
-     * @expectedException RuntimeException
-     * @expectedExceptionMessage The "tags" table does not define a primary key
-     * @return void
-     */
-    public function testEagerLoadingRequiresPrimaryKey()
-    {
-        $table = TableRegistry::get('Articles');
-        $tags = TableRegistry::get('Tags');
-        $tags->schema()->dropConstraint('primary');
-
-        $table->belongsToMany('Tags');
-        $table->find()->contain('Tags')->first();
-    }
-
-    /**
      * Tests that fetching belongsToMany association will not force
-     * all fields being returned, but instead will honor the select() clause
+     * all fields being returned, but intead will honor the select() clause
      *
      * @see https://github.com/cakephp/cakephp/issues/7916
      * @return void

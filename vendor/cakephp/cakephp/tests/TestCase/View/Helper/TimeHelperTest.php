@@ -1,19 +1,20 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         1.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\View\Helper;
 
+use Cake\Core\Configure;
 use Cake\I18n\I18n;
 use Cake\I18n\Time;
 use Cake\TestSuite\TestCase;
@@ -26,15 +27,7 @@ use Cake\View\View;
 class TimeHelperTest extends TestCase
 {
 
-    /**
-     * @var \Cake\View\Helper\TimeHelper
-     */
-    public $Time;
-
-    /**
-     * @var string
-     */
-    public $locale;
+    public $Time = null;
 
     /**
      * setUp method
@@ -190,7 +183,7 @@ class TimeHelperTest extends TestCase
      */
     public function testToUnix()
     {
-        $this->assertSame('1397980800', $this->Time->toUnix('2014-04-20 08:00:00'));
+        $this->assertEquals(1397980800, $this->Time->toUnix('2014-04-20 08:00:00'));
     }
 
     /**
@@ -606,7 +599,7 @@ class TimeHelperTest extends TestCase
      */
     public function assertTimeFormat($expected, $result)
     {
-        $this->assertEquals(
+        return $this->assertEquals(
             str_replace([',', '(', ')', ' at', ' à'], '', $expected),
             str_replace([',', '(', ')', ' at', ' à'], '', $result)
         );

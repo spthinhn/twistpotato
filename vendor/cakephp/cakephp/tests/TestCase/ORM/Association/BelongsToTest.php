@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\ORM\Association;
 
@@ -89,22 +89,6 @@ class BelongsToTest extends TestCase
      * @return void
      */
     public function testForeignKey()
-    {
-        $assoc = new BelongsTo('Companies', [
-            'sourceTable' => $this->client,
-            'targetTable' => $this->company,
-        ]);
-        $this->assertEquals('company_id', $assoc->foreignKey());
-        $this->assertEquals('another_key', $assoc->foreignKey('another_key'));
-        $this->assertEquals('another_key', $assoc->foreignKey());
-    }
-
-    /**
-     * Test that foreignKey generation ignores database names in target table.
-     *
-     * @return void
-     */
-    public function testForeignKeyIgnoreDatabaseName()
     {
         $this->company->table('schema.companies');
         $this->client->table('schema.clients');
@@ -259,7 +243,7 @@ class BelongsToTest extends TestCase
      * @expectedExceptionMessage Cannot match provided foreignKey for "Companies", got "(company_id)" but expected foreign key for "(id, tenant_id)"
      * @return void
      */
-    public function testAttachToMultiPrimaryKeyMismatch()
+    public function testAttachToMultiPrimaryKeyMistmatch()
     {
         $this->company->primaryKey(['id', 'tenant_id']);
         $query = $this->client->query();

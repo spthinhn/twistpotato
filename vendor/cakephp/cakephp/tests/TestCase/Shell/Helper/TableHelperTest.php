@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP :  Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP :  Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP Project
  * @since         3.1.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Shell\Helper;
 
@@ -24,20 +24,6 @@ use Cake\TestSuite\TestCase;
  */
 class TableHelperTest extends TestCase
 {
-    /**
-     * @var ConsoleOutput
-     */
-    public $stub;
-
-    /**
-     * @var ConsoleIo
-     */
-    public $io;
-
-    /**
-     * @var TableHelper
-     */
-    public $helper;
 
     /**
      * setUp method
@@ -58,7 +44,7 @@ class TableHelperTest extends TestCase
      *
      * @return void
      */
-    public function testOutputDefaultOutput()
+    public function testDefaultOutput()
     {
         $data = [
             ['Header 1', 'Header', 'Long Header'],
@@ -73,80 +59,6 @@ class TableHelperTest extends TestCase
             '| short        | Longish thing | short         |',
             '| Longer thing | short         | Longest Value |',
             '+--------------+---------------+---------------+',
-        ];
-        $this->assertEquals($expected, $this->stub->messages());
-    }
-
-    /**
-     * Test output with inconsistent keys.
-     *
-     * When outputting entities or other structured data,
-     * headers shouldn't need to have the same keys as it is
-     * annoying to use.
-     *
-     * @return void
-     */
-    public function testOutputInconsistentKeys()
-    {
-        $data = [
-            ['Header 1', 'Header', 'Long Header'],
-            ['a' => 'short', 'b' => 'Longish thing', 'c' => 'short'],
-            ['c' => 'Longer thing', 'a' => 'short', 'b' => 'Longest Value'],
-        ];
-        $this->helper->output($data);
-        $expected = [
-            '+--------------+---------------+---------------+',
-            '| <info>Header 1</info>     | <info>Header</info>        | <info>Long Header</info>   |',
-            '+--------------+---------------+---------------+',
-            '| short        | Longish thing | short         |',
-            '| Longer thing | short         | Longest Value |',
-            '+--------------+---------------+---------------+',
-        ];
-        $this->assertEquals($expected, $this->stub->messages());
-    }
-
-    /**
-     * Test that output works when data contains just empty strings.
-     *
-     * @return void
-     */
-    public function testOutputEmptyStrings()
-    {
-        $data = [
-            ['Header 1', 'Header', 'Empty'],
-            ['short', 'Longish thing', ''],
-            ['Longer thing', 'short', ''],
-        ];
-        $this->helper->output($data);
-        $expected = [
-            '+--------------+---------------+-------+',
-            '| <info>Header 1</info>     | <info>Header</info>        | <info>Empty</info> |',
-            '+--------------+---------------+-------+',
-            '| short        | Longish thing |       |',
-            '| Longer thing | short         |       |',
-            '+--------------+---------------+-------+',
-        ];
-        $this->assertEquals($expected, $this->stub->messages());
-    }
-
-    /**
-     * Test that output works when data contains nulls.
-     */
-    public function testNullValues()
-    {
-        $data = [
-            ['Header 1', 'Header', 'Empty'],
-            ['short', 'Longish thing', null],
-            ['Longer thing', 'short', null],
-        ];
-        $this->helper->output($data);
-        $expected = [
-            '+--------------+---------------+-------+',
-            '| <info>Header 1</info>     | <info>Header</info>        | <info>Empty</info> |',
-            '+--------------+---------------+-------+',
-            '| short        | Longish thing |       |',
-            '| Longer thing | short         |       |',
-            '+--------------+---------------+-------+',
         ];
         $this->assertEquals($expected, $this->stub->messages());
     }

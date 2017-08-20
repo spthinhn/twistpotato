@@ -1,37 +1,28 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Database\Type;
 
 use Cake\Database\Type;
 use Cake\TestSuite\TestCase;
-use PDO;
+use \PDO;
 
 /**
  * Test for the Integer type.
  */
 class IntegerTypeTest extends TestCase
 {
-    /**
-     * @var \Cake\Database\Type\IntegerType
-     */
-    public $type;
-
-    /**
-     * @var \Cake\Database\Driver
-     */
-    public $driver;
 
     /**
      * Setup
@@ -92,10 +83,10 @@ class IntegerTypeTest extends TestCase
     /**
      * Tests that passing an invalid value will throw an exception
      *
-     * @expectedException \InvalidArgumentException
+     * @expectedException InvalidArgumentException
      * @return void
      */
-    public function testToDatabaseInvalid()
+    public function testToDatabseInvalid()
     {
         $this->type->toDatabase(['3', '4'], $this->driver);
     }
@@ -107,34 +98,34 @@ class IntegerTypeTest extends TestCase
      */
     public function testMarshal()
     {
-        $result = $this->type->marshal('some data');
+        $result = $this->type->marshal('some data', $this->driver);
         $this->assertNull($result);
 
-        $result = $this->type->marshal('');
+        $result = $this->type->marshal('', $this->driver);
         $this->assertNull($result);
 
-        $result = $this->type->marshal('0');
+        $result = $this->type->marshal('0', $this->driver);
         $this->assertSame(0, $result);
 
-        $result = $this->type->marshal('105');
+        $result = $this->type->marshal('105', $this->driver);
         $this->assertSame(105, $result);
 
-        $result = $this->type->marshal(105);
+        $result = $this->type->marshal(105, $this->driver);
         $this->assertSame(105, $result);
 
-        $result = $this->type->marshal('-105');
+        $result = $this->type->marshal('-105', $this->driver);
         $this->assertSame(-105, $result);
 
-        $result = $this->type->marshal(-105);
+        $result = $this->type->marshal(-105, $this->driver);
         $this->assertSame(-105, $result);
 
-        $result = $this->type->marshal('1.25');
+        $result = $this->type->marshal('1.25', $this->driver);
         $this->assertSame(1, $result);
 
-        $result = $this->type->marshal('2 monkeys');
+        $result = $this->type->marshal('2 monkeys', $this->driver);
         $this->assertNull($result);
 
-        $result = $this->type->marshal(['3', '4']);
+        $result = $this->type->marshal(['3', '4'], $this->driver);
         $this->assertSame(1, $result);
     }
 

@@ -1,20 +1,19 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 
 namespace Cake\Test\TestCase\Event;
 
-use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventManager;
 use Cake\TestSuite\TestCase;
 
@@ -23,10 +22,6 @@ use Cake\TestSuite\TestCase;
  */
 class EventDispatcherTraitTest extends TestCase
 {
-    /**
-     * @var EventDispatcherTrait
-     */
-    public $subject;
 
     /**
      * setup
@@ -75,8 +70,8 @@ class EventDispatcherTraitTest extends TestCase
         $event = $this->subject->dispatchEvent('some.event', ['foo' => 'bar']);
 
         $this->assertInstanceOf('Cake\Event\Event', $event);
-        $this->assertSame($this->subject, $event->subject());
-        $this->assertEquals('some.event', $event->name());
-        $this->assertEquals(['foo' => 'bar'], $event->data());
+        $this->assertSame($this->subject, $event->subject);
+        $this->assertEquals('some.event', $event->name);
+        $this->assertEquals(['foo' => 'bar'], $event->data);
     }
 }

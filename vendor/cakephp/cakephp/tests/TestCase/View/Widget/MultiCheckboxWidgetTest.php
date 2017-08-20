@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\View\Widget;
 
@@ -483,59 +483,6 @@ class MultiCheckboxWidgetTest extends TestCase
             'Development',
             '/label',
             '/div',
-        ];
-        $this->assertHtml($expected, $result);
-    }
-
-    /**
-     * testRenderCustomAttributes method
-     *
-     * Test render with custom attributes
-     *
-     * @return void
-     */
-    public function testRenderCustomAttributes()
-    {
-        $label = new LabelWidget($this->templates);
-        $input = new MultiCheckboxWidget($this->templates, $label);
-        $result = $input->render([
-            'name' => 'category',
-            'options' => ['1', '2'],
-            'class' => 'my-class',
-            'data-ref' => 'custom-attr',
-        ], $this->context);
-        $expected = [
-            ['div' => ['class' => 'checkbox']],
-            [
-                'input' => [
-                    'type' => 'checkbox',
-                    'name' => 'category[]',
-                    'value' => '0',
-                    'id' => 'category-0',
-                    'class' => 'my-class',
-                    'data-ref' => 'custom-attr'
-                ]
-            ],
-            ['label' => ['for' => 'category-0']],
-            '1',
-            '/label',
-            '/div',
-
-            ['div' => ['class' => 'checkbox']],
-            [
-                'input' => [
-                    'type' => 'checkbox',
-                    'name' => 'category[]',
-                    'value' => '1',
-                    'id' => 'category-1',
-                    'class' => 'my-class',
-                    'data-ref' => 'custom-attr'
-                ]
-            ],
-            ['label' => ['for' => 'category-1']],
-            '2',
-            '/label',
-            '/div'
         ];
         $this->assertHtml($expected, $result);
     }

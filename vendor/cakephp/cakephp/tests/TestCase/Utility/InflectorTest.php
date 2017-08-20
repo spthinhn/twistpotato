@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://book.cakephp.org/3.0/en/development/testing.html
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://book.cakephp.org/3.0/en/development/testing.html
  * @since         1.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Utility;
 
@@ -347,13 +347,13 @@ class InflectorTest extends TestCase
             'rules' => [],
         ]);
 
-        $this->assertEquals('wisdom tooth', Inflector::singularize('wisdom teeth'));
-        $this->assertEquals('wisdom-tooth', Inflector::singularize('wisdom-teeth'));
-        $this->assertEquals('wisdom_tooth', Inflector::singularize('wisdom_teeth'));
+        $this->assertEquals(Inflector::singularize('wisdom teeth'), 'wisdom tooth');
+        $this->assertEquals(Inflector::singularize('wisdom-teeth'), 'wisdom-tooth');
+        $this->assertEquals(Inflector::singularize('wisdom_teeth'), 'wisdom_tooth');
 
-        $this->assertEquals('sweet potatoes', Inflector::pluralize('sweet potato'));
-        $this->assertEquals('sweet-potatoes', Inflector::pluralize('sweet-potato'));
-        $this->assertEquals('sweet_potatoes', Inflector::pluralize('sweet_potato'));
+        $this->assertEquals(Inflector::pluralize('sweet potato'), 'sweet potatoes');
+        $this->assertEquals(Inflector::pluralize('sweet-potato'), 'sweet-potatoes');
+        $this->assertEquals(Inflector::pluralize('sweet_potato'), 'sweet_potatoes');
     }
 
     /**
@@ -484,14 +484,14 @@ class InflectorTest extends TestCase
         $this->assertSame('test_thing_extra', Inflector::underscore('TestThingExtra'));
         $this->assertSame('test_thing_extra', Inflector::underscore('testThingExtra'));
         $this->assertSame('test_this_thing', Inflector::underscore('test-this-thing'));
-        $this->assertSame('test_thing_extrå', Inflector::underscore('testThingExtrå'));
+        $this->assertSame(Inflector::underscore('testThingExtrå'), 'test_thing_extrå');
 
         // Identical checks test the cache code path.
         $this->assertSame('test_thing', Inflector::underscore('TestThing'));
         $this->assertSame('test_thing', Inflector::underscore('testThing'));
         $this->assertSame('test_thing_extra', Inflector::underscore('TestThingExtra'));
         $this->assertSame('test_thing_extra', Inflector::underscore('testThingExtra'));
-        $this->assertSame('test_thing_extrå', Inflector::underscore('testThingExtrå'));
+        $this->assertSame(Inflector::underscore('testThingExtrå'), 'test_thing_extrå');
 
         // Test stupid values
         $this->assertSame('', Inflector::underscore(''));
@@ -592,8 +592,8 @@ class InflectorTest extends TestCase
         $this->assertEquals('File Systems', Inflector::humanize('file_systems'));
         $this->assertSame('', Inflector::humanize(null));
         $this->assertSame('', Inflector::humanize(false));
-        $this->assertSame('Hello Wörld', Inflector::humanize('hello_wörld'));
-        $this->assertSame('福岡 City', Inflector::humanize('福岡_city'));
+        $this->assertSame(Inflector::humanize('hello_wörld'), 'Hello Wörld');
+        $this->assertSame(Inflector::humanize('福岡_city'), '福岡 City');
     }
 
     /**

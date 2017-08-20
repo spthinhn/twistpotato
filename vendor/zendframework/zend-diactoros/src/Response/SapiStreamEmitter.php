@@ -11,7 +11,6 @@ namespace Zend\Diactoros\Response;
 
 use Psr\Http\Message\ResponseInterface;
 use RuntimeException;
-use Zend\Diactoros\RelativeStream;
 
 class SapiStreamEmitter implements EmitterInterface
 {
@@ -40,7 +39,7 @@ class SapiStreamEmitter implements EmitterInterface
 
         $range = $this->parseContentRange($response->getHeaderLine('Content-Range'));
 
-        if (is_array($range) && $range[0] === 'bytes') {
+        if (is_array($range)) {
             $this->emitBodyRange($range, $response, $maxBufferLength);
             return;
         }
@@ -57,15 +56,7 @@ class SapiStreamEmitter implements EmitterInterface
     private function emitBody(ResponseInterface $response, $maxBufferLength)
     {
         $body = $response->getBody();
-
-        if ($body->isSeekable()) {
-            $body->rewind();
-        }
-
-        if (! $body->isReadable()) {
-            echo $body;
-            return;
-        }
+        $body->rewind();
 
         while (! $body->eof()) {
             echo $body->read($maxBufferLength);
@@ -81,34 +72,21 @@ class SapiStreamEmitter implements EmitterInterface
      */
     private function emitBodyRange(array $range, ResponseInterface $response, $maxBufferLength)
     {
-        list($unit, $first, $last, $length) = $range;
+        list($unit, $first, $last, $lenght) = $range;
 
+        ++$last; //zero-based position
         $body = $response->getBody();
+        $body->seek($first);
+        $pos = $first;
 
-        $length = $last - $first + 1;
+        while (! $body->eof() && $pos < $last) {
+            if (($pos + $maxBufferLength) > $last) {
+                echo $body->read($last - $pos);
+                break;
+            }
 
-        if ($body->isSeekable()) {
-            $body->seek($first);
-
-            $first = 0;
-        }
-
-        if (! $body->isReadable()) {
-            echo substr($body->getContents(), $first, $length);
-            return;
-        }
-
-        $remaining = $length;
-
-        while ($remaining >= $maxBufferLength && ! $body->eof()) {
-            $contents   = $body->read($maxBufferLength);
-            $remaining -= strlen($contents);
-
-            echo $contents;
-        }
-
-        if ($remaining > 0 && ! $body->eof()) {
-            echo $body->read($remaining);
+            echo $body->read($maxBufferLength);
+            $pos = $body->tell();
         }
     }
 

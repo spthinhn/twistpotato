@@ -1,22 +1,23 @@
 <?php
 /**
- * CakePHP :  Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP :  Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP Project
  * @since         1.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Console;
 
 use Cake\Console\ConsoleIo;
 use Cake\Console\ConsoleOptionParser;
 use Cake\Console\Shell;
+use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\Filesystem\Folder;
 use Cake\TestSuite\TestCase;
@@ -66,7 +67,7 @@ class ShellTestShell extends Shell
      * @param int $status
      * @return void
      */
-    protected function _stop($status = Shell::CODE_SUCCESS)
+    protected function _stop($status = 0)
     {
         $this->stopped = $status;
     }
@@ -167,7 +168,7 @@ class ShellTest extends TestCase
      */
     public function testInitialize()
     {
-        static::setAppNamespace();
+        Configure::write('App.namespace', 'TestApp');
 
         Plugin::load('TestPlugin');
         $this->Shell->tasks = ['DbConfig' => ['one', 'two']];
@@ -190,7 +191,7 @@ class ShellTest extends TestCase
      */
     public function testLoadModel()
     {
-        static::setAppNamespace();
+        Configure::write('App.namespace', 'TestApp');
 
         $Shell = new MergeShell();
         $this->assertInstanceOf(
@@ -392,7 +393,7 @@ class ShellTest extends TestCase
 
         $this->io->expects($this->at(1))
             ->method('err')
-            ->with('Searched all...');
+            ->with("Searched all...");
 
         $this->Shell->error('Foo Not Found', 'Searched all...');
         $this->assertSame($this->Shell->stopped, 1);
@@ -504,7 +505,7 @@ class ShellTest extends TestCase
         $contents = "<?php{$eol}echo 'test';${eol}\$te = 'st';{$eol}";
         $result = $this->Shell->createFile($file, $contents);
         $this->assertTrue($result);
-        $this->assertFileExists($file);
+        $this->assertTrue(file_exists($file));
         $this->assertEquals(file_get_contents($file), $contents);
     }
 
@@ -526,11 +527,11 @@ class ShellTest extends TestCase
             ->will($this->returnValue('n'));
 
         touch($file);
-        $this->assertFileExists($file);
+        $this->assertTrue(file_exists($file));
 
-        $contents = 'My content';
+        $contents = "My content";
         $result = $this->Shell->createFile($file, $contents);
-        $this->assertFileExists($file);
+        $this->assertTrue(file_exists($file));
         $this->assertTextEquals('', file_get_contents($file));
         $this->assertFalse($result, 'Did not create file.');
     }
@@ -553,11 +554,11 @@ class ShellTest extends TestCase
             ->will($this->returnValue('y'));
 
         touch($file);
-        $this->assertFileExists($file);
+        $this->assertTrue(file_exists($file));
 
-        $contents = 'My content';
+        $contents = "My content";
         $result = $this->Shell->createFile($file, $contents);
-        $this->assertFileExists($file);
+        $this->assertTrue(file_exists($file));
         $this->assertTextEquals($contents, file_get_contents($file));
         $this->assertTrue($result, 'Did create file.');
     }
@@ -575,7 +576,7 @@ class ShellTest extends TestCase
         new Folder($path, true);
 
         touch($file);
-        $this->assertFileExists($file);
+        $this->assertTrue(file_exists($file));
 
         $this->io->expects($this->never())->method('askChoice');
 
@@ -608,10 +609,10 @@ class ShellTest extends TestCase
 
         foreach ($files as $file => $contents) {
             touch($file);
-            $this->assertFileExists($file);
+            $this->assertTrue(file_exists($file));
 
             $result = $this->Shell->createFile($file, $contents);
-            $this->assertFileExists($file);
+            $this->assertTrue(file_exists($file));
             $this->assertTextEquals($contents, file_get_contents($file));
             $this->assertTrue($result, 'Did create file.');
         }
@@ -635,7 +636,7 @@ class ShellTest extends TestCase
         chmod($path, 0444);
 
         $this->Shell->createFile($file, 'testing');
-        $this->assertFileNotExists($file);
+        $this->assertFalse(file_exists($file));
 
         chmod($path, 0744);
         rmdir($path);
@@ -990,7 +991,7 @@ TEXT;
      *
      * @return void
      */
-    public function testRunCommandBaseClassMethod()
+    public function testRunCommandBaseclassMethod()
     {
         $shell = $this->getMockBuilder('Cake\Console\Shell')
             ->setMethods(['startup', 'getOptionParser', 'out', 'hr'])
@@ -1173,36 +1174,6 @@ TEXT;
     }
 
     /**
-     * test run command missing parameters
-     *
-     * @return void
-     */
-    public function testRunCommandMainMissingArgument()
-    {
-        $io = $this->getMockBuilder('Cake\Console\ConsoleIo')->getMock();
-        $shell = $this->getMockBuilder('Cake\Console\Shell')
-            ->setMethods(['main', 'startup', 'getOptionParser'])
-            ->setConstructorArgs([$io])
-            ->getMock();
-
-        $parser = new ConsoleOptionParser('test');
-        $parser->addArgument('filename', [
-            'required' => true,
-            'help' => 'a file',
-        ]);
-        $shell->expects($this->once())
-            ->method('getOptionParser')
-            ->will($this->returnValue($parser));
-        $shell->expects($this->never())->method('main');
-
-        $io->expects($this->once())
-            ->method('err')
-            ->with('<error>Error: Missing required arguments. filename is required.</error>');
-        $result = $shell->runCommand([]);
-        $this->assertFalse($result, 'Shell should fail');
-    }
-
-    /**
      * test wrapBlock wrapping text.
      *
      * @return void
@@ -1317,7 +1288,7 @@ TEXT;
         $io->expects($this->at(0))
             ->method('setLoggers')
             ->with(true);
-        $io->expects($this->at(2))
+        $io->expects($this->at(3))
             ->method('setLoggers')
             ->with(ConsoleIo::QUIET);
 

@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         2.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Error;
 
@@ -20,9 +20,9 @@ use Cake\Core\Configure;
 use Cake\Core\Exception\Exception as CakeException;
 use Cake\Core\Exception\MissingPluginException;
 use Cake\Event\Event;
-use Cake\Http\Response;
-use Cake\Http\ServerRequest;
 use Cake\Network\Exception\HttpException;
+use Cake\Network\Request;
+use Cake\Network\Response;
 use Cake\Routing\DispatcherFactory;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
@@ -47,22 +47,15 @@ use PDOException;
  * Using a subclass of ExceptionRenderer gives you full control over how Exceptions are rendered, you
  * can configure your class in your config/app.php.
  */
-class ExceptionRenderer implements ExceptionRendererInterface
+class ExceptionRenderer
 {
-
-    /**
-     * The exception being handled.
-     *
-     * @var \Exception
-     */
-    public $error;
 
     /**
      * Controller instance.
      *
      * @var \Cake\Controller\Controller
      */
-    public $controller;
+    public $controller = null;
 
     /**
      * Template to render for Cake\Core\Exception\Exception
@@ -77,6 +70,13 @@ class ExceptionRenderer implements ExceptionRendererInterface
      * @var string
      */
     public $method = '';
+
+    /**
+     * The exception being handled.
+     *
+     * @var \Exception
+     */
+    public $error = null;
 
     /**
      * Creates the controller to perform rendering on the error response.
@@ -115,14 +115,12 @@ class ExceptionRenderer implements ExceptionRendererInterface
     protected function _getController()
     {
         if (!$request = Router::getRequest(true)) {
-            $request = ServerRequest::createFromGlobals();
+            $request = Request::createFromGlobals();
         }
         $response = new Response();
-        $controller = null;
 
         try {
             $class = App::className('Error', 'Controller', 'Controller');
-            /* @var \Cake\Controller\Controller $controller */
             $controller = new $class($request, $response);
             $controller->startupProcess();
             $startup = true;
@@ -150,7 +148,7 @@ class ExceptionRenderer implements ExceptionRendererInterface
     /**
      * Renders the response for the exception.
      *
-     * @return \Cake\Http\Response The response to be sent.
+     * @return \Cake\Network\Response The response to be sent.
      */
     public function render()
     {
@@ -168,7 +166,7 @@ class ExceptionRenderer implements ExceptionRendererInterface
         }
 
         $message = $this->_message($exception, $code);
-        $url = $this->controller->request->getRequestTarget();
+        $url = $this->controller->request->here();
 
         if (method_exists($exception, 'responseHeader')) {
             $this->controller->response->header($exception->responseHeader());
@@ -186,10 +184,6 @@ class ExceptionRenderer implements ExceptionRendererInterface
                 'format' => 'array',
                 'args' => false
             ]);
-            $viewVars['file'] = $exception->getFile() ?: 'null';
-            $viewVars['line'] = $exception->getLine() ?: 'null';
-            $viewVars['_serialize'][] = 'file';
-            $viewVars['_serialize'][] = 'line';
         }
         $this->controller->set($viewVars);
 
@@ -205,7 +199,7 @@ class ExceptionRenderer implements ExceptionRendererInterface
      *
      * @param string $method The method name to invoke.
      * @param \Exception $exception The exception to render.
-     * @return \Cake\Http\Response The response to send.
+     * @return \Cake\Network\Response The response to send.
      */
     protected function _customMethod($method, $exception)
     {
@@ -218,7 +212,6 @@ class ExceptionRenderer implements ExceptionRendererInterface
 
         return $result;
     }
-
     /**
      * Get method name
      *
@@ -277,7 +270,16 @@ class ExceptionRenderer implements ExceptionRendererInterface
         $exception = $this->_unwrap($exception);
         $isHttpException = $exception instanceof HttpException;
 
-        if (!Configure::read('debug') && !$isHttpException || $isHttpException) {
+        if (!Configure::read('debug') && !$isHttpException) {
+            $template = 'error500';
+            if ($code < 500) {
+                $template = 'error400';
+            }
+
+            return $this->template = $template;
+        }
+
+        if ($isHttpException) {
             $template = 'error500';
             if ($code < 500) {
                 $template = 'error400';
@@ -317,7 +319,7 @@ class ExceptionRenderer implements ExceptionRendererInterface
      * Generate the response using the controller object.
      *
      * @param string $template The template to render.
-     * @return \Cake\Http\Response A response object that can be sent.
+     * @return \Cake\Network\Response A response object that can be sent.
      */
     protected function _outputMessage($template)
     {
@@ -349,17 +351,17 @@ class ExceptionRenderer implements ExceptionRendererInterface
      * and doesn't call component methods.
      *
      * @param string $template The template to render.
-     * @return \Cake\Http\Response A response object that can be sent.
+     * @return \Cake\Network\Response A response object that can be sent.
      */
     protected function _outputMessageSafe($template)
     {
         $helpers = ['Form', 'Html'];
         $this->controller->helpers = $helpers;
         $builder = $this->controller->viewBuilder();
-        $builder->setHelpers($helpers, false)
-            ->setLayoutPath('')
-            ->setTemplatePath('Error');
-        $view = $this->controller->createView('View');
+        $builder->helpers($helpers, false)
+            ->layoutPath('')
+            ->templatePath('Error');
+        $view = $this->controller->createView();
 
         $this->controller->response->body($view->render($template, 'error'));
         $this->controller->response->type('html');
@@ -372,22 +374,18 @@ class ExceptionRenderer implements ExceptionRendererInterface
      *
      * Triggers the afterFilter and afterDispatch events.
      *
-     * @return \Cake\Http\Response The response to serve.
+     * @return \Cake\Network\Response The response to serve.
      */
     protected function _shutdown()
     {
         $this->controller->dispatchEvent('Controller.shutdown');
         $dispatcher = DispatcherFactory::create();
-        $eventManager = $dispatcher->eventManager();
-        foreach ($dispatcher->filters() as $filter) {
-            $eventManager->on($filter);
-        }
         $args = [
             'request' => $this->controller->request,
             'response' => $this->controller->response
         ];
         $result = $dispatcher->dispatchEvent('Dispatcher.afterDispatch', $args);
 
-        return $result->getData('response');
+        return $result->data['response'];
     }
 }

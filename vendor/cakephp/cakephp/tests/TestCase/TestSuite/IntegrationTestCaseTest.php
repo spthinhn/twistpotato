@@ -1,21 +1,22 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\TestSuite;
 
+use Cake\Core\Configure;
 use Cake\Event\EventManager;
-use Cake\Http\Response;
+use Cake\Network\Response;
 use Cake\Routing\DispatcherFactory;
 use Cake\Routing\Router;
 use Cake\TestSuite\IntegrationTestCase;
@@ -36,9 +37,8 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     public function setUp()
     {
         parent::setUp();
-        static::setAppNamespace();
+        Configure::write('App.namespace', 'TestApp');
 
-        Router::connect('/get/:controller/:action', ['_method' => 'GET'], ['routeClass' => 'InflectedRoute']);
         Router::connect('/:controller/:action/*', [], ['routeClass' => 'InflectedRoute']);
         DispatcherFactory::clear();
         DispatcherFactory::add('Routing');
@@ -150,9 +150,8 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     {
         $request = $this->_buildRequest('/tasks/view?archived=yes', 'GET', []);
 
-        $this->assertSame('/tasks/view', $request['url']);
-        $this->assertSame('archived=yes', $request['environment']['QUERY_STRING']);
-        $this->assertSame('/tasks/view', $request['environment']['REQUEST_URI']);
+        $this->assertEquals('/tasks/view', $request['url']);
+        $this->assertEquals('yes', $request['query']['archived']);
     }
 
     /**
@@ -179,31 +178,14 @@ class IntegrationTestCaseTest extends IntegrationTestCase
 
         $this->get('/request_action/test_request_action');
         $this->assertNotEmpty($this->_response);
-        $this->assertInstanceOf('Cake\Http\Response', $this->_response);
-        $this->assertEquals('This is a test', $this->_response->getBody());
-
-        $this->_response = null;
-        $this->get('/get/request_action/test_request_action');
-        $this->assertEquals('This is a test', $this->_response->getBody());
-    }
-
-    /**
-     * Test sending get requests sets the request method
-     *
-     * @return void
-     */
-    public function testGetSpecificRouteHttpServer()
-    {
-        $this->useHttpServer(true);
-        $this->get('/get/request_action/test_request_action');
-        $this->assertResponseOk();
-        $this->assertEquals('This is a test', $this->_response->getBody());
+        $this->assertInstanceOf('Cake\Network\Response', $this->_response);
+        $this->assertEquals('This is a test', $this->_response->body());
     }
 
     /**
      * Test customizing the app class.
      *
-     * @expectedException \LogicException
+     * @expectedException LogicException
      * @expectedExceptionMessage Cannot load "TestApp\MissingApp" for use in integration
      * @return void
      */
@@ -228,8 +210,8 @@ class IntegrationTestCaseTest extends IntegrationTestCase
 
         $this->get('/request_action/test_request_action');
         $this->assertNotEmpty($this->_response);
-        $this->assertInstanceOf('Cake\Http\Response', $this->_response);
-        $this->assertEquals('This is a test', $this->_response->getBody());
+        $this->assertInstanceOf('Cake\Network\Response', $this->_response);
+        $this->assertEquals('This is a test', $this->_response->body());
         $this->assertHeader('X-Middleware', 'true');
     }
 
@@ -238,7 +220,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
      *
      * @return void
      */
-    public function testGetQueryStringHttpServer()
+    public function testQueryStringHttpServer()
     {
         $this->useHttpServer(true);
 
@@ -248,10 +230,6 @@ class IntegrationTestCaseTest extends IntegrationTestCase
         $this->assertResponseContains('"q":"query"');
         $this->assertResponseContains('"contentType":"text\/plain"');
         $this->assertHeader('X-Middleware', 'true');
-
-        $request = $this->_controller->request;
-        $this->assertContains('/request_action/params_pass?q=query', $request->here());
-        $this->assertContains('/request_action/params_pass?q=query', $request->getRequestTarget());
     }
 
     /**
@@ -280,7 +258,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
         $this->useHttpServer(true);
 
         $this->post('/request_action/post_pass', ['title' => 'value']);
-        $data = json_decode($this->_response->getBody());
+        $data = json_decode($this->_response->body());
         $this->assertEquals('value', $data->title);
         $this->assertHeader('X-Middleware', 'true');
     }
@@ -295,10 +273,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
         $this->useHttpServer(true);
 
         $this->post('/request_action/input_test', '{"hello":"world"}');
-        if ($this->_response->getBody()->isSeekable()) {
-            $this->_response->getBody()->rewind();
-        }
-        $this->assertSame('world', $this->_response->getBody()->getContents());
+        $this->assertSame('world', $this->_response->body());
         $this->assertHeader('X-Middleware', 'true');
     }
 
@@ -413,38 +388,9 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     }
 
     /**
-     * Test flash assertions stored with enableRememberFlashMessages() after they
-     * are rendered
-     *
-     * @return void
-     */
-    public function testFlashAssertionsAfterRender()
-    {
-        $this->enableRetainFlashMessages();
-        $this->get('/posts/index/with_flash');
-
-        $this->assertSession('An error message', 'Flash.flash.0.message');
-    }
-
-    /**
-     * Test flash assertions stored with enableRememberFlashMessages() even if
-     * no view is rendered
-     *
-     * @return void
-     */
-    public function testFlashAssertionsWithNoRender()
-    {
-        $this->enableRetainFlashMessages();
-        $this->get('/posts/flashNoRender');
-        $this->assertRedirect();
-
-        $this->assertSession('An error message', 'Flash.flash.0.message');
-    }
-
-    /**
      * Tests the failure message for assertCookieNotSet
      *
-     * @expectedException \PHPUnit\Framework\AssertionFailedError
+     * @expectedException PHPUnit_Framework_AssertionFailedError
      * @expectedExceptionMessage Cookie 'remember_me' has been set
      * @return void
      */
@@ -458,7 +404,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
      * Tests the failure message for assertCookieNotSet when no
      * response whas generated
      *
-     * @expectedException \PHPUnit\Framework\AssertionFailedError
+     * @expectedException PHPUnit_Framework_AssertionFailedError
      * @expectedExceptionMessage No response set, cannot assert cookies.
      * @return void
      */
@@ -577,7 +523,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     /**
      * Test that exceptions being thrown are handled correctly.
      *
-     * @expectedException \PHPUnit\Framework\AssertionFailedError
+     * @expectedException PHPUnit_Framework_AssertionFailedError
      * @return void
      */
     public function testWithUnexpectedException()
@@ -634,34 +580,34 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     {
         $this->_response = new Response();
 
-        $this->_response = $this->_response->withStatus(200);
+        $this->_response->statusCode(200);
         $this->assertResponseOk();
 
-        $this->_response = $this->_response->withStatus(201);
+        $this->_response->statusCode(201);
         $this->assertResponseOk();
 
-        $this->_response = $this->_response->withStatus(204);
+        $this->_response->statusCode(204);
         $this->assertResponseOk();
 
-        $this->_response = $this->_response->withStatus(202);
+        $this->_response->statusCode(202);
         $this->assertResponseSuccess();
 
-        $this->_response = $this->_response->withStatus(302);
+        $this->_response->statusCode(302);
         $this->assertResponseSuccess();
 
-        $this->_response = $this->_response->withStatus(400);
+        $this->_response->statusCode(400);
         $this->assertResponseError();
 
-        $this->_response = $this->_response->withStatus(417);
+        $this->_response->statusCode(417);
         $this->assertResponseError();
 
-        $this->_response = $this->_response->withStatus(500);
+        $this->_response->statusCode(500);
         $this->assertResponseFailure();
 
-        $this->_response = $this->_response->withStatus(505);
+        $this->_response->statusCode(505);
         $this->assertResponseFailure();
 
-        $this->_response = $this->_response->withStatus(301);
+        $this->_response->statusCode(301);
         $this->assertResponseCode(301);
     }
 
@@ -673,7 +619,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     public function testAssertRedirect()
     {
         $this->_response = new Response();
-        $this->_response = $this->_response->withHeader('Location', 'http://localhost/tasks/index');
+        $this->_response->header('Location', 'http://localhost/tasks/index');
 
         $this->assertRedirect();
         $this->assertRedirect('/tasks/index');
@@ -703,7 +649,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     {
         $test = new AssertIntegrationTestCase('testBadAssertNoRedirect');
         $result = $test->run();
-
+        ob_start();
         $this->assertFalse($result->wasSuccessful());
         $this->assertEquals(1, $result->failureCount());
     }
@@ -716,7 +662,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     public function testAssertRedirectContains()
     {
         $this->_response = new Response();
-        $this->_response = $this->_response->withHeader('Location', 'http://localhost/tasks/index');
+        $this->_response->header('Location', 'http://localhost/tasks/index');
 
         $this->assertRedirectContains('/tasks/index');
     }
@@ -729,7 +675,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     public function testAssertHeader()
     {
         $this->_response = new Response();
-        $this->_response = $this->_response->withHeader('Etag', 'abc123');
+        $this->_response->header('Etag', 'abc123');
 
         $this->assertHeader('Etag', 'abc123');
     }
@@ -742,7 +688,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     public function testAssertHeaderContains()
     {
         $this->_response = new Response();
-        $this->_response = $this->_response->withHeader('Etag', 'abc123');
+        $this->_response->header('Etag', 'abc123');
 
         $this->assertHeaderContains('Etag', 'abc');
     }
@@ -782,7 +728,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     public function testAssertResponseContains()
     {
         $this->_response = new Response();
-        $this->_response = $this->_response->withStringBody('Some content');
+        $this->_response->body('Some content');
 
         $this->assertResponseContains('content');
     }
@@ -795,59 +741,9 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     public function testAssertResponseNotContains()
     {
         $this->_response = new Response();
-        $this->_response = $this->_response->withStringBody('Some content');
+        $this->_response->body('Some content');
 
         $this->assertResponseNotContains('contents');
-    }
-
-    /**
-     * Test the content regexp assertion.
-     *
-     * @return void
-     */
-    public function testAssertResponseRegExp()
-    {
-        $this->_response = new Response();
-        $this->_response = $this->_response->withStringBody('Some content');
-
-        $this->assertResponseRegExp('/cont/');
-    }
-
-    /**
-     * Test the content regexp assertion failing
-     *
-     * @expectedException \PHPUnit\Framework\AssertionFailedError
-     * @expectedExceptionMessage No response set
-     * @return void
-     */
-    public function testAssertResponseRegExpNoResponse()
-    {
-        $this->assertResponseRegExp('/cont/');
-    }
-
-    /**
-     * Test the negated content regexp assertion.
-     *
-     * @return void
-     */
-    public function testAssertResponseNotRegExp()
-    {
-        $this->_response = new Response();
-        $this->_response = $this->_response->withStringBody('Some content');
-
-        $this->assertResponseNotRegExp('/cant/');
-    }
-
-    /**
-     * Test negated content regexp assertion failing
-     *
-     * @expectedException \PHPUnit\Framework\AssertionFailedError
-     * @expectedExceptionMessage No response set
-     * @return void
-     */
-    public function testAssertResponseNotRegExpNoResponse()
-    {
-        $this->assertResponseNotRegExp('/cont/');
     }
 
     /**
@@ -861,10 +757,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
      */
     public function testEventManagerReset1()
     {
-        $eventManager = EventManager::instance();
-        $this->assertInstanceOf('Cake\Event\EventManager', $eventManager);
-
-        return $eventManager;
+        return EventManager::instance();
     }
 
     /**
@@ -875,7 +768,6 @@ class IntegrationTestCaseTest extends IntegrationTestCase
      */
     public function testEventManagerReset2($prevEventManager)
     {
-        $this->assertInstanceOf('Cake\Event\EventManager', $prevEventManager);
         $this->assertNotSame($prevEventManager, EventManager::instance());
     }
 
@@ -907,11 +799,11 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     /**
      * Test that assertFile requires a response
      *
-     * @expectedException \PHPUnit\Framework\AssertionFailedError
+     * @expectedException PHPUnit_Framework_AssertionFailedError
      * @expectedExceptionMessage No response set, cannot assert file
      * @return void
      */
-    public function testAssertFileNoResponse()
+    public function testAssertFileNoReponse()
     {
         $this->assertFileResponse('foo');
     }
@@ -919,7 +811,7 @@ class IntegrationTestCaseTest extends IntegrationTestCase
     /**
      * Test that assertFile requires a file
      *
-     * @expectedException \PHPUnit\Framework\AssertionFailedError
+     * @expectedException PHPUnit_Framework_AssertionFailedError
      * @expectedExceptionMessage No file was sent in this response
      * @return void
      */

@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Collection;
 
@@ -44,6 +44,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function each(callable $c)
     {
@@ -84,20 +85,24 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function every(callable $c)
     {
+        $return = false;
         foreach ($this->unwrap() as $key => $value) {
+            $return = true;
             if (!$c($value, $key)) {
                 return false;
             }
         }
 
-        return true;
+        return $return;
     }
 
     /**
      * {@inheritDoc}
+     *
      */
     public function some(callable $c)
     {
@@ -112,6 +117,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function contains($value)
     {
@@ -136,6 +142,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function reduce(callable $c, $zero = null)
     {
@@ -159,6 +166,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function extract($matcher)
     {
@@ -176,6 +184,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function max($callback, $type = SORT_NUMERIC)
     {
@@ -184,6 +193,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function min($callback, $type = SORT_NUMERIC)
     {
@@ -192,6 +202,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function sortBy($callback, $dir = SORT_DESC, $type = SORT_NUMERIC)
     {
@@ -200,6 +211,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function groupBy($callback)
     {
@@ -214,6 +226,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function indexBy($callback)
     {
@@ -228,6 +241,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function countBy($callback)
     {
@@ -246,6 +260,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function sumOf($matcher = null)
     {
@@ -264,6 +279,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function shuffle()
     {
@@ -275,6 +291,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function sample($size = 10)
     {
@@ -283,6 +300,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function take($size = 1, $from = 0)
     {
@@ -291,6 +309,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function skip($howMany)
     {
@@ -299,6 +318,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function match(array $conditions)
     {
@@ -307,6 +327,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function firstMatch(array $conditions)
     {
@@ -315,6 +336,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function first()
     {
@@ -325,6 +347,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function last()
     {
@@ -344,10 +367,11 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function append($items)
     {
-        $list = new AppendIterator();
+        $list = new AppendIterator;
         $list->append($this->unwrap());
         $list->append((new Collection($items))->unwrap());
 
@@ -356,6 +380,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function combine($keyPath, $valuePath, $groupPath = null)
     {
@@ -369,7 +394,7 @@ trait CollectionTrait
             $rowKey = $options['keyPath'];
             $rowVal = $options['valuePath'];
 
-            if (!$options['groupPath']) {
+            if (!($options['groupPath'])) {
                 $mapReduce->emit($rowVal($value, $key), $rowKey($value, $key));
 
                 return null;
@@ -395,6 +420,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function nest($idPath, $parentPath, $nestingKey = 'children')
     {
@@ -451,6 +477,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function toArray($preserveKeys = true)
     {
@@ -471,6 +498,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function toList()
     {
@@ -479,6 +507,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function jsonSerialize()
     {
@@ -487,6 +516,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function compile($preserveKeys = true)
     {
@@ -539,6 +569,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function unfold(callable $transformer = null)
     {
@@ -558,6 +589,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function through(callable $handler)
     {
@@ -568,6 +600,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function zip($items)
     {
@@ -576,6 +609,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function zipWith($items, $callable)
     {
@@ -591,6 +625,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function chunk($chunkSize)
     {
@@ -610,33 +645,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
-     */
-    public function chunkWithKeys($chunkSize, $preserveKeys = true)
-    {
-        return $this->map(function ($v, $k, $iterator) use ($chunkSize, $preserveKeys) {
-            $key = 0;
-            if ($preserveKeys) {
-                $key = $k;
-            }
-            $values = [$key => $v];
-            for ($i = 1; $i < $chunkSize; $i++) {
-                $iterator->next();
-                if (!$iterator->valid()) {
-                    break;
-                }
-                if ($preserveKeys) {
-                    $values[$iterator->key()] = $iterator->current();
-                } else {
-                    $values[] = $iterator->current();
-                }
-            }
-
-            return $values;
-        });
-    }
-
-    /**
-     * {@inheritDoc}
+     *
      */
     public function isEmpty()
     {
@@ -649,6 +658,7 @@ trait CollectionTrait
 
     /**
      * {@inheritDoc}
+     *
      */
     public function unwrap()
     {
@@ -666,63 +676,9 @@ trait CollectionTrait
      * @return \Iterator
      * @deprecated
      */
-    // @codingStandardsIgnoreLine
     public function _unwrap()
     {
         return $this->unwrap();
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * @return \Cake\Collection\CollectionInterface
-     */
-    public function cartesianProduct(callable $operation = null, callable $filter = null)
-    {
-        if ($this->isEmpty()) {
-            return new Collection([]);
-        }
-
-        $collectionArrays = [];
-        $collectionArraysKeys = [];
-        $collectionArraysCounts = [];
-
-        foreach ($this->toList() as $value) {
-            $valueCount = count($value);
-            if ($valueCount !== count($value, COUNT_RECURSIVE)) {
-                throw new LogicException('Cannot find the cartesian product of a multidimensional array');
-            }
-
-            $collectionArraysKeys[] = array_keys($value);
-            $collectionArraysCounts[] = $valueCount;
-            $collectionArrays[] = $value;
-        }
-
-        $result = [];
-        $lastIndex = count($collectionArrays) - 1;
-        // holds the indexes of the arrays that generate the current combination
-        $currentIndexes = array_fill(0, $lastIndex + 1, 0);
-
-        $changeIndex = $lastIndex;
-
-        while (!($changeIndex === 0 && $currentIndexes[0] === $collectionArraysCounts[0])) {
-            $currentCombination = array_map(function ($value, $keys, $index) {
-                return $value[$keys[$index]];
-            }, $collectionArrays, $collectionArraysKeys, $currentIndexes);
-
-            if ($filter === null || $filter($currentCombination)) {
-                $result[] = ($operation === null) ? $currentCombination : $operation($currentCombination);
-            }
-
-            $currentIndexes[$lastIndex]++;
-
-            for ($changeIndex = $lastIndex; $currentIndexes[$changeIndex] === $collectionArraysCounts[$changeIndex] && $changeIndex > 0; $changeIndex--) {
-                $currentIndexes[$changeIndex] = 0;
-                $currentIndexes[$changeIndex - 1]++;
-            }
-        }
-
-        return new Collection($result);
     }
 
     /**
@@ -739,9 +695,6 @@ trait CollectionTrait
             if (count($row) != $length) {
                 throw new LogicException('Child arrays do not have even length');
             }
-        }
-
-        for ($column = 0; $column < $length; $column++) {
             $result[] = array_column($arrayValue, $column);
         }
 

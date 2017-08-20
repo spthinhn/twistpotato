@@ -1,22 +1,23 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         1.2.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Cache;
 
 use Cake\Cache\Cache;
 use Cake\Cache\CacheRegistry;
 use Cake\Cache\Engine\FileEngine;
+use Cake\Core\Configure;
 use Cake\Core\Plugin;
 use Cake\TestSuite\TestCase;
 
@@ -131,7 +132,7 @@ class CacheTest extends TestCase
      */
     public function testConfigWithLibAndPluginEngines()
     {
-        static::setAppNamespace();
+        Configure::write('App.namespace', 'TestApp');
         Plugin::load('TestPlugin');
 
         $config = ['engine' => 'TestAppCache', 'path' => TMP, 'prefix' => 'cake_test_'];
@@ -400,7 +401,7 @@ class CacheTest extends TestCase
      */
     public function testDrop()
     {
-        static::setAppNamespace();
+        Configure::write('App.namespace', 'TestApp');
 
         $result = Cache::drop('some_config_that_does_not_exist');
         $this->assertFalse($result, 'Drop should not succeed when config is missing.');
@@ -509,12 +510,12 @@ class CacheTest extends TestCase
     /**
      * Test that failed writes cause errors to be triggered.
      *
-     * @expectedException \PHPUnit\Framework\Error\Error
+     * @expectedException \PHPUnit_Framework_Error
      * @return void
      */
     public function testWriteTriggerError()
     {
-        static::setAppNamespace();
+        Configure::write('App.namespace', 'TestApp');
         Cache::config('test_trigger', [
             'engine' => 'TestAppCache',
             'prefix' => ''

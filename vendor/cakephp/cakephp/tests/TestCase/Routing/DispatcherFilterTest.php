@@ -1,22 +1,22 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Routing;
 
 use Cake\Event\Event;
-use Cake\Http\Response;
-use Cake\Http\ServerRequest;
+use Cake\Network\Request;
+use Cake\Network\Response;
 use Cake\Routing\DispatcherFilter;
 use Cake\TestSuite\TestCase;
 
@@ -87,21 +87,21 @@ class DispatcherFilterTest extends TestCase
      */
     public function testMatchesWithFor()
     {
-        $request = new ServerRequest(['url' => '/articles/view']);
+        $request = new Request(['url' => '/articles/view']);
         $event = new Event('Dispatcher.beforeDispatch', $this, compact('request'));
         $filter = new DispatcherFilter(['for' => '/articles']);
         $this->assertTrue($filter->matches($event));
 
-        $request = new ServerRequest(['url' => '/blog/articles']);
+        $request = new Request(['url' => '/blog/articles']);
         $event = new Event('Dispatcher.beforeDispatch', $this, compact('request'));
         $this->assertFalse($filter->matches($event), 'Does not start with /articles');
 
-        $request = new ServerRequest(['url' => '/articles/edit/1']);
+        $request = new Request(['url' => '/articles/edit/1']);
         $event = new Event('Dispatcher.beforeDispatch', $this, compact('request'));
         $filter = new DispatcherFilter(['for' => 'preg:#^/articles/edit/\d+$#']);
         $this->assertTrue($filter->matches($event));
 
-        $request = new ServerRequest(['url' => '/blog/articles/edit/1']);
+        $request = new Request(['url' => '/blog/articles/edit/1']);
         $event = new Event('Dispatcher.beforeDispatch', $this, compact('request'));
         $this->assertFalse($filter->matches($event), 'Does not start with /articles');
     }
@@ -115,13 +115,13 @@ class DispatcherFilterTest extends TestCase
     public function testMatchesWithWhen()
     {
         $matcher = function ($request, $response) {
-            $this->assertInstanceOf('Cake\Http\ServerRequest', $request);
-            $this->assertInstanceOf('Cake\Http\Response', $response);
+            $this->assertInstanceOf('Cake\Network\Request', $request);
+            $this->assertInstanceOf('Cake\Network\Response', $response);
 
             return true;
         };
 
-        $request = new ServerRequest(['url' => '/articles/view']);
+        $request = new Request(['url' => '/articles/view']);
         $response = new Response();
         $event = new Event('Dispatcher.beforeDispatch', $this, compact('response', 'request'));
         $filter = new DispatcherFilter(['when' => $matcher]);
@@ -142,7 +142,7 @@ class DispatcherFilterTest extends TestCase
      */
     public function testMatchesWithForAndWhen()
     {
-        $request = new ServerRequest(['url' => '/articles/view']);
+        $request = new Request(['url' => '/articles/view']);
         $response = new Response();
 
         $matcher = function () {
@@ -174,7 +174,7 @@ class DispatcherFilterTest extends TestCase
      */
     public function testImplementedEventsMethodName()
     {
-        $request = new ServerRequest(['url' => '/articles/view']);
+        $request = new Request(['url' => '/articles/view']);
         $response = new Response();
 
         $beforeEvent = new Event('Dispatcher.beforeDispatch', $this, compact('response', 'request'));
@@ -202,7 +202,7 @@ class DispatcherFilterTest extends TestCase
      */
     public function testHandleAppliesFor()
     {
-        $request = new ServerRequest(['url' => '/articles/view']);
+        $request = new Request(['url' => '/articles/view']);
         $response = new Response();
 
         $event = new Event('Dispatcher.beforeDispatch', $this, compact('response', 'request'));
@@ -225,7 +225,7 @@ class DispatcherFilterTest extends TestCase
      */
     public function testHandleAppliesWhen()
     {
-        $request = new ServerRequest(['url' => '/articles/view']);
+        $request = new Request(['url' => '/articles/view']);
         $response = new Response();
 
         $event = new Event('Dispatcher.beforeDispatch', $this, compact('response', 'request'));

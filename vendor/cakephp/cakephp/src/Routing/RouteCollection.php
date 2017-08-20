@@ -1,23 +1,22 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Routing;
 
 use Cake\Routing\Exception\DuplicateNamedRouteException;
 use Cake\Routing\Exception\MissingRouteException;
 use Cake\Routing\Route\Route;
-use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * Contains a collection of routes.
@@ -40,14 +39,14 @@ class RouteCollection
     /**
      * The routes connected to this collection.
      *
-     * @var \Cake\Routing\Route\Route[]
+     * @var array
      */
     protected $_routes = [];
 
     /**
      * The hash map of named routes that are in this collection.
      *
-     * @var \Cake\Routing\Route\Route[]
+     * @var array
      */
     protected $_named = [];
 
@@ -105,8 +104,8 @@ class RouteCollection
         }
         $this->_paths[$path][] = $route;
 
-        $extensions = $route->getExtensions();
-        if (count($extensions) > 0) {
+        $extensions = $route->extensions();
+        if ($extensions) {
             $this->extensions($extensions);
         }
     }
@@ -132,7 +131,6 @@ class RouteCollection
                 list($url, $queryParameters) = explode('?', $url, 2);
                 parse_str($queryParameters, $queryParameters);
             }
-            /* @var \Cake\Routing\Route\Route $route */
             foreach ($this->_paths[$path] as $route) {
                 $r = $route->parse($url, $method);
                 if ($r === false) {
@@ -145,52 +143,11 @@ class RouteCollection
                 return $r;
             }
         }
-
-        $exceptionProperties = ['url' => $url];
-        if ($method !== '') {
-            // Ensure that if the method is included, it is the first element of
-            // the array, to match the order that the strings are printed in the
-            // MissingRouteException error message, $_messageTemplateWithMethod.
-            $exceptionProperties = array_merge(['method' => $method], $exceptionProperties);
-        }
-        throw new MissingRouteException($exceptionProperties);
+        throw new MissingRouteException(['url' => $url]);
     }
 
     /**
-     * Takes the ServerRequestInterface, iterates the routes until one is able to parse the route.
-     *
-     * @param \Psr\Http\Messages\ServerRequestInterface $request The request to parse route data from.
-     * @return array An array of request parameters parsed from the URL.
-     * @throws \Cake\Routing\Exception\MissingRouteException When a URL has no matching route.
-     */
-    public function parseRequest(ServerRequestInterface $request)
-    {
-        $uri = $request->getUri();
-        $urlPath = urldecode($uri->getPath());
-        foreach (array_keys($this->_paths) as $path) {
-            if (strpos($urlPath, $path) !== 0) {
-                continue;
-            }
-
-            /* @var \Cake\Routing\Route\Route $route */
-            foreach ($this->_paths[$path] as $route) {
-                $r = $route->parseRequest($request);
-                if ($r === false) {
-                    continue;
-                }
-                if ($uri->getQuery()) {
-                    parse_str($uri->getQuery(), $queryParameters);
-                    $r['?'] = $queryParameters;
-                }
-
-                return $r;
-            }
-        }
-        throw new MissingRouteException(['url' => $urlPath]);
-    }
-
-    /**
-     * Get the set of names from the $url. Accepts both older style array urls,
+     * Get the set of names from the $url.  Accepts both older style array urls,
      * and newer style urls containing '_name'
      *
      * @param array $url The url to match.
@@ -213,7 +170,7 @@ class RouteCollection
             "${controller}:${action}",
             "${controller}:_action",
             "_controller:${action}",
-            '_controller:_action',
+            "_controller:_action"
         ];
 
         // No prefix, no plugin
@@ -231,7 +188,7 @@ class RouteCollection
                 "_plugin.${controller}:${action}",
                 "_plugin.${controller}:_action",
                 "_plugin._controller:${action}",
-                '_plugin._controller:_action',
+                "_plugin._controller:_action",
             ];
         }
 
@@ -245,7 +202,7 @@ class RouteCollection
                 "_prefix:${controller}:${action}",
                 "_prefix:${controller}:_action",
                 "_prefix:_controller:${action}",
-                '_prefix:_controller:_action',
+                "_prefix:_controller:_action"
             ];
         }
 
@@ -267,21 +224,19 @@ class RouteCollection
             "_prefix:_plugin.${controller}:${action}",
             "_prefix:_plugin.${controller}:_action",
             "_prefix:_plugin._controller:${action}",
-            '_prefix:_plugin._controller:_action',
+            "_prefix:_plugin._controller:_action",
         ];
     }
 
     /**
-     * Reverse route or match a $url array with the connected routes.
+     * Reverse route or match a $url array with the defined routes.
+     * Returns either the string URL generate by the route, or false on failure.
      *
-     * Returns either the URL string generated by the route,
-     * or throws an exception on failure.
-     *
-     * @param array $url The URL to match.
+     * @param array $url The url to match.
      * @param array $context The request context to use. Contains _base, _port,
      *    _host, _scheme and params keys.
-     * @return string The URL string on match.
-     * @throws \Cake\Routing\Exception\MissingRouteException When no route could be matched.
+     * @return string|false Either a string on match, or false on failure.
+     * @throws \Cake\Routing\Exception\MissingRouteException when a route cannot be matched.
      */
     public function match($url, $context)
     {
@@ -289,6 +244,7 @@ class RouteCollection
         if (isset($url['_name'])) {
             $name = $url['_name'];
             unset($url['_name']);
+            $out = false;
             if (isset($this->_named[$name])) {
                 $route = $this->_named[$name];
                 $out = $route->match($url + $route->defaults, $context);
@@ -308,7 +264,6 @@ class RouteCollection
             if (empty($this->_routeTable[$name])) {
                 continue;
             }
-            /* @var \Cake\Routing\Route\Route $route */
             foreach ($this->_routeTable[$name] as $route) {
                 $match = $route->match($url, $context);
                 if ($match) {
@@ -322,7 +277,7 @@ class RouteCollection
     /**
      * Get all the connected routes as a flat list.
      *
-     * @return \Cake\Routing\Route\Route[]
+     * @return array
      */
     public function routes()
     {
@@ -332,7 +287,7 @@ class RouteCollection
     /**
      * Get the connected named routes.
      *
-     * @return \Cake\Routing\Route\Route[]
+     * @return array
      */
     public function named()
     {

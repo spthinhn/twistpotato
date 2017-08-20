@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         0.10.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\View\Helper;
 
@@ -40,15 +40,9 @@ use Traversable;
  *
  * Automatic generation of HTML FORMs from given data.
  *
- * @method string text($fieldName, array $options = [])
- * @method string number($fieldName, array $options = [])
- * @method string email($fieldName, array $options = [])
- * @method string password($fieldName, array $options = [])
- * @method string search($fieldName, array $options = [])
- *
- * @property \Cake\View\Helper\HtmlHelper $Html
- * @property \Cake\View\Helper\UrlHelper $Url
- * @link https://book.cakephp.org/3.0/en/views/helpers/form.html
+ * @property HtmlHelper $Html
+ * @property UrlHelper $Url
+ * @link http://book.cakephp.org/3.0/en/views/helpers/form.html
  */
 class FormHelper extends Helper
 {
@@ -167,9 +161,9 @@ class FormHelper extends Helper
     /**
      * Defines the type of form being created. Set by FormHelper::create().
      *
-     * @var string|null
+     * @var string
      */
-    public $requestType;
+    public $requestType = null;
 
     /**
      * An array of field names that have been excluded from
@@ -191,7 +185,7 @@ class FormHelper extends Helper
     /**
      * Context for the current form.
      *
-     * @var \Cake\View\Form\ContextInterface|null
+     * @var \Cake\View\Form\ContextInterface
      */
     protected $_context;
 
@@ -210,13 +204,6 @@ class FormHelper extends Helper
      * @var string
      */
     protected $_lastAction = '';
-
-    /**
-     * The sources to be used when retrieving prefilled input values.
-     *
-     * @var array
-     */
-    protected $_valueSources = ['context'];
 
     /**
      * Construct the widgets and binds the default context providers
@@ -244,7 +231,7 @@ class FormHelper extends Helper
 
         $this->widgetRegistry($registry, $widgets);
         $this->_addDefaultContextProviders();
-        $this->_idPrefix = $this->getConfig('idPrefix');
+        $this->_idPrefix = $this->config('idPrefix');
     }
 
     /**
@@ -304,44 +291,63 @@ class FormHelper extends Helper
     }
 
     /**
-     * Returns an HTML form element.
+     * Returns if a field is required to be filled based on validation properties from the validating object.
+     *
+     * @param \Cake\Validation\ValidationSet $validationRules Validation rules set.
+     * @return bool true if field is required to be filled, false otherwise
+     */
+    protected function _isRequiredField($validationRules)
+    {
+        if (empty($validationRules) || count($validationRules) === 0) {
+            return false;
+        }
+        $validationRules->isUpdate($this->requestType === 'put');
+        foreach ($validationRules as $rule) {
+            if ($rule->skip()) {
+                continue;
+            }
+
+            return !$validationRules->isEmptyAllowed();
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns an HTML FORM element.
      *
      * ### Options:
      *
      * - `type` Form method defaults to autodetecting based on the form context. If
      *   the form context's isCreate() method returns false, a PUT request will be done.
-     * - `method` Set the form's method attribute explicitly.
      * - `action` The controller action the form submits to, (optional). Use this option if you
      *   don't need to change the controller from the current request's controller. Deprecated since 3.2, use `url`.
      * - `url` The URL the form submits to. Can be a string or a URL array. If you use 'url'
      *    you should leave 'action' undefined.
      * - `encoding` Set the accept-charset encoding for the form. Defaults to `Configure::read('App.encoding')`
-     * - `enctype` Set the form encoding explicitly. By default `type => file` will set `enctype`
-     *   to `multipart/form-data`.
      * - `templates` The templates you want to use for this form. Any templates will be merged on top of
      *   the already loaded templates. This option can either be a filename in /config that contains
      *   the templates you want to load, or an array of templates to use.
      * - `context` Additional options for the context class. For example the EntityContext accepts a 'table'
      *   option that allows you to set the specific Table class the form should be based on.
      * - `idPrefix` Prefix for generated ID attributes.
-     * - `valueSources` The sources that values should be read from. See FormHelper::setValueSources()
      * - `templateVars` Provide template variables for the formStart template.
      *
-     * @param mixed $context The context for which the form is being defined. Can
+     * @param mixed $model The context for which the form is being defined. Can
      *   be an ORM entity, ORM resultset, or an array of meta data. You can use false or null
-     *   to make a context-less form.
+     *   to make a model-less form.
      * @param array $options An array of html attributes and options.
      * @return string An formatted opening FORM tag.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#Cake\View\Helper\FormHelper::create
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#Cake\View\Helper\FormHelper::create
      */
-    public function create($context = null, array $options = [])
+    public function create($model = null, array $options = [])
     {
         $append = '';
 
         if (empty($options['context'])) {
             $options['context'] = [];
         }
-        $options['context']['entity'] = $context;
+        $options['context']['entity'] = $model;
         $context = $this->_getContext($options['context']);
         unset($options['context']);
 
@@ -354,16 +360,10 @@ class FormHelper extends Helper
             'encoding' => strtolower(Configure::read('App.encoding')),
             'templates' => null,
             'idPrefix' => null,
-            'valueSources' => null,
         ];
 
         if (isset($options['action'])) {
             trigger_error('Using key `action` is deprecated, use `url` directly instead.', E_USER_DEPRECATED);
-        }
-
-        if (isset($options['valueSources'])) {
-            $this->setValueSources($options['valueSources']);
-            unset($options['valueSources']);
         }
 
         if ($options['idPrefix'] !== null) {
@@ -397,7 +397,7 @@ class FormHelper extends Helper
             // Set enctype for form
             case 'file':
                 $htmlAttributes['enctype'] = 'multipart/form-data';
-                $options['type'] = $isCreate ? 'post' : 'put';
+                $options['type'] = ($isCreate) ? 'post' : 'put';
             // Move on
             case 'post':
             // Move on
@@ -415,13 +415,6 @@ class FormHelper extends Helper
             default:
                 $htmlAttributes['method'] = 'post';
         }
-        if (isset($options['method'])) {
-            $htmlAttributes['method'] = strtolower($options['method']);
-        }
-        if (isset($options['enctype'])) {
-            $htmlAttributes['enctype'] = strtolower($options['enctype']);
-        }
-
         $this->requestType = strtolower($options['type']);
 
         if (!empty($options['encoding'])) {
@@ -473,15 +466,15 @@ class FormHelper extends Helper
 
         $actionDefaults = [
             'plugin' => $this->plugin,
-            'controller' => $this->request->getParam('controller'),
-            'action' => $this->request->getParam('action'),
+            'controller' => $this->request->params['controller'],
+            'action' => $this->request->params['action'],
         ];
 
         $action = (array)$options['url'] + $actionDefaults;
 
         $pk = $context->primaryKey();
         if (count($pk)) {
-            $id = $this->getSourceValue($pk[0]);
+            $id = $context->val($pk[0]);
         }
         if (empty($action[0]) && isset($id)) {
             $action[0] = $id;
@@ -513,19 +506,18 @@ class FormHelper extends Helper
      */
     protected function _csrfField()
     {
-        if ($this->request->getParam('_Token.unlockedFields')) {
-            foreach ((array)$this->request->getParam('_Token.unlockedFields') as $unlocked) {
+        if (!empty($this->request['_Token']['unlockedFields'])) {
+            foreach ((array)$this->request['_Token']['unlockedFields'] as $unlocked) {
                 $this->_unlockedFields[] = $unlocked;
             }
         }
-        if (!$this->request->getParam('_csrfToken')) {
+        if (empty($this->request->params['_csrfToken'])) {
             return '';
         }
 
         return $this->hidden('_csrfToken', [
-            'value' => $this->request->getParam('_csrfToken'),
-            'secure' => static::SECURE_SKIP,
-            'autocomplete' => 'off',
+            'value' => $this->request->params['_csrfToken'],
+            'secure' => static::SECURE_SKIP
         ]);
     }
 
@@ -533,18 +525,18 @@ class FormHelper extends Helper
      * Closes an HTML form, cleans up values set by FormHelper::create(), and writes hidden
      * input fields where appropriate.
      *
-     * Resets some parts of the state, shared among multiple FormHelper::create() calls, to defaults.
-     *
      * @param array $secureAttributes Secure attributes which will be passed as HTML attributes
      *   into the hidden input elements generated for the Security Component.
      * @return string A closing FORM tag.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#closing-the-form
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#closing-the-form
      */
     public function end(array $secureAttributes = [])
     {
         $out = '';
 
-        if ($this->requestType !== 'get' && $this->request->getParam('_Token')) {
+        if ($this->requestType !== 'get' &&
+            !empty($this->request['_Token'])
+        ) {
             $out .= $this->secure($this->fields, $secureAttributes);
             $this->fields = [];
             $this->_unlockedFields = [];
@@ -554,8 +546,7 @@ class FormHelper extends Helper
         $this->templater()->pop();
         $this->requestType = null;
         $this->_context = null;
-        $this->_valueSources = ['context'];
-        $this->_idPrefix = $this->getConfig('idPrefix');
+        $this->_idPrefix = $this->config('idPrefix');
 
         return $out;
     }
@@ -577,7 +568,7 @@ class FormHelper extends Helper
      */
     public function secure(array $fields = [], array $secureAttributes = [])
     {
-        if (!$this->request->getParam('_Token')) {
+        if (empty($this->request['_Token'])) {
             return '';
         }
         $debugSecurity = Configure::read('debug');
@@ -586,7 +577,6 @@ class FormHelper extends Helper
             unset($secureAttributes['debugSecurity']);
         }
         $secureAttributes['secure'] = static::SECURE_SKIP;
-        $secureAttributes['autocomplete'] = 'off';
 
         $tokenData = $this->_buildFieldToken(
             $this->_lastAction,
@@ -623,7 +613,7 @@ class FormHelper extends Helper
      *
      * @param string|null $name The dot separated name for the field.
      * @return array|null Either null, or the list of fields.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#working-with-securitycomponent
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#working-with-securitycomponent
      */
     public function unlockField($name = null)
     {
@@ -674,9 +664,7 @@ class FormHelper extends Helper
         if ($lock) {
             if (!in_array($field, $this->fields)) {
                 if ($value !== null) {
-                    $this->fields[$field] = $value;
-
-                    return;
+                    return $this->fields[$field] = $value;
                 }
                 if (isset($this->fields[$field]) && $value === null) {
                     unset($this->fields[$field]);
@@ -693,7 +681,7 @@ class FormHelper extends Helper
      *
      * @param string $field This should be "modelname.fieldname"
      * @return bool If there are errors this method returns true, else false.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#displaying-and-checking-errors
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#displaying-and-checking-errors
      */
     public function isFieldError($field)
     {
@@ -715,7 +703,7 @@ class FormHelper extends Helper
      *   it should be a hash of key names => messages.
      * @param array $options See above.
      * @return string Formatted errors or ''.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#displaying-and-checking-errors
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#displaying-and-checking-errors
      */
     public function error($field, $text = null, array $options = [])
     {
@@ -824,7 +812,7 @@ class FormHelper extends Helper
      *   fieldName.
      * @param array $options An array of HTML attributes.
      * @return string The formatted LABEL element
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#creating-labels
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#creating-labels
      */
     public function label($fieldName, $text = null, array $options = [])
     {
@@ -865,20 +853,20 @@ class FormHelper extends Helper
     }
 
     /**
-     * Generate a set of controls for `$fields`. If $fields is empty the fields
-     * of current model will be used.
+     * Generate a set of inputs for `$fields`. If $fields is empty the fields of current model
+     * will be used.
      *
-     * You can customize individual controls through `$fields`.
+     * You can customize individual inputs through `$fields`.
      * ```
-     * $this->Form->allControls([
+     * $this->Form->allInputs([
      *   'name' => ['label' => 'custom label']
      * ]);
      * ```
      *
-     * You can exclude fields by specifying them as `false`:
+     * You can exclude fields by specifying them as false:
      *
      * ```
-     * $this->Form->allControls(['title' => false]);
+     * $this->Form->allInputs(['title' => false]);
      * ```
      *
      * In the above example, no field would be generated for the title field.
@@ -889,12 +877,12 @@ class FormHelper extends Helper
      * - `fieldset` Set to false to disable the fieldset. You can also pass an array of params to be
      *    applied as HTML attributes to the fieldset tag. If you pass an empty array, the fieldset will
      *    be enabled
-     * - `legend` Set to false to disable the legend for the generated control set. Or supply a string
+     * - `legend` Set to false to disable the legend for the generated input set. Or supply a string
      *    to customize the legend text.
-     * @return string Completed form controls.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#generating-entire-forms
+     * @return string Completed form inputs.
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#generating-entire-forms
      */
-    public function allControls(array $fields = [], array $options = [])
+    public function allInputs(array $fields = [], array $options = [])
     {
         $context = $this->_getContext();
 
@@ -905,53 +893,32 @@ class FormHelper extends Helper
             Hash::normalize($fields)
         );
 
-        return $this->controls($fields, $options);
+        return $this->inputs($fields, $options);
     }
 
     /**
-     * Generate a set of controls for `$fields`. If $fields is empty the fields
-     * of current model will be used.
+     * Generate a set of inputs for `$fields` wrapped in a fieldset element.
      *
-     * @param array $fields An array of customizations for the fields that will be
-     *   generated. This array allows you to set custom types, labels, or other options.
-     * @param array $options Options array. Valid keys are:
-     * - `fieldset` Set to false to disable the fieldset. You can also pass an array of params to be
-     *    applied as HTML attributes to the fieldset tag. If you pass an empty array, the fieldset will
-     *    be enabled
-     * - `legend` Set to false to disable the legend for the generated control set. Or supply a string
-     *    to customize the legend text.
-     * @return string Completed form controls.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#generating-entire-forms
-     * @deprecated 3.4.0 Use FormHelper::allControls() instead.
-     */
-    public function allInputs(array $fields = [], array $options = [])
-    {
-        return $this->allControls($fields, $options);
-    }
-
-    /**
-     * Generate a set of controls for `$fields` wrapped in a fieldset element.
-     *
-     * You can customize individual controls through `$fields`.
+     * You can customize individual inputs through `$fields`.
      * ```
-     * $this->Form->controls([
+     * $this->Form->inputs([
      *   'name' => ['label' => 'custom label'],
      *   'email'
      * ]);
      * ```
      *
-     * @param array $fields An array of the fields to generate. This array allows
-     *   you to set custom types, labels, or other options.
+     * @param array $fields An array of the fields to generate. This array allows you to set custom
+     *   types, labels, or other options.
      * @param array $options Options array. Valid keys are:
-     * - `fieldset` Set to false to disable the fieldset. You can also pass an
-     *    array of params to be applied as HTML attributes to the fieldset tag.
-     *    If you pass an empty array, the fieldset will be enabled.
-     * - `legend` Set to false to disable the legend for the generated input set.
-     *    Or supply a string to customize the legend text.
+     * - `fieldset` Set to false to disable the fieldset. You can also pass an array of params to be
+     *    applied as HTML attributes to the fieldset tag. If you pass an empty array, the fieldset will
+     *    be enabled
+     * - `legend` Set to false to disable the legend for the generated input set. Or supply a string
+     *    to customize the legend text.
      * @return string Completed form inputs.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#generating-entire-forms
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#generating-entire-forms
      */
-    public function controls(array $fields, array $options = [])
+    public function inputs(array $fields, array $options = [])
     {
         $fields = Hash::normalize($fields);
 
@@ -961,30 +928,10 @@ class FormHelper extends Helper
                 continue;
             }
 
-            $out .= $this->control($name, (array)$opts);
+            $out .= $this->input($name, (array)$opts);
         }
 
         return $this->fieldset($out, $options);
-    }
-
-    /**
-     * Generate a set of controls for `$fields` wrapped in a fieldset element.
-     *
-     * @param array $fields An array of the fields to generate. This array allows
-     *   you to set custom types, labels, or other options.
-     * @param array $options Options array. Valid keys are:
-     * - `fieldset` Set to false to disable the fieldset. You can also pass an
-     *    array of params to be applied as HTML attributes to the fieldset tag.
-     *    If you pass an empty array, the fieldset will be enabled.
-     * - `legend` Set to false to disable the legend for the generated input set.
-     *    Or supply a string to customize the legend text.
-     * @return string Completed form inputs.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#generating-entire-forms
-     * @deprecated 3.4.0 Use FormHelper::controls() instead.
-     */
-    public function inputs(array $fields, array $options = [])
-    {
-        return $this->controls($fields, $options);
     }
 
     /**
@@ -1018,7 +965,7 @@ class FormHelper extends Helper
             if (!$isCreate) {
                 $actionName = __d('cake', 'Edit %s');
             }
-            $modelName = Inflector::humanize(Inflector::singularize($this->request->getParam('controller')));
+            $modelName = Inflector::humanize(Inflector::singularize($this->request->params['controller']));
             $legend = sprintf($actionName, $modelName);
         }
 
@@ -1038,7 +985,7 @@ class FormHelper extends Helper
     }
 
     /**
-     * Generates a form control element complete with label and wrapper div.
+     * Generates a form input element complete with label and wrapper div
      *
      * ### Options
      *
@@ -1059,16 +1006,13 @@ class FormHelper extends Helper
      * - `templates` - The templates you want to use for this input. Any templates will be merged on top of
      *   the already loaded templates. This option can either be a filename in /config that contains
      *   the templates you want to load, or an array of templates to use.
-     * - `labelOptions` - Either `false` to disable label around nestedWidgets e.g. radio, multicheckbox or an array
-     *   of attributes for the label tag. `selected` will be added to any classes e.g. `class => 'myclass'` where
-     *   widget is checked
      *
      * @param string $fieldName This should be "modelname.fieldname"
      * @param array $options Each type of input takes different options.
      * @return string Completed form widget.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#creating-form-inputs
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#creating-form-inputs
      */
-    public function control($fieldName, array $options = [])
+    public function input($fieldName, array $options = [])
     {
         $options += [
             'type' => null,
@@ -1077,8 +1021,7 @@ class FormHelper extends Helper
             'required' => null,
             'options' => null,
             'templates' => [],
-            'templateVars' => [],
-            'labelOptions' => true
+            'templateVars' => []
         ];
         $options = $this->_parseOptions($fieldName, $options);
         $options += ['id' => $this->_domId($fieldName)];
@@ -1108,21 +1051,17 @@ class FormHelper extends Helper
         $label = $options['label'];
         unset($options['label']);
 
-        $labelOptions = $options['labelOptions'];
-        unset($options['labelOptions']);
-
         $nestedInput = false;
         if ($options['type'] === 'checkbox') {
             $nestedInput = true;
         }
         $nestedInput = isset($options['nestedInput']) ? $options['nestedInput'] : $nestedInput;
-        unset($options['nestedInput']);
 
         if ($nestedInput === true && $options['type'] === 'checkbox' && !array_key_exists('hiddenField', $options) && $label !== false) {
             $options['hiddenField'] = '_split';
         }
 
-        $input = $this->_getInput($fieldName, $options + ['labelOptions' => $labelOptions]);
+        $input = $this->_getInput($fieldName, $options);
         if ($options['type'] === 'hidden' || $options['type'] === 'submit') {
             if ($newTemplates) {
                 $templater->pop();
@@ -1132,11 +1071,7 @@ class FormHelper extends Helper
         }
 
         $label = $this->_getLabel($fieldName, compact('input', 'label', 'error', 'nestedInput') + $options);
-        if ($nestedInput) {
-            $result = $this->_groupTemplate(compact('label', 'error', 'options'));
-        } else {
-            $result = $this->_groupTemplate(compact('input', 'label', 'error', 'options'));
-        }
+        $result = $this->_groupTemplate(compact('input', 'label', 'error', 'options'));
         $result = $this->_inputContainerTemplate([
             'content' => $result,
             'error' => $error,
@@ -1149,20 +1084,6 @@ class FormHelper extends Helper
         }
 
         return $result;
-    }
-
-    /**
-     * Generates a form control element complete with label and wrapper div.
-     *
-     * @param string $fieldName This should be "modelname.fieldname"
-     * @param array $options Each type of input takes different options.
-     * @return string Completed form widget.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#creating-form-inputs
-     * @deprecated 3.4.0 Use FormHelper::control() instead.
-     */
-    public function input($fieldName, array $options = [])
-    {
-        return $this->control($fieldName, $options);
     }
 
     /**
@@ -1179,7 +1100,7 @@ class FormHelper extends Helper
         }
 
         return $this->formatTemplate($groupTemplate, [
-            'input' => isset($options['input']) ? $options['input'] : [],
+            'input' => $options['input'],
             'label' => $options['label'],
             'error' => $options['error'],
             'templateVars' => isset($options['options']['templateVars']) ? $options['options']['templateVars'] : []
@@ -1217,24 +1138,22 @@ class FormHelper extends Helper
      */
     protected function _getInput($fieldName, $options)
     {
-        $label = $options['labelOptions'];
-        unset($options['labelOptions']);
         switch (strtolower($options['type'])) {
             case 'select':
                 $opts = $options['options'];
                 unset($options['options']);
 
-                return $this->select($fieldName, $opts, $options + ['label' => $label]);
+                return $this->select($fieldName, $opts, $options);
             case 'radio':
                 $opts = $options['options'];
                 unset($options['options']);
 
-                return $this->radio($fieldName, $opts, $options + ['label' => $label]);
+                return $this->radio($fieldName, $opts, $options);
             case 'multicheckbox':
                 $opts = $options['options'];
                 unset($options['options']);
 
-                return $this->multiCheckbox($fieldName, $opts, $options + ['label' => $label]);
+                return $this->multiCheckbox($fieldName, $opts, $options);
             case 'input':
                 throw new RuntimeException("Invalid type 'input' used for field '$fieldName'");
 
@@ -1486,9 +1405,6 @@ class FormHelper extends Helper
         if ($options['nestedInput']) {
             $labelAttributes['input'] = $options['input'];
         }
-        if (isset($options['escape'])) {
-            $labelAttributes['escape'] = $options['escape'];
-        }
 
         return $this->label($fieldName, $labelText, $labelAttributes);
     }
@@ -1510,7 +1426,7 @@ class FormHelper extends Helper
      * @param string $fieldName Name of a field, like this "modelname.fieldname"
      * @param array $options Array of HTML attributes.
      * @return string|array An HTML text input element.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#creating-checkboxes
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#creating-checkboxes
      */
     public function checkbox($fieldName, array $options = [])
     {
@@ -1526,7 +1442,7 @@ class FormHelper extends Helper
         if ($options['hiddenField']) {
             $hiddenOptions = [
                 'name' => $options['name'],
-                'value' => $options['hiddenField'] !== true && $options['hiddenField'] !== '_split' ? $options['hiddenField'] : '0',
+                'value' => ($options['hiddenField'] !== true && $options['hiddenField'] !== '_split' ? $options['hiddenField'] : '0'),
                 'form' => isset($options['form']) ? $options['form'] : null,
                 'secure' => false
             ];
@@ -1552,13 +1468,10 @@ class FormHelper extends Helper
      * ### Attributes:
      *
      * - `value` - Indicates the value when this radio button is checked.
-     * - `label` - Either `false` to disable label around the widget or an array of attributes for
-     *    the label tag. `selected` will be added to any classes e.g. `'class' => 'myclass'` where widget
-     *    is checked
+     * - `label` - boolean to indicate whether or not labels for widgets should be displayed.
      * - `hiddenField` - boolean to indicate if you want the results of radio() to include
      *    a hidden input with a value of ''. This is useful for creating radio sets that are non-continuous.
-     * - `disabled` - Set to `true` or `disabled` to disable all the radio buttons. Use an array of
-     *   values to disable specific radio buttons.
+     * - `disabled` - Set to `true` or `disabled` to disable all the radio buttons.
      * - `empty` - Set to `true` to create an input with the value '' as the first option. When `true`
      *   the radio label will be 'empty'. Set this option to a string to control the label value.
      *
@@ -1566,7 +1479,7 @@ class FormHelper extends Helper
      * @param array|\Traversable $options Radio button options array.
      * @param array $attributes Array of attributes.
      * @return string Completed radio widget set.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#creating-radio-buttons
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#creating-radio-buttons
      */
     public function radio($fieldName, $options = [], array $attributes = [])
     {
@@ -1641,7 +1554,7 @@ class FormHelper extends Helper
      * @param string $fieldName Name of a field, in the form "modelname.fieldname"
      * @param array $options Array of HTML attributes, and special options above.
      * @return string A generated HTML text input element
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#creating-textareas
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#creating-textareas
      */
     public function textarea($fieldName, array $options = [])
     {
@@ -1657,7 +1570,7 @@ class FormHelper extends Helper
      * @param string $fieldName Name of a field, in the form of "modelname.fieldname"
      * @param array $options Array of HTML attributes.
      * @return string A generated hidden input
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#creating-hidden-inputs
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#creating-hidden-inputs
      */
     public function hidden($fieldName, array $options = [])
     {
@@ -1686,7 +1599,7 @@ class FormHelper extends Helper
      * @param string $fieldName Name of a field, in the form "modelname.fieldname"
      * @param array $options Array of HTML attributes.
      * @return string A generated file input.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#creating-file-inputs
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#creating-file-inputs
      */
     public function file($fieldName, array $options = [])
     {
@@ -1711,7 +1624,7 @@ class FormHelper extends Helper
      * @param string $title The button's caption. Not automatically HTML encoded
      * @param array $options Array of options and HTML attributes.
      * @return string A HTML button tag.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#creating-button-elements
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#creating-button-elements
      */
     public function button($title, array $options = [])
     {
@@ -1739,7 +1652,7 @@ class FormHelper extends Helper
      * @param string|array $url URL as string or array
      * @param array $options Array of options and HTML attributes.
      * @return string A HTML button tag.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#creating-standalone-buttons-and-post-links
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#creating-standalone-buttons-and-post-links
      */
     public function postButton($title, $url, array $options = [])
     {
@@ -1792,7 +1705,7 @@ class FormHelper extends Helper
      *   external URL (starts with http://)
      * @param array $options Array of HTML attributes.
      * @return string An `<a />` element.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#creating-standalone-buttons-and-post-links
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#creating-standalone-buttons-and-post-links
      */
     public function postLink($title, $url = null, array $options = [])
     {
@@ -1888,7 +1801,7 @@ class FormHelper extends Helper
      *  OR if the first character is not /, image is relative to webroot/img.
      * @param array $options Array of options. See above.
      * @return string A HTML submit button
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#creating-buttons-and-submit-elements
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#creating-buttons-and-submit-elements
      */
     public function submit($caption = null, array $options = [])
     {
@@ -2003,7 +1916,7 @@ class FormHelper extends Helper
      * @param array $attributes The HTML attributes of the select element.
      * @return string Formatted SELECT element
      * @see \Cake\View\Helper\FormHelper::multiCheckbox() for creating multiple checkboxes.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#creating-select-pickers
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#creating-select-pickers
      */
     public function select($fieldName, $options = [], array $attributes = [])
     {
@@ -2021,8 +1934,6 @@ class FormHelper extends Helper
 
             return $this->multiCheckbox($fieldName, $options, $attributes);
         }
-
-        unset($attributes['label']);
 
         // Secure the field if there are options, or it's a multi select.
         // Single selects with no options don't submit, but multiselects do.
@@ -2064,9 +1975,6 @@ class FormHelper extends Helper
      *   You can also set disabled to a list of values you want to disable when creating checkboxes.
      * - `hiddenField` - Set to false to remove the hidden field that ensures a value
      *   is always submitted.
-     * - `label` - Either `false` to disable label around the widget or an array of attributes for
-     *   the label tag. `selected` will be added to any classes e.g. `'class' => 'myclass'` where
-     *   widget is checked
      *
      * Can be used in place of a select box with the multiple attribute.
      *
@@ -2095,11 +2003,10 @@ class FormHelper extends Helper
                 'name' => $attributes['name'],
                 'value' => '',
                 'secure' => false,
-                'disabled' => $attributes['disabled'] === true || $attributes['disabled'] === 'disabled',
+                'disabled' => ($attributes['disabled'] === true || $attributes['disabled'] === 'disabled'),
             ];
             $hidden = $this->hidden($fieldName, $hiddenAttributes);
         }
-        unset($attributes['hiddenField']);
 
         return $hidden . $this->widget('multicheckbox', $attributes);
     }
@@ -2144,7 +2051,7 @@ class FormHelper extends Helper
      * @param string|null $fieldName Prefix name for the SELECT element
      * @param array $options Options & HTML attributes for the select element
      * @return string A generated day select box.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#creating-day-inputs
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#creating-day-inputs
      */
     public function day($fieldName = null, array $options = [])
     {
@@ -2177,7 +2084,7 @@ class FormHelper extends Helper
      * @param string $fieldName Prefix name for the SELECT element
      * @param array $options Options & attributes for the select elements.
      * @return string Completed year select input
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#creating-year-inputs
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#creating-year-inputs
      */
     public function year($fieldName, array $options = [])
     {
@@ -2209,7 +2116,7 @@ class FormHelper extends Helper
      * @param string $fieldName Prefix name for the SELECT element
      * @param array $options Attributes for the select element
      * @return string A generated month select dropdown.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#creating-month-inputs
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#creating-month-inputs
      */
     public function month($fieldName, array $options = [])
     {
@@ -2239,7 +2146,7 @@ class FormHelper extends Helper
      * @param string $fieldName Prefix name for the SELECT element
      * @param array $options List of HTML attributes
      * @return string Completed hour select input
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#creating-hour-inputs
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#creating-hour-inputs
      */
     public function hour($fieldName, array $options = [])
     {
@@ -2274,7 +2181,7 @@ class FormHelper extends Helper
      * @param string $fieldName Prefix name for the SELECT element
      * @param array $options Array of options.
      * @return string Completed minute select input.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#creating-minute-inputs
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#creating-minute-inputs
      */
     public function minute($fieldName, array $options = [])
     {
@@ -2302,7 +2209,7 @@ class FormHelper extends Helper
      * @param string $fieldName Prefix name for the SELECT element
      * @param array $options Array of options
      * @return string Completed meridian select input
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#creating-meridian-inputs
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#creating-meridian-inputs
      */
     public function meridian($fieldName, array $options = [])
     {
@@ -2354,7 +2261,7 @@ class FormHelper extends Helper
      * @param string $fieldName Prefix name for the SELECT element
      * @param array $options Array of Options
      * @return string Generated set of select boxes for the date and time formats chosen.
-     * @link https://book.cakephp.org/3.0/en/views/helpers/form.html#creating-date-and-time-inputs
+     * @link http://book.cakephp.org/3.0/en/views/helpers/form.html#creating-date-and-time-inputs
      */
     public function dateTime($fieldName, array $options = [])
     {
@@ -2534,7 +2441,7 @@ class FormHelper extends Helper
     protected function _initInputField($field, $options = [])
     {
         if (!isset($options['secure'])) {
-            $options['secure'] = (bool)$this->request->getParam('_Token');
+            $options['secure'] = !empty($this->request->params['_Token']);
         }
         $context = $this->_getContext();
 
@@ -2568,7 +2475,7 @@ class FormHelper extends Helper
                 'default' => isset($options['default']) ? $options['default'] : null,
                 'schemaDefault' => isset($options['schemaDefault']) ? $options['schemaDefault'] : true,
             ];
-            $options['val'] = $this->getSourceValue($field, $valOptions);
+            $options['val'] = $context->val($field, $valOptions);
         }
         if (!isset($options['val']) && isset($options['default'])) {
             $options['val'] = $options['default'];
@@ -2578,7 +2485,17 @@ class FormHelper extends Helper
         if ($context->hasError($field)) {
             $options = $this->addClass($options, $this->_config['errorClass']);
         }
-        $isDisabled = $this->_isDisabled($options);
+        $isDisabled = false;
+        if (isset($options['disabled'])) {
+            $isDisabled = (
+                $options['disabled'] === true ||
+                $options['disabled'] === 'disabled' ||
+                (is_array($options['disabled']) &&
+                    !empty($options['options']) &&
+                    array_diff($options['options'], $options['disabled']) === []
+                )
+            );
+        }
         if ($isDisabled) {
             $options['secure'] = self::SECURE_SKIP;
         }
@@ -2590,42 +2507,6 @@ class FormHelper extends Helper
         }
 
         return $options;
-    }
-
-    /**
-     * Determine if a field is disabled.
-     *
-     * @param array $options The option set.
-     * @return bool Whether or not the field is disabled.
-     */
-    protected function _isDisabled(array $options)
-    {
-        if (!isset($options['disabled'])) {
-            return false;
-        }
-        if (is_scalar($options['disabled'])) {
-            return ($options['disabled'] === true || $options['disabled'] === 'disabled');
-        }
-        if (!isset($options['options'])) {
-            return false;
-        }
-        if (is_array($options['options'])) {
-            // Simple list options
-            $first = $options['options'][array_keys($options['options'])[0]];
-            if (is_scalar($first)) {
-                return array_diff($options['options'], $options['disabled']) === [];
-            }
-            // Complex option types
-            if (is_array($first)) {
-                $disabled = array_filter($options['options'], function ($i) use ($options) {
-                    return in_array($i['value'], $options['disabled']);
-                });
-
-                return count($disabled) > 0;
-            }
-        }
-
-        return false;
     }
 
     /**
@@ -2687,7 +2568,7 @@ class FormHelper extends Helper
      * If there is no active form null will be returned.
      *
      * @param \Cake\View\Form\ContextInterface|null $context Either the new context when setting, or null to get.
-     * @return \Cake\View\Form\ContextInterface The context for the form.
+     * @return null|\Cake\View\Form\ContextInterface The context for the form.
      */
     public function context($context = null)
     {
@@ -2704,7 +2585,7 @@ class FormHelper extends Helper
      * If no type can be matched a NullContext will be returned.
      *
      * @param mixed $data The data to get a context provider for.
-     * @return \Cake\View\Form\ContextInterface Context provider.
+     * @return mixed Context provider.
      * @throws \RuntimeException when the context class does not implement the
      *   ContextInterface.
      */
@@ -2788,7 +2669,7 @@ class FormHelper extends Helper
      */
     public function resetTemplates()
     {
-        $this->setTemplates($this->_defaultConfig['templates']);
+        $this->templates($this->_defaultConfig['templates']);
     }
 
     /**
@@ -2799,56 +2680,5 @@ class FormHelper extends Helper
     public function implementedEvents()
     {
         return [];
-    }
-
-    /**
-     * Gets the value sources.
-     *
-     * Returns a list, but at least one item, of valid sources, such as: `'context'`, `'data'` and `'query'`.
-     *
-     * @return array List of value sources.
-     */
-    public function getValueSources()
-    {
-        return $this->_valueSources;
-    }
-
-    /**
-     * Sets the value sources.
-     *
-     * Valid values are `'context'`, `'data'` and `'query'`.
-     * You need to supply one valid context or multiple, as a list of strings. Order sets priority.
-     *
-     * @param string|array $sources A string or a list of strings identifying a source.
-     * @return $this
-     */
-    public function setValueSources($sources)
-    {
-        $this->_valueSources = array_values(array_intersect((array)$sources, ['context', 'data', 'query']));
-
-        return $this;
-    }
-
-    /**
-     * Gets a single field value from the sources available.
-     *
-     * @param string $fieldname The fieldname to fetch the value for.
-     * @param array|null $options The options containing default values.
-     * @return string|null Field value derived from sources or defaults.
-     */
-    public function getSourceValue($fieldname, $options = [])
-    {
-        foreach ($this->getValueSources() as $valuesSource) {
-            if ($valuesSource === 'context') {
-                $val = $this->_getContext()->val($fieldname, $options);
-                if ($val !== null) {
-                    return $val;
-                }
-            } elseif ($this->request->{$valuesSource}($fieldname) !== null) {
-                return $this->request->{$valuesSource}($fieldname);
-            }
-        }
-
-        return null;
     }
 }

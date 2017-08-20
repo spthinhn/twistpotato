@@ -1,20 +1,20 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\View\Form;
 
-use Cake\Http\ServerRequest;
+use Cake\Network\Request;
 use Cake\Utility\Hash;
 
 /**
@@ -29,24 +29,17 @@ class FormContext implements ContextInterface
     /**
      * The request object.
      *
-     * @var \Cake\Http\ServerRequest
+     * @var \Cake\Network\Request
      */
     protected $_request;
 
     /**
-     * The form object.
-     *
-     * @var \Cake\Form\Form
-     */
-    protected $_form;
-
-    /**
      * Constructor.
      *
-     * @param \Cake\Http\ServerRequest $request The request object.
+     * @param \Cake\Network\Request $request The request object.
      * @param array $context Context info.
      */
-    public function __construct(ServerRequest $request, array $context)
+    public function __construct(Request $request, array $context)
     {
         $this->_request = $request;
         $context += [
@@ -89,7 +82,7 @@ class FormContext implements ContextInterface
             'schemaDefault' => true
         ];
 
-        $val = $this->_request->getData($field);
+        $val = $this->_request->data($field);
         if ($val !== null) {
             return $val;
         }
@@ -135,9 +128,9 @@ class FormContext implements ContextInterface
     public function attributes($field)
     {
         $column = (array)$this->_form->schema()->field($field);
-        $whiteList = ['length' => null, 'precision' => null];
+        $whitelist = ['length' => null, 'precision' => null];
 
-        return array_intersect_key($column, $whiteList);
+        return array_intersect_key($column, $whitelist);
     }
 
     /**

@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\I18n\Parser;
 
@@ -27,7 +27,7 @@ class PoFileParser
     /**
      * Parses portable object (PO) format.
      *
-     * From https://www.gnu.org/software/gettext/manual/gettext.html#PO-Files
+     * From http://www.gnu.org/software/gettext/manual/gettext.html#PO-Files
      * we should be able to parse files having:
      *
      * white-space
@@ -71,7 +71,7 @@ class PoFileParser
      */
     public function parse($resource)
     {
-        $stream = fopen($resource, 'rb');
+        $stream = fopen($resource, 'r');
 
         $defaults = [
             'ids' => [],
@@ -142,10 +142,11 @@ class PoFileParser
 
         $translation = stripcslashes($translation);
 
-        if ($context !== null) {
+        if ($context && (!isset($messages[$singular]) || is_array($messages[$singular]))) {
             $messages[$singular]['_context'][$context] = $translation;
-        } else {
-            $messages[$singular]['_context'][''] = $translation;
+        }
+        if ($context === null) {
+            $messages[$singular] = $translation;
         }
 
         if (isset($item['ids']['plural'])) {
@@ -165,10 +166,10 @@ class PoFileParser
             $plurals = array_map('stripcslashes', $plurals);
             $key = stripcslashes($item['ids']['plural']);
 
-            if ($context !== null) {
+            if ($context) {
                 $messages[$key]['_context'][$context] = $plurals;
             } else {
-                $messages[$key]['_context'][''] = $plurals;
+                $messages[$key] = $plurals;
             }
         }
     }

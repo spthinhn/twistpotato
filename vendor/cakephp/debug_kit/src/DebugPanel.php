@@ -13,6 +13,7 @@
  */
 namespace DebugKit;
 
+use Cake\Controller\Controller;
 use Cake\Event\Event;
 use Cake\Event\EventListenerInterface;
 use Cake\Utility\Inflector;

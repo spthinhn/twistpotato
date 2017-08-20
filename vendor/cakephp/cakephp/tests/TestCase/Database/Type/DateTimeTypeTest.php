@@ -1,21 +1,20 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\Test\TestCase\Database\Type;
 
 use Cake\Database\Type\DateTimeType;
-use Cake\I18n\FrozenTime;
 use Cake\I18n\Time;
 use Cake\TestSuite\TestCase;
 
@@ -24,15 +23,6 @@ use Cake\TestSuite\TestCase;
  */
 class DateTimeTypeTest extends TestCase
 {
-    /**
-     * @var \Cake\Database\Type\DateTimeType
-     */
-    public $type;
-
-    /**
-     * @var \Cake\Database\Driver
-     */
-    public $driver;
 
     /**
      * Original type map
@@ -51,19 +41,6 @@ class DateTimeTypeTest extends TestCase
         parent::setUp();
         $this->type = new DateTimeType();
         $this->driver = $this->getMockBuilder('Cake\Database\Driver')->getMock();
-    }
-
-    /**
-     * Test getDateTimeClassName
-     *
-     * @return void
-     */
-    public function testGetDateTimeClassName()
-    {
-        $this->assertSame(Time::class, $this->type->getDateTimeClassName());
-
-        $this->type->useImmutable();
-        $this->assertSame(FrozenTime::class, $this->type->getDateTimeClassName());
     }
 
     /**

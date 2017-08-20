@@ -1,16 +1,16 @@
 <?php
 /**
- * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
- * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
+ * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
+ * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
  *
  * Licensed under The MIT License
  * For full copyright and license information, please see the LICENSE.txt
  * Redistributions of files must retain the above copyright notice.
  *
- * @copyright     Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
- * @link          https://cakephp.org CakePHP(tm) Project
+ * @copyright     Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
+ * @link          http://cakephp.org CakePHP(tm) Project
  * @since         3.0.0
- * @license       https://opensource.org/licenses/mit-license.php MIT License
+ * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
 namespace Cake\View;
 
@@ -19,8 +19,8 @@ use Cake\Cache\Cache;
 use Cake\Datasource\ModelAwareTrait;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventManager;
-use Cake\Http\Response;
-use Cake\Http\ServerRequest;
+use Cake\Network\Request;
+use Cake\Network\Response;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Inflector;
 use Cake\View\Exception\MissingCellViewException;
@@ -63,21 +63,21 @@ abstract class Cell
      *
      * @var string
      */
-    public $plugin;
+    public $plugin = null;
 
     /**
-     * An instance of a Cake\Http\ServerRequest object that contains information about the current request.
+     * An instance of a Cake\Network\Request object that contains information about the current request.
      * This object contains all the information about a request and several methods for reading
      * additional information about the request.
      *
-     * @var \Cake\Http\ServerRequest
+     * @var \Cake\Network\Request
      */
     public $request;
 
     /**
      * An instance of a Response object that contains information about the impending response
      *
-     * @var \Cake\Http\Response
+     * @var \Cake\Network\Response
      */
     public $response;
 
@@ -133,13 +133,13 @@ abstract class Cell
     /**
      * Constructor.
      *
-     * @param \Cake\Http\ServerRequest|null $request The request to use in the cell.
-     * @param \Cake\Http\Response|null $response The response to use in the cell.
+     * @param \Cake\Network\Request|null $request The request to use in the cell.
+     * @param \Cake\Network\Response|null $response The response to use in the cell.
      * @param \Cake\Event\EventManager|null $eventManager The eventManager to bind events to.
      * @param array $cellOptions Cell options to apply.
      */
     public function __construct(
-        ServerRequest $request = null,
+        Request $request = null,
         Response $response = null,
         EventManager $eventManager = null,
         array $cellOptions = []
@@ -172,7 +172,7 @@ abstract class Cell
     {
         $cache = [];
         if ($this->_cache) {
-            $cache = $this->_cacheConfig($this->action, $template);
+            $cache = $this->_cacheConfig($this->action);
         }
 
         $render = function () use ($template) {
@@ -196,17 +196,17 @@ abstract class Cell
                 $template = Inflector::underscore($template);
             }
             if ($template === null) {
-                $template = $builder->getTemplate() ?: $this->template;
+                $template = $builder->template() ?: $this->template;
             }
-            $builder->setLayout(false)
-                ->setTemplate($template);
+            $builder->layout(false)
+                ->template($template);
 
             $className = get_class($this);
             $namePrefix = '\View\Cell\\';
             $name = substr($className, strpos($className, $namePrefix) + strlen($namePrefix));
             $name = substr($name, 0, -4);
-            if (!$builder->getTemplatePath()) {
-                $builder->setTemplatePath('Cell' . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $name));
+            if (!$builder->templatePath()) {
+                $builder->templatePath('Cell' . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $name));
             }
 
             $this->View = $this->createView();
@@ -230,16 +230,14 @@ abstract class Cell
      * If the key is undefined, the cell class and action name will be used.
      *
      * @param string $action The action invoked.
-     * @param string|null $template The name of the template to be rendered.
      * @return array The cache configuration.
      */
-    protected function _cacheConfig($action, $template = null)
+    protected function _cacheConfig($action)
     {
         if (empty($this->_cache)) {
             return [];
         }
-        $template = $template ?: 'default';
-        $key = 'cell_' . Inflector::underscore(get_class($this)) . '_' . $action . '_' . $template;
+        $key = 'cell_' . Inflector::underscore(get_class($this)) . '_' . $action;
         $key = str_replace('\\', '_', $key);
         $default = [
             'config' => 'default',
