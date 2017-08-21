@@ -49,7 +49,7 @@
                                         <p>Bột phô mai nguyên chất có vị mặn hơi ngọt và béo béo đặc trưng của phô mai làm dậy lên hương vị tuyệt vời của những món ăn mà bạn tự tay mình làm.</p>
                                         <div class="dishes-footer">
                                             <div class="col-sm-4 col-sm-offset-8">
-                                                <a class="dishes-order pull-right" href="#">Xem thêm !</a>
+                                                <a class="dishes-order pull-right" href="product">Xem thêm !</a>
                                             </div>
                                         </div>
                                     </div>
@@ -71,7 +71,7 @@
                                         <p>Bột phô mai nguyên chất có vị mặn hơi ngọt và béo béo đặc trưng của phô mai làm dậy lên hương vị tuyệt vời của những món ăn mà bạn tự tay mình làm.</p>
                                         <div class="dishes-footer">
                                             <div class="col-sm-4 col-sm-offset-8">
-                                                <a class="dishes-order pull-right" href="#">Xem thêm !</a>
+                                                <a class="dishes-order pull-right" href="product">Xem thêm !</a>
                                             </div>
                                         </div>
                                     </div>
