@@ -101,7 +101,7 @@ input,textarea {
 	font-size: 12px;
 }
 .header-half-2 {
-	color: #949089;
+	color: #000;
 	font-size: 12px;
 	float: right;
 }
@@ -640,7 +640,7 @@ input,textarea {
 	display: inline-block;
 }
 .slide-a.slide-a-2 a {
-	background-color: #949089;
+	background-color: #000;
 }
 .slide-a a:hover {
 	background-color: #413c35;
@@ -763,7 +763,7 @@ input,textarea {
 	color: #413c35;
 }
 .section-1 .section-title p,.section-3 .section-title p {
-	color: #949089;
+	color: #000;
 }
 .section-2 .section-title > div span {
 	background: url("/images/title_2.png") no-repeat;
@@ -809,7 +809,7 @@ input,textarea {
 .box-icon p {
 	font-size: 15px;
 	line-height: 23px;
-	color: #949089;
+	color: #000;
 }
 a.button-radius {
 	background-color: #413c35;
@@ -908,7 +908,7 @@ a.button-radius {
 .dishes-content p {
 	font-size: 13px;
 	line-height: 22px;
-	color: #949089;
+	color: #000;
 }
 .dishes-footer {
 	text-align: center;
@@ -918,7 +918,7 @@ a.button-radius {
 .dishes-price {
 	display: inline-block;
 	margin-right: 4%;
-	background-color: #949089;
+	background-color: #000;
 	font-size: 13px;
 	font-weight: 600;
 	padding: 6px 15px;
@@ -1099,11 +1099,11 @@ a.dishes-order:hover {
 .menu-content p {
 	font-size: 13px;
 	line-height: 22px;
-	color: #949089;
+	color: #000;
 }
 .menu-price {
 	display: inline-block;
-	background-color: #949089;
+	background-color: #000;
 	font-size: 13px;
 	font-weight: 600;
 	padding: 6px 15px;
@@ -1215,7 +1215,7 @@ a.dishes-order:hover {
 	line-height: 22px;
 }
 .customers-meta {
-	color: #949089;
+	color: #000;
 	font-size: 12px;
 	font-weight: 600;
 	float: right;
@@ -1323,7 +1323,7 @@ a.dishes-order:hover {
 	padding: 10px;
 	font-size: 13px;
 	line-height: 22px;
-	color: #949089;
+	color: #000;
 }
 a.event-single {
 	width: 34px;
@@ -1443,7 +1443,7 @@ a.event-single i {
 	font-size: 13px;
 	line-height: 22px;
 	margin-bottom: 0;
-	color: #949089;
+	color: #000;
 }
 .callout-a {
 	float: right;
@@ -1520,7 +1520,7 @@ a.event-single i {
 .chefs-content span {
 	font-size: 13px;
 	line-height: 22px;
-	color: #949089;
+	color: #000;
 }
 /* 13 - pagination */
 .pagination {
@@ -1538,7 +1538,7 @@ a.event-single i {
 	border-radius: 50%;
 }
 .pagination li.pagination-prev a,.pagination li.pagination-next a {
-	background-color: #949089;
+	background-color: #000;
 	font-size: 14px;
 	padding: 5px 13px;
 	margin: 0 5px;
@@ -1588,7 +1588,7 @@ a.event-single i {
 	text-align: center;
 }
 .about p {
-	color: #949089;
+	color: #000;
 	font-size: 16px;
 	line-height: 24px;
 }
@@ -1710,7 +1710,7 @@ a.event-single i {
 .page-content p {
 	font-size: 13px;
 	line-height: 22px;
-	color: #949089;
+	color: #000;
 }
 .form-style input[type="text"],.form-style input[type="email"],.form-style textarea {
 	width: 100%;
@@ -1880,7 +1880,7 @@ a.event-single i {
 	font-weight: bold;
 }
 .pricing-content ul li span {
-	color: #949089;
+	color: #000;
 	font-size: 12px;
 	font-weight: bold;
 	float: right;
@@ -1901,7 +1901,7 @@ a.event-single i {
 }
 .pricing-footer a {
 	display: inline-block;
-	background-color: #949089;
+	background-color: #000;
 	font-size: 13px;
 	font-weight: bold;
 	padding: 5px 10px;
@@ -1920,14 +1920,14 @@ a.event-single i {
 	background-color: #413c35;
 }
 .pricing-tables-2 .pricing-footer a:hover {
-	background-color: #949089;
+	background-color: #000;
 }
 /* 20 - typography */
 .dropcap {
 	float: left;
 	line-height: 30px;
 	font-size: 36px;
-	color: #949089;
+	color: #000;
 	margin: 0 10px 0 0;
 	line-height: 85%;
 	text-transform: uppercase;
@@ -2102,12 +2102,12 @@ a.event-single i {
 	line-height: 32px;
 }
 .single-tags i {
-	color: #949089;
+	color: #000;
 	margin-right: 10px;
 	font-size: 15px;
 }
 .single-tags a {
-	color: #949089;
+	color: #000;
 	font-size: 12px;
 }
 .single-tags a:hover {
@@ -2283,7 +2283,7 @@ a.comment-reply:hover {
 	border-bottom: none;
 }
 .widget ul li a {
-	color: #949089;
+	color: #000;
 }
 .widget ul li a span {
 	float: right;
@@ -2663,7 +2663,7 @@ a.comment-reply:hover {
 	background-color: #cac9c3;
 }
 .footer-widget-2 .tweet_list {
-	color: #949089;
+	color: #000;
 	font-size: 12px;
 }
 .footer-widget-2 .tweet_list li {
@@ -2738,7 +2738,7 @@ a.comment-reply:hover {
 .copyrights {
 	font-size: 12px;
 	font-weight: 600;
-	color: #949089;
+	color: #000;
 	float: right;
 }
 /* 25 - Color #FFF */

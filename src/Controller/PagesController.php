@@ -59,6 +59,11 @@ class PagesController extends AppController
         
     }
 
+    public function listBlog()
+    {
+        
+    }
+
     public function blogs()
     {
         

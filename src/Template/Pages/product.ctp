@@ -14,22 +14,28 @@
 					<p>Dùng được trong nhiều thực phẩm, các món ăn như gà lắc, nem chua, khoai tây lắc, khoai tây lốc xoáy, bánh tráng, bắp rang caramen phô mai, đặc biệt là làm bánh và nhiều công dụng khác.</p>
 				</div>
 				<div class="clearfix"></div>
-				<div class="col-sm-3">
-					<img width="100%" alt="" src="images/phomai/12.png">
+				<div class="owl-carousel owl-theme">
+				    <div class="item">
+				    	<img width="100%" alt="" src="images/phomai/12.png">
+				    </div>
+				    <div class="item">
+				    	<img width="100%" alt="" src="images/phomai/12.png">
+				    </div>
+				    <div class="item">
+				    	<img width="100%" alt="" src="images/phomai/12.png">
+				    </div>
+				    <div class="item">
+				    	<img width="100%" alt="" src="images/phomai/12.png">
+				    </div>
+				    <div class="item">
+				    	<img width="100%" alt="" src="images/phomai/12.png">
+				    </div>
 				</div>
-				<div class="col-sm-3">
-					<img width="100%" alt="" src="images/phomai/12.png">
-				</div>
-				<div class="col-sm-3">
-					<img width="100%" alt="" src="images/phomai/12.png">
-				</div>
-				<div class="col-sm-3">
-					<img width="100%" alt="" src="images/phomai/12.png">
-				</div>
+				
 				<div class="col-sm-12">
 					<div class="dishes">
 						<div class="dishes-content conten-product">
-							<div class="dishes-icon"><i class="icon-food"></i></div>
+							<div class="dishes-icon"><i class="icon-info"></i></div>
 							<h3><a href="single-dishes.html">Giới thiệu</a></h3>
 							<p>Là dạng bột mịn, có màu vàng cam, có vị thơm ngon</p>
 							<p>Khối lượng: 50 gr</p>
@@ -48,19 +54,19 @@
 					</div>
 					<div class="dishes">
 						<div class="dishes-content conten-product">
-							<div class="dishes-icon"><i class="icon-food"></i></div>
+							<div class="dishes-icon"><i class="icon-book"></i></div>
 							<h3><a href="single-dishes.html">Hướng dẫn sử dụng</a></h3>
 						</div>
 					</div>
 					<div class="dishes">
 						<div class="dishes-content conten-product">
-							<div class="dishes-icon"><i class="icon-food"></i></div>
+							<div class="dishes-icon"><i class="icon-book"></i></div>
 							<h3><a href="single-dishes.html">Hướng dẫn bảo quản</a></h3>
 						</div>
 					</div>
 					<div class="dishes">
 						<div class="dishes-content conten-product">
-							<div class="dishes-icon"><i class="icon-food"></i></div>
+							<div class="dishes-icon"><i class="icon-home"></i></div>
 							<h3><a href="single-dishes.html">Hệ thống phân phối</a></h3>
 						</div>
 					</div>
@@ -73,52 +79,68 @@
 				</div>
 			</div>
 			<div class="clearfix"></div>
-			<div class="dishes-slider">
-				<ul>
-					<li>
-						<div class="col-md-3 dishes-item">
-							<div class="dishes">
-								<div class="dishes-img"><a href="product"><img alt="" src="images/phomai/12.png"></a></div>
-								<div class="dishes-content">
-									<div class="dishes-icon"><i class="icon-food"></i></div>
-									<h3><a href="product">Korean BBQ chicken</a></h3>
-									<p>Dùng được trong nhiều thực phẩm, các món ăn như gà lắc, nem chua, khoai tây lắc, khoai tây lốc xoáy, bánh tráng, bắp rang caramen phô mai, đặc biệt là làm bánh và nhiều công dụng khác.</p>
-								</div>
-							</div>
+			<div class="owl-carousel owl-theme">
+			    <div class="item">
+			    	<div class="dishes">
+						<div class="dishes-img"><a href="product"><img alt="" src="images/phomai/12.png"></a></div>
+						<div class="dishes-content">
+							<div class="dishes-icon"><i class="icon-food"></i></div>
+							<h3><a href="product">Korean BBQ chicken</a></h3>
+							<p>Dùng được trong nhiều thực phẩm, các món ăn như gà lắc, nem chua, khoai tây lắc, khoai tây lốc xoáy, bánh tráng, bắp rang caramen phô mai, đặc biệt là làm bánh và nhiều công dụng khác.</p>
 						</div>
-						<div class="col-md-3 dishes-item">
-							<div class="dishes">
-								<div class="dishes-img"><a href="product"><img alt="" src="images/phomai/12.png"></a></div>
-								<div class="dishes-content">
-									<div class="dishes-icon"><i class="icon-food"></i></div>
-									<h3><a href="product">Korean BBQ chicken</a></h3>
-									<p>Dùng được trong nhiều thực phẩm, các món ăn như gà lắc, nem chua, khoai tây lắc, khoai tây lốc xoáy, bánh tráng, bắp rang caramen phô mai, đặc biệt là làm bánh và nhiều công dụng khác.</p>
-								</div>
-							</div>
+					</div>
+			    </div>
+			    <div class="item">
+			    	<div class="dishes">
+						<div class="dishes-img"><a href="product"><img alt="" src="images/phomai/12.png"></a></div>
+						<div class="dishes-content">
+							<div class="dishes-icon"><i class="icon-food"></i></div>
+							<h3><a href="product">Korean BBQ chicken</a></h3>
+							<p>Dùng được trong nhiều thực phẩm, các món ăn như gà lắc, nem chua, khoai tây lắc, khoai tây lốc xoáy, bánh tráng, bắp rang caramen phô mai, đặc biệt là làm bánh và nhiều công dụng khác.</p>
 						</div>
-						<div class="col-md-3 dishes-item">
-							<div class="dishes">
-								<div class="dishes-img"><a href="product"><img alt="" src="images/phomai/12.png"></a></div>
-								<div class="dishes-content">
-									<div class="dishes-icon"><i class="icon-food"></i></div>
-									<h3><a href="product">Korean BBQ chicken</a></h3>
-									<p>Dùng được trong nhiều thực phẩm, các món ăn như gà lắc, nem chua, khoai tây lắc, khoai tây lốc xoáy, bánh tráng, bắp rang caramen phô mai, đặc biệt là làm bánh và nhiều công dụng khác.</p>
-								</div>
-							</div>
+					</div>
+			    </div>
+			    <div class="item">
+			    	<div class="dishes">
+						<div class="dishes-img"><a href="product"><img alt="" src="images/phomai/12.png"></a></div>
+						<div class="dishes-content">
+							<div class="dishes-icon"><i class="icon-food"></i></div>
+							<h3><a href="product">Korean BBQ chicken</a></h3>
+							<p>Dùng được trong nhiều thực phẩm, các món ăn như gà lắc, nem chua, khoai tây lắc, khoai tây lốc xoáy, bánh tráng, bắp rang caramen phô mai, đặc biệt là làm bánh và nhiều công dụng khác.</p>
 						</div>
-						<div class="col-md-3 dishes-item">
-							<div class="dishes">
-								<div class="dishes-img"><a href="product"><img alt="" src="images/phomai/12.png"></a></div>
-								<div class="dishes-content">
-									<div class="dishes-icon"><i class="icon-food"></i></div>
-									<h3><a href="product">Korean BBQ chicken</a></h3>
-									<p>Dùng được trong nhiều thực phẩm, các món ăn như gà lắc, nem chua, khoai tây lắc, khoai tây lốc xoáy, bánh tráng, bắp rang caramen phô mai, đặc biệt là làm bánh và nhiều công dụng khác.</p>
-								</div>
-							</div>
+					</div>
+			    </div>
+			    <div class="item">
+			    	<div class="dishes">
+						<div class="dishes-img"><a href="product"><img alt="" src="images/phomai/12.png"></a></div>
+						<div class="dishes-content">
+							<div class="dishes-icon"><i class="icon-food"></i></div>
+							<h3><a href="product">Korean BBQ chicken</a></h3>
+							<p>Dùng được trong nhiều thực phẩm, các món ăn như gà lắc, nem chua, khoai tây lắc, khoai tây lốc xoáy, bánh tráng, bắp rang caramen phô mai, đặc biệt là làm bánh và nhiều công dụng khác.</p>
 						</div>
-					</li>
-				</ul>
-			</div><!-- End dishes-slider -->
+					</div>
+			    </div>
+			    <div class="item">
+			    	<div class="dishes">
+						<div class="dishes-img"><a href="product"><img alt="" src="images/phomai/12.png"></a></div>
+						<div class="dishes-content">
+							<div class="dishes-icon"><i class="icon-food"></i></div>
+							<h3><a href="product">Korean BBQ chicken</a></h3>
+							<p>Dùng được trong nhiều thực phẩm, các món ăn như gà lắc, nem chua, khoai tây lắc, khoai tây lốc xoáy, bánh tráng, bắp rang caramen phô mai, đặc biệt là làm bánh và nhiều công dụng khác.</p>
+						</div>
+					</div>
+			    </div>
+			    <div class="item">
+			    	<div class="dishes">
+						<div class="dishes-img"><a href="product"><img alt="" src="images/phomai/12.png"></a></div>
+						<div class="dishes-content">
+							<div class="dishes-icon"><i class="icon-food"></i></div>
+							<h3><a href="product">Korean BBQ chicken</a></h3>
+							<p>Dùng được trong nhiều thực phẩm, các món ăn như gà lắc, nem chua, khoai tây lắc, khoai tây lốc xoáy, bánh tráng, bắp rang caramen phô mai, đặc biệt là làm bánh và nhiều công dụng khác.</p>
+						</div>
+					</div>
+			    </div>
+			</div>
 			<div class="clearfix gap"></div>
 		</div>
 	</div>

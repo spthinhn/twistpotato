@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/responsive.css">
     <link rel="stylesheet" href="css/responsiveslides.css">
+    <link rel="stylesheet" href="css/owl.carousel.min.css">
 
     
     
@@ -61,12 +62,12 @@
                     <div class="footer-widget footer-widget-2">
                         <h6>Liên hệ</h6>
                         <div class="col-md-6">
-                            <p><b>Địa chỉ: </b> 1F/62 Đường Bình Lợi, P.13, Q.Bình Thạnh, TP. Hồ Chí Minh, Việt Nam</p>
-                            <p><b>Số điện thoại: </b>031 2045 447</p>
-                            <iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2Fpages%2FPh%25C3%25B4-Mai-H%25C3%25A0n-Qu%25E1%25BB%2591c%2F824398560926201&amp;width&amp;layout=standard&amp;action=like&amp;show_faces=true&amp;share=true&amp;height=75" scrolling="no" style="border:none; overflow:hidden; height:75px; " allowtransparency="true" frameborder="0"></iframe>
+                            <p style="margin: 0px; color: #cac9c3"><b><i class="icon-map-marker"></i> Địa chỉ: </b> 1F/62 Đường Bình Lợi, P.13, Q.Bình Thạnh, TP. Hồ Chí Minh, Việt Nam</p>
+                            <p style="margin: 0px; color: #cac9c3"><b><i class="icon-envelope"></i> Email: </b>tomatotnp@gmail.com</p>
+                            <p style="margin: 0px; color: #cac9c3"><b><i class="icon-phone"></i> Số điện thoại: </b>031 2045 447</p>
                         </div>
                         <div class="col-md-6">
-                            <img width="100%" src="images/googlemap.jpg" />
+                            <iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2Fpages%2FPh%25C3%25B4-Mai-H%25C3%25A0n-Qu%25E1%25BB%2591c%2F824398560926201&amp;width&amp;layout=standard&amp;action=like&amp;show_faces=true&amp;share=true&amp;height=75" scrolling="no" style="border:none; overflow:hidden; height:75px;" allowtransparency="true" frameborder="0"></iframe>
                         </div>
                     </div>
                 </div>
@@ -102,6 +103,7 @@
 <script src="js/jquery.themepunch.revolution.min.js"></script>
 <script src="js/jquery.nicescroll.min.js"></script>
 <script src="js/responsiveslides.min.js"></script>
+<script src="js/owl.carousel.min.js"></script>
 <script src="js/custom.js"></script>
 <!-- End js -->
 
