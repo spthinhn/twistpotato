@@ -1,4 +1,29 @@
 <?= $this->element('slideshow') ?>
+<div>
+        <img width="100%" src="images/tamnhin.jpg">
+    </div>
+    <style type="text/css">
+        .spanImg {
+
+        }
+    </style>
+<div id="example">
+  <carousel-3d >
+    <slide :index="0">
+      <img src="images/phomai/17.png" width="100%"><span class=".spanImg" >dsadas</span>
+    </slide>
+    <slide :index="1">
+      <img src="images/phomai/18.png" width="100%"><span class=".spanImg" >dsadsadadas</span>
+    </slide>
+    <slide :index="2">
+      <img src="images/phomai/12.png" width="100%"><span class=".spanImg" >dsadsadadas</span>
+    </slide>
+    <slide :index="3">
+      <img src="images/phomai/17.png" width="100%"><span class=".spanImg" >dsadas1231</span>
+    </slide>
+  </carousel-3d>
+</div>
+
 <div class="section-3">
     <div class="re_s_4"></div>
     <div class="container">

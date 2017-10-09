@@ -104,6 +104,9 @@
 <script src="js/jquery.nicescroll.min.js"></script>
 <script src="js/responsiveslides.min.js"></script>
 <script src="js/owl.carousel.min.js"></script>
+<script src="js/vue.js"></script>
+<script src="js/vue-carousel-3d.min.js"></script>
+
 <script src="js/custom.js"></script>
 <!-- End js -->
 
