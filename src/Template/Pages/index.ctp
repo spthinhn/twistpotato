@@ -1,7 +1,7 @@
 <?= $this->element('slideshow') ?>
 <div>
-        <img width="100%" src="images/tamnhin.jpg">
-    </div>
+    <img width="100%" src="images/tamnhin.jpg">
+</div>
     <style type="text/css">
         .spanImg {
 
@@ -10,20 +10,21 @@
 <div id="example">
   <carousel-3d >
     <slide :index="0">
-      <img src="images/phomai/17.png" width="100%"><span class=".spanImg" >dsadas</span>
+      <img src="images/phomai/17.png" width="100%"><span class=".spanImg" >dsadas1</span>
     </slide>
     <slide :index="1">
-      <img src="images/phomai/18.png" width="100%"><span class=".spanImg" >dsadsadadas</span>
+      <img src="images/phomai/18.png" width="100%"><span class=".spanImg" >dsadas22</span>
     </slide>
     <slide :index="2">
-      <img src="images/phomai/12.png" width="100%"><span class=".spanImg" >dsadsadadas</span>
+      <img src="images/phomai/12.png" width="100%"><span class=".spanImg" >dsadas333</span>
     </slide>
     <slide :index="3">
-      <img src="images/phomai/17.png" width="100%"><span class=".spanImg" >dsadas1231</span>
+      <img src="images/phomai/17.png" width="100%"><span class=".spanImg" >dsadas4444</span>
     </slide>
   </carousel-3d>
 </div>
 
+<img src="images/bpm.gif" width="100%" />
 <div class="section-3">
     <div class="re_s_4"></div>
     <div class="container">
@@ -47,148 +48,3 @@
         </div>
     </div>
 </div><!-- End section-1 -->
-
-<div class="section-1">
-    <div class="re_s_2"></div>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="section-title" style="margin-bottom: 30px">
-                    <div><h3>Sản phẩm</h3><span></span></div>
-                </div>
-            </div>
-            <div class="clearfix"></div>
-            <div class="dishes-slider">
-                <ul>
-                    <li>
-                        <div class="col-md-12 dishes-item">
-                            <div class="col-md-3">
-                                <div class="dishes-img"><img alt="" src="images/phomai/12.png"></div>
-                            </div>
-                            <div class="col-md-9">
-                                <div class="dishes">
-                                    <div class="dishes-content">
-                                        <div class="dishes-icon"><i class="icon-food"></i></div>
-                                        <h3><a href="single-dishes.html">NGUYÊN CHẤT TRUYỀN THỐNG</a></h3>
-                                        <p>Bột phô mai nguyên chất có vị mặn hơi ngọt và béo béo đặc trưng của phô mai làm dậy lên hương vị tuyệt vời của những món ăn mà bạn tự tay mình làm.</p>
-                                        <p>Bột phô mai nguyên chất có vị mặn hơi ngọt và béo béo đặc trưng của phô mai làm dậy lên hương vị tuyệt vời của những món ăn mà bạn tự tay mình làm.</p>
-                                        <div class="dishes-footer">
-                                            <div class="col-sm-4 col-sm-offset-8">
-                                                <a class="dishes-order pull-right" href="product">Xem thêm !</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="col-md-12 dishes-item">
-                            <div class="col-md-3">
-                                <div class="dishes-img"><img alt="" src="images/phomai/12.png"></div>
-                            </div>
-                            <div class="col-md-9">
-                                <div class="dishes">
-                                    <div class="dishes-content">
-                                        <div class="dishes-icon"><i class="icon-food"></i></div>
-                                        <h3><a href="single-dishes.html">NGUYÊN CHẤT TRUYỀN THỐNG</a></h3>
-                                        <p>Bột phô mai nguyên chất có vị mặn hơi ngọt và béo béo đặc trưng của phô mai làm dậy lên hương vị tuyệt vời của những món ăn mà bạn tự tay mình làm.</p>
-                                        <p>Bột phô mai nguyên chất có vị mặn hơi ngọt và béo béo đặc trưng của phô mai làm dậy lên hương vị tuyệt vời của những món ăn mà bạn tự tay mình làm.</p>
-                                        <div class="dishes-footer">
-                                            <div class="col-sm-4 col-sm-offset-8">
-                                                <a class="dishes-order pull-right" href="product">Xem thêm !</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div><!-- End dishes-slider -->
-        </div>
-    </div>
-</div><!-- End section-2 -->
-
-<div class="section-3">
-    <div class="re_s_4"></div>
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="section-title" style="margin-bottom: 30px">
-                    <div><h3>Tin tức</h3><span></span></div>
-                </div>
-            </div>
-            <div class="col-md-3 event-item">
-                <div class="event">
-                    <div class="event-img">
-                        <a href="single-event.html"><img alt="" src="http://placehold.it/346x229/949089/FFF/"></a>
-                        <div class="event-title">
-                            <div>
-                                <h3>LÀM THẾ NÀO ĐỂ BẢO QUẢN BỘT PHÔ MAI</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="event-content">
-                        <p>1. KHÔNG nên để bột ở nơi ẩm ướt ( ví dụ như gần bồn rửa chén bát) và trong ngăn đá tủ lạnh.</p>
-                        <p>2. KHÔNG để bột tiếp xúc trực tiếp không khí và ánh nắng, nghĩa là bạn phải đậy kín và để bột nơi thoáng mát.</p>
-                        <a class="event-single" href="single-event.html"><i class="icon-chevron-right"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 event-item">
-                <div class="event">
-                    <div class="event-img">
-                        <a href="single-event.html"><img alt="" src="http://placehold.it/346x229/949089/FFF/"></a>
-                        <div class="event-title">
-                            <div>
-                                <h3>LÀM THẾ NÀO ĐỂ BẢO QUẢN BỘT PHÔ MAI</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="event-content">
-                        <p>1. KHÔNG nên để bột ở nơi ẩm ướt ( ví dụ như gần bồn rửa chén bát) và trong ngăn đá tủ lạnh.</p>
-                        <p>2. KHÔNG để bột tiếp xúc trực tiếp không khí và ánh nắng, nghĩa là bạn phải đậy kín và để bột nơi thoáng mát.</p>
-                        <a class="event-single" href="single-event.html"><i class="icon-chevron-right"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 event-item">
-                <div class="event">
-                    <div class="event-img">
-                        <a href="single-event.html"><img alt="" src="http://placehold.it/346x229/949089/FFF/"></a>
-                        <div class="event-title">
-                            <div>
-                                <h3>LÀM THẾ NÀO ĐỂ BẢO QUẢN BỘT PHÔ MAI</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="event-content">
-                        <p>1. KHÔNG nên để bột ở nơi ẩm ướt ( ví dụ như gần bồn rửa chén bát) và trong ngăn đá tủ lạnh.</p>
-                        <p>2. KHÔNG để bột tiếp xúc trực tiếp không khí và ánh nắng, nghĩa là bạn phải đậy kín và để bột nơi thoáng mát.</p>
-                        <a class="event-single" href="single-event.html"><i class="icon-chevron-right"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3 event-item">
-                <div class="event">
-                    <div class="event-img">
-                        <a href="single-event.html"><img alt="" src="http://placehold.it/346x229/949089/FFF/"></a>
-                        <div class="event-title">
-                            <div>
-                                <h3>LÀM THẾ NÀO ĐỂ BẢO QUẢN BỘT PHÔ MAI</h3>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="event-content">
-                        <p>1. KHÔNG nên để bột ở nơi ẩm ướt ( ví dụ như gần bồn rửa chén bát) và trong ngăn đá tủ lạnh.</p>
-                        <p>2. KHÔNG để bột tiếp xúc trực tiếp không khí và ánh nắng, nghĩa là bạn phải đậy kín và để bột nơi thoáng mát.</p>
-                        <a class="event-single" href="single-event.html"><i class="icon-chevron-right"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-    </div>
-    <div class="re_s_5"></div>
-</div><!-- End section-3 -->

@@ -48,7 +48,7 @@
                     <div class="footer-widget footer-widget-1">
                         <h6>Tomato T&P</h6>
                         <p>TOMATO T&P là nhà nhập khẩu và phân phối độc quyền bột phô mai có xuất xứ từ Hàn Quốc ở Việt Nam.</p>
-                        <div class="footer-social">
+                        <div class="hidden-xs hidden-sm footer-social">
                             <ul>
                                 <li class=""><a href="#"><i class="social_icon-facebook"></i></a></li>
                                 <li class=""><a href="#"><i class="social_icon-twitter"></i></a></li>
@@ -59,7 +59,7 @@
                     </div>
                 </div>
                 <div class="col-md-8 col-md-offset-1">
-                    <div class="footer-widget footer-widget-2">
+                    <div class="footer-widget footer-widget-2" style="margin-bottom: 0px;">
                         <h6>Liên hệ</h6>
                         <div class="col-md-6">
                             <p style="margin: 0px; color: #cac9c3"><b><i class="icon-map-marker"></i> Địa chỉ: </b> 1F/62 Đường Bình Lợi, P.13, Q.Bình Thạnh, TP. Hồ Chí Minh, Việt Nam</p>
@@ -74,19 +74,6 @@
             </div><!-- End row -->
         </div><!-- End container -->
     </footer><!-- End footer -->
-    <footer id="footer-bottom">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="copyright">Sexy Food  |  All Rights Reserved</div>
-                </div>
-                <div class="col-md-6">
-                    <a class="copyrights" href="#">Template By 7oroof.com</a>
-                </div>
-            </div>
-        </div><!-- End container -->
-        <div class="re_s_6"></div>
-    </footer><!-- End footer-bottom -->
 </div><!-- End wrap -->
 
 <!-- js -->
