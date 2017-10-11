@@ -67,7 +67,7 @@
                             <p style="margin: 0px; color: #cac9c3"><b><i class="icon-phone"></i> Số điện thoại: </b>031 2045 447</p>
                         </div>
                         <div class="col-md-6">
-                            <iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2Fpages%2FPh%25C3%25B4-Mai-H%25C3%25A0n-Qu%25E1%25BB%2591c%2F824398560926201&amp;width&amp;layout=standard&amp;action=like&amp;show_faces=true&amp;share=true&amp;height=75" scrolling="no" style="border:none; overflow:hidden; height:75px;" allowtransparency="true" frameborder="0"></iframe>
+
                         </div>
                     </div>
                 </div>
